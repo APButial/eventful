@@ -13,6 +13,13 @@ import javafx.stage.Stage;
 public class SignupUI extends Application {
     @Override
     public void start(Stage primaryStage) {
+        // Load Logo for Application Icon (Increases size)
+        Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
+        ImageView logoicon = new ImageView(logoImg);
+        logoicon.setFitWidth(64); // Adjust width
+        logoicon.setFitHeight(64); // Adjust height
+        primaryStage.getIcons().add(logoImg);
+
 
         VBox leftPanel = new VBox(20);
         leftPanel.setStyle("-fx-background-color: white; -fx-padding: 40px; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");

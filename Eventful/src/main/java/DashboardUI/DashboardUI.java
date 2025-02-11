@@ -15,6 +15,13 @@ import javafx.stage.Stage;
 public class DashboardUI extends Application {
     @Override
     public void start(Stage primaryStage) {
+        // Load Logo for Application Icon (Increases size)
+        Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
+        ImageView logoicon = new ImageView(logoImg);
+        logoicon.setFitWidth(64); // Adjust width
+        logoicon.setFitHeight(64); // Adjust height
+        primaryStage.getIcons().add(logoImg);
+
         VBox sidebar = new VBox(20);
         sidebar.setPadding(new Insets(40));
         sidebar.setStyle("-fx-background-color: #F5F6FA; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");
@@ -104,7 +111,7 @@ public class DashboardUI extends Application {
         VBox eventList = new VBox(10);
         eventList.setPadding(new Insets(10, 20, 10, 20));
 
-        for (int i = 0; i < 5; i++) {// just to simulate multiple events
+        for (int i = 0; i < 2; i++) {// just to simulate multiple events
             HBox event = new HBox(20);
             event.setPadding(new Insets(15));
             event.setAlignment(Pos.CENTER_LEFT);
