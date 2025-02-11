@@ -63,12 +63,12 @@ public class LoginUI extends Application {
 
         // Login Button
         Button loginButton = new Button("Login");
-        loginButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 10px;");
+        loginButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
         loginButton.setMaxWidth(300);
 
         // Create New User Button
         Button createUserButton = new Button("Create new user");
-        createUserButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 10px;");
+        createUserButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
         createUserButton.setMaxWidth(300);
 
         // "OR" separator line
