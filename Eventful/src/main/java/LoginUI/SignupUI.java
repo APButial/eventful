@@ -31,7 +31,7 @@ public class SignupUI extends Application {
 
         // Login Text
         Label loginText = new Label("Sign up for an account");
-        loginText.setStyle("-fx-font-size: 14px; -fx-text-fill: gray;");
+        loginText.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
 
         // Username Field with Label (Using VBox)
         VBox usernameBox = new VBox(5);
@@ -44,7 +44,7 @@ public class SignupUI extends Application {
         usernameBox.getChildren().addAll(usernameLabel, usernameField);
 
         // Password Field with Label (Using VBox)
-        VBox passwordBox = new VBox(1);
+        VBox passwordBox = new VBox(5);
         passwordBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label passwordLabel = new Label("PASSWORD");
         passwordLabel.setStyle("-fx-font-size: 10px;");
@@ -55,15 +55,16 @@ public class SignupUI extends Application {
 
         // Re enter Password Field with Label (Using VBox)
 
-        VBox reenterBox = new VBox(10);
+        VBox reenterBox = new VBox(5); // Adjusted spacing
         reenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
+        reenterBox.setSpacing(5); // Ensures consistent spacing between label and field
         Label reenterLabel = new Label("RE-ENTER PASSWORD");
         reenterLabel.setStyle("-fx-font-size: 10px;");
         PasswordField renterField = new PasswordField();
         renterField.setPromptText("Re-Enter your password");
-        renterField.setMaxWidth(300);
+        renterField.setMaxWidth(250);
         reenterBox.getChildren().addAll(reenterLabel, renterField);
-
+        HBox space = new HBox(1);
 
         // Login Button
         Button loginButton = new Button("Confirm");
@@ -83,7 +84,7 @@ public class SignupUI extends Application {
         orline.getChildren().add(orSeparatorLabel);
 
         // Add elements to left panel
-        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox,reenterBox, loginButton, orline, createUserButton);
+        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox,reenterBox, space,loginButton, orline, createUserButton);
 
         // Right Panel (Background Image) - 70% Width
         Image bgImage = new Image(getClass().getResourceAsStream("/login.jpg"));
