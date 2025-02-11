@@ -46,20 +46,43 @@ public class LoginUI extends Application {
         usernameBox.setAlignment(Pos.BASELINE_LEFT); // Left align the username box
         Label usernameLabel = new Label("USERNAME");
         usernameLabel.setStyle("-fx-font-size: 10px;");
+
+        HBox usernameFieldContainer = new HBox(5);
+        usernameFieldContainer.setAlignment(Pos.CENTER_LEFT);
+        usernameFieldContainer.setPrefWidth(300); //
         TextField usernameField = new TextField();
         usernameField.setPromptText("Enter your username");
-        usernameField.setMaxWidth(250);
-        usernameBox.getChildren().addAll(usernameLabel, usernameField);
+        usernameField.setPrefWidth(280); // Set width
+        HBox.setHgrow(usernameField, Priority.ALWAYS);
+        Image profimg = new Image(getClass().getResourceAsStream("/profileicon.png"));
+        ImageView profileicon = new ImageView(profimg);
+        profileicon.setFitWidth(30); // icon size
+        profileicon.setPreserveRatio(true);
+        usernameFieldContainer.getChildren().addAll(usernameField, profileicon);
+        usernameBox.getChildren().addAll(usernameLabel, usernameFieldContainer);
+
 
         // Password Field with Label (Using VBox)
         VBox passwordBox = new VBox(5);
         passwordBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label passwordLabel = new Label("PASSWORD");
         passwordLabel.setStyle("-fx-font-size: 10px;");
+        // HBox to contain password field and icon
+        HBox passwordFieldContainer = new HBox(5);
+        passwordFieldContainer.setAlignment(Pos.CENTER_LEFT);
+        passwordFieldContainer.setPrefWidth(300);
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Enter your password");
-        passwordField.setMaxWidth(250);
-        passwordBox.getChildren().addAll(passwordLabel, passwordField);
+        passwordField.setPrefWidth(280); // Set width
+        HBox.setHgrow(passwordField, Priority.ALWAYS);
+
+        Image passimg = new Image(getClass().getResourceAsStream("/passicon.png"));
+        ImageView passicon = new ImageView(passimg);
+        passicon.setFitWidth(30); // Adjust size for better alignment
+        passicon.setPreserveRatio(true);
+        passwordFieldContainer.getChildren().addAll(passwordField, passicon);
+        passwordBox.getChildren().addAll(passwordLabel, passwordFieldContainer);
+
 
         // Forgot Password Link (Right Aligned)
         HBox forgotPasswordBox = new HBox();
