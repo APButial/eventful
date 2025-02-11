@@ -68,7 +68,7 @@ public class LoginUI extends Application {
 
         // Create New User Button
         Button createUserButton = new Button("Create new user");
-        createUserButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
+        createUserButton.setStyle("-fx-background-color: transparent;-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
         createUserButton.setMaxWidth(300);
 
         // "OR" separator line

@@ -44,7 +44,7 @@ public class SignupUI extends Application {
         usernameBox.getChildren().addAll(usernameLabel, usernameField);
 
         // Password Field with Label (Using VBox)
-        VBox passwordBox = new VBox(5);
+        VBox passwordBox = new VBox(1);
         passwordBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label passwordLabel = new Label("PASSWORD");
         passwordLabel.setStyle("-fx-font-size: 10px;");
@@ -52,11 +52,12 @@ public class SignupUI extends Application {
         passwordField.setPromptText("Enter your password");
         passwordField.setMaxWidth(250);
         passwordBox.getChildren().addAll(passwordLabel, passwordField);
-        // Re enter Password Field with Label (Using VBox)
 
-        VBox ReenterBox = new VBox(5);
-        ReenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
-        Label reenterLabel = new Label("Re-Enter Password");
+        // Re enter Password Field with Label (Using VBox)
+        HBox space = new HBox(5);
+        VBox reenterBox = new VBox(10);
+        reenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
+        Label reenterLabel = new Label("RE-ENTER PASSWORD");
         reenterLabel.setStyle("-fx-font-size: 10px;");
         PasswordField renterField = new PasswordField();
         renterField.setPromptText("Re-Enter your password");
@@ -70,8 +71,8 @@ public class SignupUI extends Application {
         loginButton.setMaxWidth(300);
 
         // Create New User Button
-        Button createUserButton = new Button("Canel");
-        createUserButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
+        Button createUserButton = new Button("Cancel");
+        createUserButton.setStyle("-fx-background-color: transparent;-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
         createUserButton.setMaxWidth(300);
 
         // "OR" separator line
@@ -82,7 +83,7 @@ public class SignupUI extends Application {
         orline.getChildren().add(orSeparatorLabel);
 
         // Add elements to left panel
-        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox,  loginButton, orline, createUserButton);
+        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox,reenterBox, loginButton, orline, createUserButton);
 
         // Right Panel (Background Image) - 70% Width
         Image bgImage = new Image(getClass().getResourceAsStream("/login.jpg"));
