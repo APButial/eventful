@@ -1,6 +1,6 @@
 package DashboardUI;
 
-import DashboardUI.Components.EventList;
+import DashboardUI.Components.EventDetails;
 import DashboardUI.Components.LowerHeader;
 import DashboardUI.Components.Sidebar;
 import DashboardUI.Components.UpperHeader;
@@ -11,27 +11,26 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class DashboardUI extends Application {
+public class CreateEventUI extends Application {
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Dashboard");
+        primaryStage.setTitle("Create Event");
 
-        Sidebar sidebar = new Sidebar("none");//type the name of which page being used for indicator
+        Sidebar sidebar = new Sidebar("Create Event");//type the name of which page being used for indicator
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader();
-        LowerHeader lowerHeader = new LowerHeader("Recent Events","yes");//requires string for page name
-        HBox spacer = new HBox();                           // type 'yes' to show date or 'no' if date is not included
-
+        LowerHeader lowerHeader = new LowerHeader("Create Event", "no"); // "no" to hide date
+        HBox spacer = new HBox();
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
 
-        EventList eventList = new EventList();
+        EventDetails eventDetailsConfirmation = new EventDetails();
 
-        mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(),spacer, eventList.getComponent());
+        mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(), spacer, eventDetailsConfirmation.getComponent());
 
         HBox layout = new HBox(sidebar.getComponent(), mainContent);
         layout.setSpacing(0);

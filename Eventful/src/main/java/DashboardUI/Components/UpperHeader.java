@@ -18,7 +18,7 @@ public class UpperHeader {
         searchBar.setPromptText("Search");
         searchBar.setPrefWidth(250);
 
-        Button calendarButton = new Button("\uD83D\uDCC5");
+        Button calendarButton = new Button("\uD83D\uDCC5");//idk what happend this is just the emoji for icons still works so..
         Button notificationsButton = new Button("\uD83D\uDD14");
         Button profileButton = new Button("\uD83D\uDC64");
         Button menuButton = new Button("\u22EE");
