@@ -27,18 +27,24 @@ public class Sidebar {
         logoView.setPreserveRatio(true);
         logo.getChildren().add(logoView);
 
-        Button createEvent = new Button("Create Event");
-        Button myEvents = new Button("My Events");
-        Button eventTimeline = new Button("Event Timeline");
-        Button logs = new Button("Logs");
+        sidebar.getChildren().addAll(logo, createButton("/create.png", "Create Event"),
+                createButton("/events.png", "My Events"),
+                createButton("/timeline.png", "Event Timeline"),
+                createButton("/logs.png", "Logs"));
+    }
 
-        String textButtonStyle = "-fx-background-color: transparent; -fx-border: none; -fx-font-size: 14px; -fx-text-fill: #AAB2C8;";
-        createEvent.setStyle(textButtonStyle);
-        myEvents.setStyle(textButtonStyle);
-        eventTimeline.setStyle(textButtonStyle);
-        logs.setStyle(textButtonStyle);
+    private HBox createButton(String iconPath, String text) {
+        Image icon = new Image(getClass().getResourceAsStream(iconPath));
+        ImageView iconView = new ImageView(icon);
+        iconView.setFitWidth(16);
+        iconView.setFitHeight(16);
 
-        sidebar.getChildren().addAll(logo, createEvent, myEvents, eventTimeline, logs);
+        Button button = new Button(text);
+        button.setStyle("-fx-background-color: transparent; -fx-border: none; -fx-font-size: 14px; -fx-text-fill: #AAB2C8;");
+
+        HBox buttonContainer = new HBox(10, iconView, button);
+        buttonContainer.setAlignment(Pos.CENTER_LEFT);
+        return buttonContainer;
     }
 
     public VBox getComponent() {
