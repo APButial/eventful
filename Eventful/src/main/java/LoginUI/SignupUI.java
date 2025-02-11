@@ -54,7 +54,7 @@ public class SignupUI extends Application {
         passwordBox.getChildren().addAll(passwordLabel, passwordField);
 
         // Re enter Password Field with Label (Using VBox)
-        HBox space = new HBox(5);
+
         VBox reenterBox = new VBox(10);
         reenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label reenterLabel = new Label("RE-ENTER PASSWORD");
@@ -62,7 +62,7 @@ public class SignupUI extends Application {
         PasswordField renterField = new PasswordField();
         renterField.setPromptText("Re-Enter your password");
         renterField.setMaxWidth(300);
-        passwordBox.getChildren().addAll(reenterLabel, renterField);
+        reenterBox.getChildren().addAll(reenterLabel, renterField);
 
 
         // Login Button
