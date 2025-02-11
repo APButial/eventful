@@ -16,7 +16,7 @@ public class CreateEventUI extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Create Event");
 
-        Sidebar sidebar = new Sidebar("Create Event");//type the name of which page being used for indicator
+        Sidebar sidebar = new Sidebar("Create Event");//type the name of page for indicator
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");

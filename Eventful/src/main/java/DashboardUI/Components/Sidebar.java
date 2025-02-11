@@ -16,7 +16,7 @@ public class Sidebar {
 
     public Sidebar(String activePage) {
         sidebar = new VBox(20);
-        sidebar.setPadding(new Insets(40, 20, 40, 10)); // Adjust left padding for indicator space
+        sidebar.setPadding(new Insets(40, 20, 40, 0)); // Adjust left padding for indicator space
         sidebar.setStyle("-fx-background-color: #F5F6FA; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");
         sidebar.setPrefWidth(400);
         sidebar.setAlignment(Pos.TOP_CENTER);
@@ -46,16 +46,25 @@ public class Sidebar {
         Button button = new Button(text);
         button.setStyle("-fx-background-color: transparent; -fx-border: none; -fx-font-size: 14px; -fx-text-fill: " + (isActive ? "#6A0DAD" : "#AAB2C8") + ";");
 
+        // HBox to ensure text stays left-aligned
+        HBox textContainer = new HBox(button);
+        textContainer.setAlignment(Pos.CENTER_LEFT);
+
+        // HBox for icon and text, ensuring left alignment
+        HBox buttonContent = new HBox(10, iconView, textContainer);
+        buttonContent.setAlignment(Pos.CENTER_LEFT);
+        buttonContent.setPadding(new Insets(0, 0, 0, 15)); // Adds space between indicator and icon
+
+        // Indicator (far left)
         Rectangle indicator = new Rectangle(5, 30, Color.web("#6A0DAD"));
-        indicator.setVisible(isActive); // Show only if active
+        indicator.setVisible(isActive); // Only show if active
 
-        HBox buttonContainer = new HBox(10, iconView, button);
-        buttonContainer.setAlignment(Pos.CENTER_LEFT);
-
-        HBox wrapper = new HBox(5, isActive ? indicator : new Region(), buttonContainer);
-        wrapper.setAlignment(Pos.CENTER_LEFT);
+        // Wrapper keeps indicator at the far left while keeping content aligned
+        HBox wrapper = new HBox(indicator, buttonContent);
+        wrapper.setAlignment(Pos.CENTER_LEFT); // Keeps content aligned left while keeping the structure
         return wrapper;
     }
+
 
     public VBox getComponent() {
         return sidebar;
