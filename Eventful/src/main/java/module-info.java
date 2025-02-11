@@ -6,5 +6,6 @@ module login.page.eventful {
     exports LoginUI;
     exports DashboardUI;
     exports practice_ground;
+    exports DashboardUI.Components;
 
 }
