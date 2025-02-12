@@ -1,61 +1,90 @@
 package DashboardUI.Components;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 public class EventDetails {
     private VBox component;
 
     public EventDetails() {
         component = new VBox(10);
-        component.setPadding(new Insets(20, 40, 40, 40));
+        component.setPadding(new Insets(20, 30, 40, 30)); // Reduced left padding
         component.setStyle("-fx-background-color: #FFFFFF;");
 
-
+        // Purple Line Separator pushed far down
+        Region largeSpacer = new Region();
+        VBox.setVgrow(largeSpacer, Priority.ALWAYS);
 
         // Form Fields
         GridPane form = new GridPane();
-        form.setVgap(15);
+        form.setVgap(10);
         form.setHgap(10);
+        form.setAlignment(Pos.CENTER_LEFT); // Align form content to the left
 
         Label eventNameLabel = new Label("Event Name");
         TextField eventNameField = new TextField();
         eventNameField.setPromptText("Enter event name");
-        eventNameField.setPrefWidth(400);
+        eventNameField.setPrefWidth(250);
+        eventNameField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
+        ImageView nameIcon = new ImageView(new Image("/name.png"));
+        nameIcon.setFitWidth(30);
+        nameIcon.setPreserveRatio(true);
 
         Label startDateLabel = new Label("Start Date");
         TextField startDateField = new TextField();
-        startDateField.setPromptText("Enter event start date");
+        startDateField.setPromptText("Enter event start date 1/10/25");
+        startDateField.setPrefWidth(250);
+        startDateField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
+        ImageView startDateIcon = new ImageView(new Image("/date.png"));
+        startDateIcon.setFitWidth(30);
+        startDateIcon.setPreserveRatio(true);
 
         Label endDateLabel = new Label("End Date");
         TextField endDateField = new TextField();
-        endDateField.setPromptText("Enter event end date");
+        endDateField.setPromptText("Enter event end date 1/11/25");
+        endDateField.setPrefWidth(250);
+        endDateField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
+        ImageView endDateIcon = new ImageView(new Image("/date.png"));
+        endDateIcon.setFitWidth(30);
+        endDateIcon.setPreserveRatio(true);
 
         form.add(eventNameLabel, 0, 0);
-        form.add(eventNameField, 0, 1);
+        form.add(new HBox(5, eventNameField, nameIcon), 0, 1);
         form.add(startDateLabel, 0, 2);
-        form.add(startDateField, 0, 3);
+        form.add(new HBox(5, startDateField, startDateIcon), 0, 3);
         form.add(endDateLabel, 0, 4);
-        form.add(endDateField, 0, 5);
+        form.add(new HBox(5, endDateField, endDateIcon), 0, 5);
 
         // Buttons
         Button cancelButton = new Button("Cancel");
-        cancelButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple;");
+        cancelButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
+        cancelButton.setPrefSize(100, 10);
 
         Button confirmButton = new Button("Confirm");
-        confirmButton.setStyle("-fx-background-color: purple; -fx-text-fill: white;");
+        confirmButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
+        confirmButton.setPrefSize(100, 10);
 
         HBox buttonBox = new HBox(20, cancelButton, confirmButton);
         buttonBox.setPadding(new Insets(20, 0, 0, 0));
+        buttonBox.setAlignment(Pos.BASELINE_LEFT); // Align buttons to the left
 
-        component.getChildren().addAll( form, buttonBox);
+// Spacer to push buttons down
+        Region buttonSpacer = new Region();
+        buttonSpacer.setPrefHeight(50); // Adjust height to push buttons further down
+        VBox.setVgrow(buttonSpacer, Priority.ALWAYS); // Allows expansion
+// Add components in correct order
+        component.getChildren().addAll(largeSpacer, form, buttonSpacer, buttonBox);
+
     }
 
     public VBox getComponent() {

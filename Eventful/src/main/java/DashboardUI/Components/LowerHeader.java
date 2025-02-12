@@ -18,7 +18,7 @@ public class LowerHeader {
         lowerHeader.setAlignment(Pos.CENTER_LEFT);
 
         Label headerLabel = new Label(headerText);
-        headerLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+        headerLabel.setStyle("-fx-font-size: 30px; -fx-font-weight: bold;");
 
         Region headerSpacer = new Region();
         HBox.setHgrow(headerSpacer, Priority.ALWAYS);

@@ -8,6 +8,8 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -25,14 +27,31 @@ public class CreateEventUI extends Application {
         UpperHeader upperHeader = new UpperHeader();
         LowerHeader lowerHeader = new LowerHeader("Create Event", "no"); // "no" to hide date
         HBox spacer = new HBox();
-        spacer.setPrefHeight(3);
+
+        spacer.setPrefHeight(3);//spacer
         spacer.setStyle("-fx-background-color: #800080;");
+        // Bottom Purple Bar
+        HBox bottomBar = new HBox();
+        bottomBar.setStyle("-fx-background-color: purple;");
+        bottomBar.setMaxWidth(Double.MAX_VALUE); // Expand to full width
+        bottomBar.setPrefHeight(70); // Fixed height
+        HBox.setHgrow(bottomBar, Priority.ALWAYS); // Allow horizontal expansion
+// Add a spacer to push bottomBar down
+        Region bottomSpacer = new Region();
+        VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
+        EventDetails eventDetails = new EventDetails();
 
-        EventDetails eventDetailsConfirmation = new EventDetails();
+// Add components in order, ensuring bottomSpacer is included
+        mainContent.getChildren().addAll(
+                upperHeader.getComponent(),
+                lowerHeader.getComponent(),
+                spacer,
+                eventDetails.getComponent(),
+                bottomSpacer, // Pushes bottomBar to the bottom
+                bottomBar
+        );
 
-        mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(), spacer, eventDetailsConfirmation.getComponent());
-
-        HBox layout = new HBox(sidebar.getComponent(), mainContent);
+        HBox layout = new HBox(sidebar.getComponent(),mainContent);
         layout.setSpacing(0);
 
         Scene scene = new Scene(layout, 1024, 600);
