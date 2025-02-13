@@ -1,5 +1,9 @@
-module  {
+module login.page.eventful {
     requires javafx.controls;
 
-    exports Event
+
+
+    exports LoginUI;
+    exports DashboardUI;
+    exports practice_ground;
 }
