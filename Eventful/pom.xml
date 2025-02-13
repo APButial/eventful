@@ -11,6 +11,8 @@
     <name>Eventful</name>
     <modules>
         <module>login</module>
+      <module>dashboard</module>
+      <module>event_manager</module>
     </modules>
 
     <properties>
