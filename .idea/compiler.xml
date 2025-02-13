@@ -10,7 +10,10 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="dashboard" target="17" />
+      <module name="event_manager" target="17" />
       <module name="eventful" target="17" />
+      <module name="login" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>
