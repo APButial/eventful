@@ -9,5 +9,8 @@
         <module name="Eventful" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="eventful" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

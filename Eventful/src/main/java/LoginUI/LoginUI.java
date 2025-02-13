@@ -54,7 +54,7 @@ public class LoginUI extends Application {
         usernameField.setPromptText("Enter your username");
         usernameField.setPrefWidth(280); // Set width
         HBox.setHgrow(usernameField, Priority.ALWAYS);
-        Image profimg = new Image(getClass().getResourceAsStream("/profileicon.png"));
+        Image profimg = new Image(getClass().getResourceAsStream("/profileIcon.png"));
         ImageView profileicon = new ImageView(profimg);
         profileicon.setFitWidth(30); // icon size
         profileicon.setPreserveRatio(true);
@@ -76,7 +76,7 @@ public class LoginUI extends Application {
         passwordField.setPrefWidth(280); // Set width
         HBox.setHgrow(passwordField, Priority.ALWAYS);
 
-        Image passimg = new Image(getClass().getResourceAsStream("/passicon.png"));
+        Image passimg = new Image(getClass().getResourceAsStream("/passIcon.png"));
         ImageView passicon = new ImageView(passimg);
         passicon.setFitWidth(30); // Adjust size for better alignment
         passicon.setPreserveRatio(true);
