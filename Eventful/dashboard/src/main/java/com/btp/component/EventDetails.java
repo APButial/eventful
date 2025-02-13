@@ -1,4 +1,4 @@
-package DashboardUI.Components;
+package com.btp.component;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

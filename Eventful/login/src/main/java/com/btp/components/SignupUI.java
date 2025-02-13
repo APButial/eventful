@@ -1,4 +1,4 @@
-package LoginUI;
+package com.btp.components;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -13,13 +13,6 @@ import javafx.stage.Stage;
 public class SignupUI extends Application {
     @Override
     public void start(Stage primaryStage) {
-        // Load Logo for Application Icon (Increases size)
-        Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
-        ImageView logoicon = new ImageView(logoImg);
-        logoicon.setFitWidth(64); // Adjust width
-        logoicon.setFitHeight(64); // Adjust height
-        primaryStage.getIcons().add(logoImg);
-
 
         VBox leftPanel = new VBox(20);
         leftPanel.setStyle("-fx-background-color: white; -fx-padding: 40px; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");
@@ -38,79 +31,47 @@ public class SignupUI extends Application {
 
         // Login Text
         Label loginText = new Label("Sign up for an account");
-        loginText.setStyle("-fx-font-size: 12px; -fx-text-fill: gray;");
+        loginText.setStyle("-fx-font-size: 14px; -fx-text-fill: gray;");
 
         // Username Field with Label (Using VBox)
         VBox usernameBox = new VBox(5);
         usernameBox.setAlignment(Pos.BASELINE_LEFT); // Left align the username box
         Label usernameLabel = new Label("USERNAME");
         usernameLabel.setStyle("-fx-font-size: 10px;");
-
-        HBox usernameFieldContainer = new HBox(5);
-        usernameFieldContainer.setAlignment(Pos.CENTER_LEFT);
-        usernameFieldContainer.setPrefWidth(300); //
         TextField usernameField = new TextField();
         usernameField.setPromptText("Enter your username");
-        usernameField.setPrefWidth(280); // Set width
-        HBox.setHgrow(usernameField, Priority.ALWAYS);
-        Image profimg = new Image(getClass().getResourceAsStream("/profileicon.png"));
-        ImageView profileicon = new ImageView(profimg);
-        profileicon.setFitWidth(30); // icon size
-        profileicon.setPreserveRatio(true);
-        usernameFieldContainer.getChildren().addAll(usernameField, profileicon);
-        usernameBox.getChildren().addAll(usernameLabel, usernameFieldContainer);
+        usernameField.setMaxWidth(250);
+        usernameBox.getChildren().addAll(usernameLabel, usernameField);
 
         // Password Field with Label (Using VBox)
         VBox passwordBox = new VBox(5);
         passwordBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label passwordLabel = new Label("PASSWORD");
         passwordLabel.setStyle("-fx-font-size: 10px;");
-        // HBox to contain password field and icon
-        HBox passwordFieldContainer = new HBox(5);
-        passwordFieldContainer.setAlignment(Pos.CENTER_LEFT);
-        passwordFieldContainer.setPrefWidth(300);
         PasswordField passwordField = new PasswordField();
         passwordField.setPromptText("Enter your password");
-        passwordField.setPrefWidth(280); // Set width
-        HBox.setHgrow(passwordField, Priority.ALWAYS);
+        passwordField.setMaxWidth(250);
+        passwordBox.getChildren().addAll(passwordLabel, passwordField);
+        // Re enter Password Field with Label (Using VBox)
 
-        Image passimg = new Image(getClass().getResourceAsStream("/passicon.png"));
-        ImageView passicon = new ImageView(passimg);
-        passicon.setFitWidth(30); // Adjust size for better alignment
-        passicon.setPreserveRatio(true);
-        passwordFieldContainer.getChildren().addAll(passwordField, passicon);
-        passwordBox.getChildren().addAll(passwordLabel, passwordFieldContainer);
-
-        // Re-enter Password Field with Label (Using VBox)
-        VBox reenterBox = new VBox(5); // Adjusted spacing
-        reenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
-        Label reenterLabel = new Label("RE-ENTER PASSWORD");
+        VBox ReenterBox = new VBox(5);
+        ReenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
+        Label reenterLabel = new Label("Re-Enter Password");
         reenterLabel.setStyle("-fx-font-size: 10px;");
-        // HBox to contain password field and icon
-        HBox reenterFieldContainer = new HBox(5); // Adds spacing between field and icon
-        reenterFieldContainer.setAlignment(Pos.CENTER_LEFT);
-        reenterFieldContainer.setPrefWidth(300); // Ensures enough space for both elements
         PasswordField renterField = new PasswordField();
         renterField.setPromptText("Re-Enter your password");
-        renterField.setPrefWidth(280); // Set width close to the max
-        HBox.setHgrow(renterField, Priority.ALWAYS); // Allows it to expand dynamically
-        Image rpassimg = new Image(getClass().getResourceAsStream("/passicon.png"));
-        ImageView rpassicon = new ImageView(rpassimg);
-        rpassicon.setFitWidth(30); // Adjust size for better alignment
-        rpassicon.setPreserveRatio(true);
+        renterField.setMaxWidth(300);
+        passwordBox.getChildren().addAll(reenterLabel, renterField);
 
-        reenterFieldContainer.getChildren().addAll(renterField, rpassicon);
-        reenterBox.getChildren().addAll(reenterLabel, reenterFieldContainer);
 
-       HBox space= new HBox(1);
         // Login Button
         Button loginButton = new Button("Confirm");
         loginButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
         loginButton.setMaxWidth(300);
 
         // Create New User Button
-        Button createUserButton = new Button("Cancel");
-        createUserButton.setStyle("-fx-background-color: transparent;-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
+        Button createUserButton = new Button("Canel");
+        createUserButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
         createUserButton.setMaxWidth(300);
 
         // "OR" separator line
@@ -121,7 +82,7 @@ public class SignupUI extends Application {
         orline.getChildren().add(orSeparatorLabel);
 
         // Add elements to left panel
-        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox,reenterBox,space,loginButton, orline, createUserButton);
+        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox,  loginButton, orline, createUserButton);
 
         // Right Panel (Background Image) - 70% Width
         Image bgImage = new Image(getClass().getResourceAsStream("/login.jpg"));

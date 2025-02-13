@@ -7,9 +7,15 @@
   <groupId>login.page</groupId>
   <artifactId>Eventful</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Eventful</name>
+    <packaging>pom</packaging>
+    <name>Eventful</name>
+    <modules>
+        <module>login</module>
+      <module>dashboard</module>
+      <module>event_manager</module>
+    </modules>
 
-  <properties>
+    <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <junit.version>5.10.2</junit.version>  </properties>
 
