@@ -7,7 +7,11 @@
   <groupId>login.page</groupId>
   <artifactId>Eventful</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
   <name>Eventful</name>
+  <modules>
+    <module>login</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
