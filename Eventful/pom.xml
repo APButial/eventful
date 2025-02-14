@@ -14,6 +14,7 @@
       <module>dashboard</module>
       <module>event_manager</module>
       <module>appfx</module>
+      <module>budget_tracker</module>
     </modules>
 
     <properties>

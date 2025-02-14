@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Data
-public class Event {
+public class BaseEvent {
     // mandatory event details
     private String eventName;
     private LocalDate startDate;

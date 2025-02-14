@@ -1,6 +1,6 @@
 package com.btp.service;
 
-import com.btp.model.Event;
+import com.btp.model.BaseEvent;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,9 +19,9 @@ public interface AppService {
     void createAccount();
     void deleteAccount();
 
-    // Event
-    Event getEvent();
-    void setEvent(Event event);
+    // BaseEvent
+    BaseEvent getEvent();
+    void setEvent(BaseEvent baseEvent);
     String getEventName();
     void setEventName(String eventName);
     LocalDate getStartDate();
