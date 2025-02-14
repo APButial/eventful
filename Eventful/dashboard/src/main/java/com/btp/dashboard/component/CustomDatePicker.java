@@ -1,4 +1,4 @@
-package DashboardUI.Components;
+package com.btp.dashboard.component;
 
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;

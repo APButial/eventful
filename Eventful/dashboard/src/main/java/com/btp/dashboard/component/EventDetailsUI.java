@@ -1,9 +1,5 @@
-package DashboardUI;
+package com.btp.dashboard.component;
 
-import DashboardUI.Components.EventFormUI;
-import DashboardUI.Components.LowerHeader;
-import DashboardUI.Components.Sidebar;
-import DashboardUI.Components.UpperHeader;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
