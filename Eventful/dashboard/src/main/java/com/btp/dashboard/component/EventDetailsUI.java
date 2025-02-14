@@ -1,6 +1,5 @@
 package com.btp.dashboard.component;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
@@ -8,47 +7,51 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.application.Application;
 
-public class CreateEventUI extends Application {
+public class EventDetailsUI extends Application {
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Create Event");
+        primaryStage.setTitle("Event Details");
 
-        Sidebar sidebar = new Sidebar("Create Event");//type the name of page for indicator
+        Sidebar sidebar = new Sidebar("Create Event");
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader();
-        LowerHeader lowerHeader = new LowerHeader("Create Event", "no"); // "no" to hide date
+        LowerHeader lowerHeader = new LowerHeader("Event Details", "no"); // "no" to hide date
         HBox spacer = new HBox();
 
-        spacer.setPrefHeight(3);//spacer
+        spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
+
         // Bottom Purple Bar
         HBox bottomBar = new HBox();
         bottomBar.setStyle("-fx-background-color: purple;");
-        bottomBar.setMaxWidth(Double.MAX_VALUE); // Expand to full width
-        bottomBar.setPrefHeight(70); // Fixed height
-        HBox.setHgrow(bottomBar, Priority.ALWAYS); // Allow horizontal expansion
-// Add a spacer to push bottomBar down
+        bottomBar.setMaxWidth(Double.MAX_VALUE);
+        bottomBar.setPrefHeight(70);
+        HBox.setHgrow(bottomBar, Priority.ALWAYS);
+
+        // Add a spacer to push bottomBar down
         Region bottomSpacer = new Region();
         VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
-        EventDetails eventDetails = new EventDetails();
 
-// Add components in order, ensuring bottomSpacer is included
+        EventFormUI eventFormUI = new EventFormUI();
+
+        // Add components in order, ensuring bottomSpacer is included
         mainContent.getChildren().addAll(
                 upperHeader.getComponent(),
                 lowerHeader.getComponent(),
                 spacer,
-                eventDetails.getComponent(),
-                bottomSpacer, // Pushes bottomBar to the bottom
-                bottomBar
+                eventFormUI.getComponent() // Ensure this method exists in EventFormUI
+
         );
 
-        HBox layout = new HBox(sidebar.getComponent(),mainContent);
+        HBox layout = new HBox(sidebar.getComponent(), mainContent);
         layout.setSpacing(0);
+        HBox.setHgrow(mainContent, Priority.ALWAYS); // Ensure mainContent expands properly
 
         Scene scene = new Scene(layout, 1024, 600);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
