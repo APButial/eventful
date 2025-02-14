@@ -1,5 +1,6 @@
 package com.btp.login.components;
 
+import com.btp.appfx.service.AppService;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,8 +10,18 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import lombok.Data;
 
+@Data
 public class SignupUI extends Application {
+    private AppService appService;
+    private TextField usernameField;
+    private TextField passwordField;
+
+//    public SignupUI(AppService appService) {
+//        this.appService = appService;
+//    }
+
     @Override
     public void start(Stage primaryStage) {
 
@@ -38,7 +49,8 @@ public class SignupUI extends Application {
         usernameBox.setAlignment(Pos.BASELINE_LEFT); // Left align the username box
         Label usernameLabel = new Label("USERNAME");
         usernameLabel.setStyle("-fx-font-size: 10px;");
-        TextField usernameField = new TextField();
+        usernameField = new TextField();
+
         usernameField.setPromptText("Enter your username");
         usernameField.setMaxWidth(250);
         usernameBox.getChildren().addAll(usernameLabel, usernameField);
@@ -48,7 +60,7 @@ public class SignupUI extends Application {
         passwordBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label passwordLabel = new Label("PASSWORD");
         passwordLabel.setStyle("-fx-font-size: 10px;");
-        PasswordField passwordField = new PasswordField();
+        passwordField = new PasswordField();
         passwordField.setPromptText("Enter your password");
         passwordField.setMaxWidth(250);
         passwordBox.getChildren().addAll(passwordLabel, passwordField);
@@ -56,7 +68,7 @@ public class SignupUI extends Application {
 
         VBox ReenterBox = new VBox(5);
         ReenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
-        Label reenterLabel = new Label("Re-Enter Password");
+        Label reenterLabel = new Label("RE-ENTER PASSWORD");
         reenterLabel.setStyle("-fx-font-size: 10px;");
         PasswordField renterField = new PasswordField();
         renterField.setPromptText("Re-Enter your password");
@@ -64,15 +76,18 @@ public class SignupUI extends Application {
         passwordBox.getChildren().addAll(reenterLabel, renterField);
 
 
-        // Login Button
-        Button loginButton = new Button("Confirm");
-        loginButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
-        loginButton.setMaxWidth(300);
+        // Confirm Button
+        Button confirmButton = new Button("Confirm");
+        confirmButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
+        confirmButton.setMaxWidth(300);
+        confirmButton.setOnAction(event -> {
 
-        // Create New BaseUser Button
-        Button createUserButton = new Button("Canel");
-        createUserButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
-        createUserButton.setMaxWidth(300);
+        });
+
+        // Cancel Button
+        Button cancelButton = new Button("Cancel");
+        cancelButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
+        cancelButton.setMaxWidth(300);
 
         // "OR" separator line
         HBox orline = new HBox(10);
@@ -82,7 +97,7 @@ public class SignupUI extends Application {
         orline.getChildren().add(orSeparatorLabel);
 
         // Add elements to left panel
-        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox,  loginButton, orline, createUserButton);
+        leftPanel.getChildren().addAll(logo, loginText, usernameBox, passwordBox, confirmButton, orline, cancelButton);
 
         // Right Panel (Background Image) - 70% Width
         Image bgImage = new Image(getClass().getResourceAsStream("/login.jpg"));
@@ -104,7 +119,7 @@ public class SignupUI extends Application {
         // Scene & Stage
         Scene scene = new Scene(root, 1024, 600, Color.WHITE);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("SignUp UI");
+        primaryStage.setTitle("Signup");
         primaryStage.show();
     }
 

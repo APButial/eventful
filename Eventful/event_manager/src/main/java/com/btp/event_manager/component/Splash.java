@@ -1,5 +1,6 @@
-package com.btp.login.components;
+package com.btp.event_manager.component;
 
+import com.btp.login.components.LoginUI;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -24,14 +25,14 @@ public class Splash extends StackPane {
 
         // Set the scene to the stage
         stage.setScene(scene);
-        stage.setTitle("Splash Screen");
+        stage.setTitle("Eventful");
         stage.show();
 
         // Switch to LoginUI when clicked
         scene.setOnMouseClicked(e -> {
-            LoginUI loginUI = new LoginUI(); // Create instance of LoginUI
+            MainFrame mainFrame = new MainFrame(); // Create instance of MainFrame
             try {
-                loginUI.start(stage); // Start LoginUI
+                mainFrame.start(stage); // Start MainFrame
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

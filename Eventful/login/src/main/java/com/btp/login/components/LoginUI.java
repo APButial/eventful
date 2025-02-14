@@ -1,5 +1,6 @@
 package com.btp.login.components;
 
+import com.btp.appfx.service.AppService;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,10 +9,21 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import lombok.Data;
 
+@Data
 public class LoginUI extends Application {
+    private AppService appService;
+    private TextField usernameField;
+    private TextField passwordField;
 
+
+    public LoginUI(AppService appService) {
+        this.appService = appService;
+    }
+    
     @Override
     public void start(Stage primaryStage) {
 
@@ -39,7 +51,7 @@ public class LoginUI extends Application {
         usernameBox.setAlignment(Pos.BASELINE_LEFT); // Left align the username box
         Label usernameLabel = new Label("USERNAME");
         usernameLabel.setStyle("-fx-font-size: 10px;");
-        TextField usernameField = new TextField();
+        usernameField = new TextField();
         usernameField.setPromptText("Enter your username");
         usernameField.setMaxWidth(250);
         usernameBox.getChildren().addAll(usernameLabel, usernameField);
@@ -49,7 +61,7 @@ public class LoginUI extends Application {
         passwordBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label passwordLabel = new Label("PASSWORD");
         passwordLabel.setStyle("-fx-font-size: 10px;");
-        PasswordField passwordField = new PasswordField();
+        passwordField = new PasswordField();
         passwordField.setPromptText("Enter your password");
         passwordField.setMaxWidth(250);
         passwordBox.getChildren().addAll(passwordLabel, passwordField);
@@ -101,7 +113,7 @@ public class LoginUI extends Application {
         // Scene & Stage
         Scene scene = new Scene(root, 1024, 600, Color.WHITE);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Login UI");
+        primaryStage.setTitle("Login");
         primaryStage.show();
     }
 

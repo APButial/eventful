@@ -18,7 +18,7 @@ public class EventManState extends AppState {
     protected List<ExpenseEntry> currExpenses;
     protected DateTimeService dateTimeService;
 
-    EventManState() {
+    public EventManState() {
         dateTimeService = new DateTimeService(new DateTimeListener() {
             @Override
             public void updateDateTime(LocalDateTime localDateTime) {
