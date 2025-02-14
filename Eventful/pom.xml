@@ -13,6 +13,7 @@
         <module>login</module>
       <module>dashboard</module>
       <module>event_manager</module>
+      <module>appfx</module>
     </modules>
 
     <properties>
