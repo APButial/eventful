@@ -4,12 +4,20 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>login.page</groupId>
+  <groupId>eventful</groupId>
   <artifactId>Eventful</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>Eventful</name>
+    <packaging>pom</packaging>
+    <name>Eventful</name>
+    <modules>
+        <module>login</module>
+      <module>dashboard</module>
+      <module>event_manager</module>
+      <module>appfx</module>
+      <module>budget_tracker</module>
+    </modules>
 
-  <properties>
+    <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <junit.version>5.10.2</junit.version>  </properties>
 
@@ -32,7 +40,16 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>  </dependencies>
+
+    </dependency>
+
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.32</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>

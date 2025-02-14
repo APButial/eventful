@@ -6,8 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Eventful" />
+        <module name="appfx" />
+        <module name="budget_tracker" />
+        <module name="login" />
+        <module name="dashboard" />
+        <module name="event_manager" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="eventful" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>
