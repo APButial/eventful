@@ -82,7 +82,9 @@ public class EventFormUI {
 
         // Right Section
         Label guestsLabel = new Label("No. of Guests");
-        TextField guestsField = new TextField("0");
+        TextField guestsField = new TextField("");
+
+        guestsField.setPromptText("0");
         guestsField.setStyle(
                 "-fx-background-color: #F5F5F5; " +
                         "-fx-border-color: transparent; " +
