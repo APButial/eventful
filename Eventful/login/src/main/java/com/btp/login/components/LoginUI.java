@@ -1,6 +1,8 @@
 package com.btp.login.components;
 
 import com.btp.appfx.service.AppService;
+import com.btp.login.service.LoginSuccessListener;
+import com.btp.login.service.VerifyLoginService;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,7 +11,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Data;
 
@@ -18,14 +19,20 @@ public class LoginUI extends Application {
     private AppService appService;
     private TextField usernameField;
     private TextField passwordField;
+    private SignupUI signupUI;
+    private LoginSuccessListener listener;
 
 
-    public LoginUI(AppService appService) {
+    public LoginUI(AppService appService, LoginSuccessListener loginSuccessListener) {
         this.appService = appService;
+        this.listener = loginSuccessListener;
     }
     
     @Override
     public void start(Stage primaryStage) {
+        signupUI = new SignupUI(appService);
+
+
 
         VBox leftPanel = new VBox(20);
         leftPanel.setStyle("-fx-background-color: white; -fx-padding: 40px; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");
@@ -74,14 +81,34 @@ public class LoginUI extends Application {
         forgotPasswordBox.getChildren().add(forgotPassword);
 
         // Login Button
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Login");
         Button loginButton = new Button("Login");
         loginButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
         loginButton.setMaxWidth(300);
+        loginButton.setOnAction(event -> {
+            if(VerifyLoginService.verify(usernameField.getText(),passwordField.getText())) {
+                appService.setPrevApplication(this);
+                listener.onLoginSuccess();
+            } else {
+                alert.setHeaderText("Login Unsuccessful");
+                alert.setContentText("You entered an invalid username/password. Please try again");
+                alert.showAndWait();
+            }
+        });
 
         // Create New BaseUser Button
         Button createUserButton = new Button("Create new user");
         createUserButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
         createUserButton.setMaxWidth(300);
+        createUserButton.setOnAction(event -> {
+            try {
+                appService.setPrevApplication(this);
+                signupUI.start(primaryStage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         // "OR" separator line
         HBox orline = new HBox(10);

@@ -1,17 +1,18 @@
-package com.btp.event_manager.model;
+package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
+import javafx.application.Application;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-public class EventManAppService implements AppService {
-    private EventManState eventManState;
+public class EventManCommandService implements AppService {
+    private AppService appService;
 
-    public EventManAppService(EventManState eventManState) { this.eventManState = eventManState;}
+    public EventManCommandService(AppService appService) {this.appService = appService;}
 
     @Override
     public void save(String filename) {
@@ -171,5 +172,25 @@ public class EventManAppService implements AppService {
     @Override
     public void setLastAccessed(LocalDateTime dateTime) {
 
+    }
+
+    @Override
+    public Application getPrevApplication() {
+        return appService.getPrevApplication();
+    }
+
+    @Override
+    public void setPrevApplication(Application application) {
+        appService.setPrevApplication(application);
+    }
+
+    @Override
+    public boolean isLoggedIn() {
+        return appService.isLoggedIn();
+    }
+
+    @Override
+    public void setLogIn(boolean loggedIn) {
+        appService.setLogIn(loggedIn);
     }
 }

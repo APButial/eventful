@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+import com.btp.appfx.service.AppService;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -8,6 +9,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class DashboardUI extends Application {
+    private AppService appService;
+
+    public DashboardUI(AppService appService) {
+        this.appService = appService;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Dashboard");

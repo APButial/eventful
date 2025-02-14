@@ -16,10 +16,15 @@ import lombok.Data;
 
 @Data
 public class SignupUI extends Application {
+    private  AppService appService;
     private TextField usernameField;
     private TextField passwordField;
     private PasswordField reenterField;
     private Alert alert;
+
+    public SignupUI(AppService appService) {
+        this.appService = appService;
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -106,6 +111,13 @@ public class SignupUI extends Application {
         Button cancelButton = new Button("Cancel");
         cancelButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
         cancelButton.setMaxWidth(300);
+        cancelButton.setOnAction(event -> {
+            try{
+                appService.getPrevApplication().start(primaryStage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         // "OR" separator line
         HBox orline = new HBox(10);

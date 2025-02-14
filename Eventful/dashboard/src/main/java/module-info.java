@@ -1,6 +1,6 @@
 module dashboard {
+    requires appfx;
     requires javafx.controls;
-    requires javafx.graphics;
 
-    exports com.btp.dashboard.component to javafx.graphics;
+    exports com.btp.dashboard.component to javafx.graphics, event_manager;
 }

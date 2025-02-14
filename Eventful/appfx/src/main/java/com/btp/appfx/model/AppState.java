@@ -14,4 +14,13 @@ public class AppState {
     protected Scene currentScene;
     protected Scene prevScene;
     protected LocalDateTime currDateTime;
+    protected boolean isLoggedIn;
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
+    }
 }
