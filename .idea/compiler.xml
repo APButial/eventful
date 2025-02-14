@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="appfx" />
+        <module name="budget_tracker" />
         <module name="login" />
         <module name="dashboard" />
         <module name="event_manager" />

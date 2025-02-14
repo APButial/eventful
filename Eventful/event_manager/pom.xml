@@ -28,6 +28,12 @@
             <artifactId>appfx</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>eventful</groupId>
+            <artifactId>budget_tracker</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 </project>
