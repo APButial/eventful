@@ -3,5 +3,5 @@ module event_manager {
     requires login;
     requires appfx;
 
-    exports com.btp;
+    exports com.btp.event_manager;
 }

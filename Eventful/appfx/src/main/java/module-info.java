@@ -1,6 +1,8 @@
 module appfx {
     requires static lombok;
-    exports com.btp.service;
-    exports com.btp.enums;
-    exports com.btp.model;
+    requires javafx.graphics;
+
+    exports com.btp.appfx.enums;
+    exports com.btp.appfx.service;
+    exports com.btp.appfx.model;
 }

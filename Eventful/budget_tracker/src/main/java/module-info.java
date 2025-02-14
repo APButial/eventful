@@ -1,4 +1,4 @@
 module budget_tracker {
     requires static lombok;
-    exports com.btp.model;
+    exports com.btp.budget_tracker.model;
 }

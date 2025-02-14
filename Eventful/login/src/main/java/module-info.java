@@ -1,6 +1,6 @@
 module login {
     requires javafx.controls;
 
-    exports com.btp.components;
-    exports com.btp.service;
+    exports com.btp.login.components;
+    exports com.btp.login.service;
 }

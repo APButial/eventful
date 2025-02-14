@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>login.page</groupId>
+        <groupId>eventful</groupId>
         <artifactId>Eventful</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -18,10 +18,15 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>login.page</groupId>
+            <groupId>eventful</groupId>
             <artifactId>login</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>eventful</groupId>
+            <artifactId>appfx</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
