@@ -20,6 +20,7 @@ public class ValidateNewUserService {
                 }
             }
 
+
             WriteUsersService.write(user);
         }
         return true;
