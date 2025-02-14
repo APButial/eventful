@@ -3,15 +3,19 @@ package DashboardUI.Components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+
+import java.time.LocalDate;
 
 public class EventDetails {
     private VBox component;
@@ -34,36 +38,49 @@ public class EventDetails {
         Label eventNameLabel = new Label("Event Name");
         TextField eventNameField = new TextField();
         eventNameField.setPromptText("Enter event name");
-        eventNameField.setPrefWidth(250);
+        eventNameField.setPrefWidth(230);
         eventNameField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
         ImageView nameIcon = new ImageView(new Image("/name.png"));
-        nameIcon.setFitWidth(30);
+        nameIcon.setFitWidth(31);
         nameIcon.setPreserveRatio(true);
 
         Label startDateLabel = new Label("Start Date");
-        TextField startDateField = new TextField();
-        startDateField.setPromptText("Enter event start date 1/10/25");
-        startDateField.setPrefWidth(250);
-        startDateField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
-        ImageView startDateIcon = new ImageView(new Image("/date.png"));
-        startDateIcon.setFitWidth(30);
-        startDateIcon.setPreserveRatio(true);
+        CustomDatePicker startDatePicker = new CustomDatePicker();
+        startDatePicker.setPrefWidth(250);
+        startDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
+                "-fx-border-color: transparent; " +
+                "-fx-padding: 5px; " +
+                "-fx-border-radius: 5px; " +
+                "-fx-control-inner-background: #F5F5F5;" );
+        startDatePicker.setPromptText("Select start date");
+        startDatePicker.setValue(LocalDate.now()); // Default to today's date
+
+
+
+        form.add(startDateLabel, 0, 2);
+        form.add(new HBox(5, startDatePicker), 0, 3);
 
         Label endDateLabel = new Label("End Date");
-        TextField endDateField = new TextField();
-        endDateField.setPromptText("Enter event end date 1/11/25");
-        endDateField.setPrefWidth(250);
-        endDateField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
-        ImageView endDateIcon = new ImageView(new Image("/date.png"));
-        endDateIcon.setFitWidth(30);
-        endDateIcon.setPreserveRatio(true);
+        CustomDatePicker endDatePicker = new CustomDatePicker();
+        endDatePicker.setPrefWidth(250);
+        endDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
+                "-fx-border-color: transparent; " +
+                "-fx-padding: 5px; " +
+                "-fx-border-radius: 5px; " +
+                "-fx-control-inner-background: #F5F5F5;" );
+        endDatePicker.setPromptText("Select end date");
+        endDatePicker.setValue(LocalDate.now().plusDays(1)); // Default to tomorrow's date
+
+
+
+        form.add(endDateLabel, 0, 4);
+        form.add(new HBox(5, endDatePicker), 0, 5);
 
         form.add(eventNameLabel, 0, 0);
         form.add(new HBox(5, eventNameField, nameIcon), 0, 1);
-        form.add(startDateLabel, 0, 2);
-        form.add(new HBox(5, startDateField, startDateIcon), 0, 3);
-        form.add(endDateLabel, 0, 4);
-        form.add(new HBox(5, endDateField, endDateIcon), 0, 5);
+
+
+
 
         // Buttons
         Button cancelButton = new Button("Cancel");
