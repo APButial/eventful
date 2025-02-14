@@ -1,6 +1,8 @@
 package com.btp.login.components;
 
+import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
+import com.btp.login.service.ValidateNewUserService;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,13 +16,10 @@ import lombok.Data;
 
 @Data
 public class SignupUI extends Application {
-    private AppService appService;
     private TextField usernameField;
     private TextField passwordField;
-
-//    public SignupUI(AppService appService) {
-//        this.appService = appService;
-//    }
+    private PasswordField reenterField;
+    private Alert alert;
 
     @Override
     public void start(Stage primaryStage) {
@@ -70,18 +69,34 @@ public class SignupUI extends Application {
         ReenterBox.setAlignment(Pos.BASELINE_LEFT); // Left align the password box
         Label reenterLabel = new Label("RE-ENTER PASSWORD");
         reenterLabel.setStyle("-fx-font-size: 10px;");
-        PasswordField renterField = new PasswordField();
-        renterField.setPromptText("Re-Enter your password");
-        renterField.setMaxWidth(300);
-        passwordBox.getChildren().addAll(reenterLabel, renterField);
+        reenterField = new PasswordField();
+        reenterField.setPromptText("Re-enter your password");
+        reenterField.setMaxWidth(300);
+        passwordBox.getChildren().addAll(reenterLabel, reenterField);
 
 
         // Confirm Button
         Button confirmButton = new Button("Confirm");
         confirmButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
         confirmButton.setMaxWidth(300);
-        confirmButton.setOnAction(event -> {
 
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Signup");
+        alert.setHeaderText("Signup Unsuccessful");
+        confirmButton.setOnAction(event -> {
+            if(usernameField.getText().isEmpty() || passwordField.getText().isEmpty() || reenterField.getText().isEmpty()) {
+               alert.setContentText("Please enter username, password, and confirmation password.");
+            } else if (!passwordField.getText().equals(reenterField.getText())) {
+                alert.setContentText("Entered password and confirmation password do not match.");
+            } else {
+                if(ValidateNewUserService.validate(new User(usernameField.getText(), passwordField.getText()), reenterField.getText())) {
+                    alert.setHeaderText("Signup Successful");
+                    alert.setContentText("New user account created successfully.");
+                } else {
+                    alert.setContentText("Entered username already exists.");
+                }
+            }
+            alert.showAndWait();
         });
 
         // Cancel Button
