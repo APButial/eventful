@@ -54,16 +54,16 @@ public class EventDetails {
         endDateField.setPromptText("Enter event end date 1/11/25");
         endDateField.setPrefWidth(250);
         endDateField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
-        ImageView endDateIcon = new ImageView(new Image("/date.png"));
-        endDateIcon.setFitWidth(30);
-        endDateIcon.setPreserveRatio(true);
+//        ImageView endDateIcon = new ImageView(new Image("/date.png"));
+//        endDateIcon.setFitWidth(30);
+//        endDateIcon.setPreserveRatio(true);
 
         form.add(eventNameLabel, 0, 0);
         form.add(new HBox(5, eventNameField, nameIcon), 0, 1);
         form.add(startDateLabel, 0, 2);
         form.add(new HBox(5, startDateField, startDateIcon), 0, 3);
         form.add(endDateLabel, 0, 4);
-        form.add(new HBox(5, endDateField, endDateIcon), 0, 5);
+//        form.add(new HBox(5, endDateField, endDateIcon), 0, 5);
 
         // Buttons
         Button cancelButton = new Button("Cancel");

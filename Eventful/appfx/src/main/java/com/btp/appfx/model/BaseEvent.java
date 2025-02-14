@@ -25,7 +25,7 @@ public class BaseEvent {
     private String creator;
     private LocalDateTime lastAccessed;
 
-    BaseEvent(String eventName, LocalDate startDate, LocalDate endDate) {
+    public BaseEvent(String eventName, LocalDate startDate, LocalDate endDate) {
         this.eventName = eventName;
         this.startDate = startDate;
         this.endDate = endDate;

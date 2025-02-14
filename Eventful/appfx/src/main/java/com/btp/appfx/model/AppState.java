@@ -3,6 +3,7 @@ package com.btp.appfx.model;
 import javafx.scene.Scene;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 

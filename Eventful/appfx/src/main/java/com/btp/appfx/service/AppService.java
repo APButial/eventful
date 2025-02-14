@@ -28,7 +28,7 @@ public interface AppService {
     String getEventName();
     void setEventName(String eventName);
     LocalDate getStartDate();
-    void setStartDate(LocalDate date);
+    void setEventStartDate(LocalDate date);
     LocalDate getEndDate();
     void setEndDate(LocalDate date);
     LocalTime getStartTime();
