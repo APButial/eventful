@@ -15,7 +15,7 @@ public class ValidateNewUserService {
         } else{
             for (int i = 0; i < users.getLength(); i++) {
                 Element tempUser = (Element) users.item(i);
-                if(tempUser.getAttribute("username").equals(user.getUsername())) {
+                if(tempUser.getElementsByTagName("username").item(0).getTextContent().equals(user.getUsername())) {
                     return false;
                 }
             }

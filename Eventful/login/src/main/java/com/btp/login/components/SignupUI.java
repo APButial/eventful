@@ -82,17 +82,20 @@ public class SignupUI extends Application {
 
         alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Signup");
-        alert.setHeaderText("Signup Unsuccessful");
+
         confirmButton.setOnAction(event -> {
             if(usernameField.getText().isEmpty() || passwordField.getText().isEmpty() || reenterField.getText().isEmpty()) {
+                alert.setHeaderText("Signup Unsuccessful");
                alert.setContentText("Please enter username, password, and confirmation password.");
             } else if (!passwordField.getText().equals(reenterField.getText())) {
+                alert.setHeaderText("Signup Unsuccessful");
                 alert.setContentText("Entered password and confirmation password do not match.");
             } else {
                 if(ValidateNewUserService.validate(new User(usernameField.getText(), passwordField.getText()))) {
                     alert.setHeaderText("Signup Successful");
                     alert.setContentText("New user account created successfully.");
                 } else {
+                    alert.setHeaderText("Signup Unsuccessful");
                     alert.setContentText("Entered username already exists.");
                 }
             }

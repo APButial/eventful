@@ -30,7 +30,7 @@ public class InitUsersXml {
             user.appendChild(username);
 
             Element password =  document.createElement("password");
-            password.appendChild(document.createTextNode("test"));
+            password.appendChild(document.createTextNode(PassHashService.hash("test")));
             user.appendChild(password);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
