@@ -4,5 +4,4 @@ module login {
 
     exports com.btp.login.components;
     exports com.btp.login.service;
-    exports com.btp.login.model;
 }
