@@ -38,7 +38,7 @@ public class EventDetails {
         Label eventNameLabel = new Label("Event Name");
         TextField eventNameField = new TextField();
         eventNameField.setPromptText("Enter event name");
-        eventNameField.setPrefWidth(230);
+        eventNameField.setPrefWidth(215);
         eventNameField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
         ImageView nameIcon = new ImageView(new Image("/name.png"));
         nameIcon.setFitWidth(31);
