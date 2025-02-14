@@ -1,0 +1,28 @@
+/* Hide the default arrow inside the DatePicker */
+.date-picker .arrow-button > * {
+    -fx-opacity: 0; /* Hides the default arrow */
+}
+
+/* Custom arrow button with a bigger icon */
+.date-picker .arrow-button {
+    -fx-background-image: url("/date.png"); /* Path to your custom icon */
+    -fx-background-size: 100% 100%; /* Adjust icon size within the button */
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center; /* Centers the icon */
+    -fx-background-color: transparent; /* Removes any background */
+
+    /* Make the button rounded */
+    -fx-background-radius: 100%; /* Ensures the button is a perfect circle */
+    -fx-border-radius: 100%; /* Rounds the border */
+    -fx-border-color: transparent; /* Removes border if needed */
+
+    /* Increase spacing between button and field */
+    -fx-padding: 10px; /* Adds padding to make the button bigger visually */
+   -fx-translate-x: 10px; /* Moves the button slightly */
+}
+
+/* Make the DatePicker field a fixed size but allow space for the button */
+.date-picker {
+    -fx-pref-height: 40px; /* Slightly larger text field */
+    -fx-padding: 0px 50px 0px 0px; /* Adds space on the right for the button */
+}
