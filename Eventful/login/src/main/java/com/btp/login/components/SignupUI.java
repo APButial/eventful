@@ -89,7 +89,7 @@ public class SignupUI extends Application {
             } else if (!passwordField.getText().equals(reenterField.getText())) {
                 alert.setContentText("Entered password and confirmation password do not match.");
             } else {
-                if(ValidateNewUserService.validate(new User(usernameField.getText(), passwordField.getText()), reenterField.getText())) {
+                if(ValidateNewUserService.validate(new User(usernameField.getText(), passwordField.getText()))) {
                     alert.setHeaderText("Signup Successful");
                     alert.setContentText("New user account created successfully.");
                 } else {

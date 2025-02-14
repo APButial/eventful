@@ -7,7 +7,7 @@ import org.w3c.dom.NodeList;
 import java.util.ArrayList;
 
 public class ValidateNewUserService {
-    public static boolean validate(User user, String confirmPass) {
+    public static boolean validate(User user) {
         NodeList users = ReadUsersService.read();
 
         if(users == null) {
@@ -20,7 +20,7 @@ public class ValidateNewUserService {
                 }
             }
 
-
+            user.setPassword(PassHashService.hash(user.getPassword()));
             WriteUsersService.write(user);
         }
         return true;
