@@ -1,5 +1,6 @@
 package com.btp.login.service;
 
+import com.btp.appfx.model.User;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -12,7 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
 public class InitUsersXml {
-    public static void init() {
+    public static void init(User newUser) {
         try{
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -26,11 +27,11 @@ public class InitUsersXml {
             root.appendChild(user);
 
             Element username = document.createElement("username");
-            username.appendChild(document.createTextNode("test"));
+            username.appendChild(document.createTextNode(newUser.getUsername()));
             user.appendChild(username);
 
             Element password =  document.createElement("password");
-            password.appendChild(document.createTextNode(PassHashService.hash("test")));
+            password.appendChild(document.createTextNode(PassHashService.hash(newUser.getPassword())));
             user.appendChild(password);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

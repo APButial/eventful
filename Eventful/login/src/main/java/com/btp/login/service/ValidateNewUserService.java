@@ -11,7 +11,7 @@ public class ValidateNewUserService {
         NodeList users = ReadUsersService.read();
 
         if(users == null) {
-            InitUsersXml.init();
+            InitUsersXml.init(user);
         } else{
             for (int i = 0; i < users.getLength(); i++) {
                 Element tempUser = (Element) users.item(i);
