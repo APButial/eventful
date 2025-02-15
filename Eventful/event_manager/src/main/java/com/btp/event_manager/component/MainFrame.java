@@ -9,6 +9,7 @@ import com.btp.event_manager.model.Event;
 import com.btp.event_manager.service.EventManAppService;
 import com.btp.event_manager.model.EventManState;
 import com.btp.event_manager.service.EventManCommandService;
+import com.btp.event_manager.service.LoadUserEvents;
 import com.btp.event_manager.service.ValidateNewEventService;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.LoginSuccessListener;
@@ -35,7 +36,13 @@ public class MainFrame extends Application {
         eventManAppService = new EventManAppService(eventManState);
         appService = new EventManCommandService(eventManAppService);
 
-        loginUI = new LoginUI(appService, () -> dashboardUI.start(primaryStage));
+        loginUI = new LoginUI(appService, new LoginSuccessListener() {
+            @Override
+            public void onLoginSuccess() {
+                dashboardUI.start(primaryStage);
+                LoadUserEvents.load(appService);
+            }
+        });
 
         DashNavigateListener listener = new DashNavigateListener() {
             @Override
