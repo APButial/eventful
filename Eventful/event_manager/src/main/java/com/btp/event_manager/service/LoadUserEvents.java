@@ -18,7 +18,7 @@ public class LoadUserEvents {
 
             String eventName = event.getElementsByTagName("title").item(0).getTextContent();
             LocalDate startDate = LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent());
-            LocalDate endDate = LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent());
+            LocalDate endDate = LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent());
             LocalDateTime lastAccessed = LocalDateTime.parse(event.getElementsByTagName("lastAccessed").item(0).getTextContent());
 
             Event savedEvent = new Event(eventName, startDate, endDate);
