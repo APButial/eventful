@@ -2,6 +2,7 @@ package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
+import com.btp.dashboard.component.DashboardUI;
 import com.btp.event_manager.component.MainFrame;
 import com.btp.event_manager.model.EventManState;
 import javafx.application.Application;
@@ -159,12 +160,12 @@ public class EventManAppService implements AppService {
 
     @Override
     public String getCreator() {
-        return "";
+        return eventManState.getCurrUser();
     }
 
     @Override
     public void setCreator(String user) {
-
+        eventManState.setCurrUser(user);
     }
 
     @Override

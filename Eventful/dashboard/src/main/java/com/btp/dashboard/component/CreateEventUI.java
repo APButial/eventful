@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+import com.btp.appfx.service.AppService;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -10,11 +11,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class CreateEventUI extends Application {
+    private AppService appService;
+
+    public CreateEventUI(AppService appService) {
+        this.appService = appService;
+    }
+
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Create Event");
 
-        Sidebar sidebar = new Sidebar("Create Event");//type the name of page for indicator
+        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService);//type the name of page for indicator
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
@@ -36,6 +43,14 @@ public class CreateEventUI extends Application {
         Region bottomSpacer = new Region();
         VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
         EventDetails eventDetails = new EventDetails();
+
+        eventDetails.getCancelButton().setOnAction(event -> {
+            try {
+                appService.getPrevApplication().start(primaryStage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
 // Add components in order, ensuring bottomSpacer is included
         mainContent.getChildren().addAll(

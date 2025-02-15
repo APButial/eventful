@@ -23,9 +23,10 @@ public class DashboardUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        appService.setPrevApplication(this);
         primaryStage.setTitle("Dashboard");
 
-        Sidebar sidebar = new Sidebar("none");//type the name of which page being used for indicator
+        Sidebar sidebar = new Sidebar("None", primaryStage, appService);//type the name of which page being used for indicator
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
@@ -42,10 +43,10 @@ public class DashboardUI extends Application {
         });
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             lowerHeader.setDateLabel(appService.getSysDateTime());
+            lowerHeader.getDayButtons().getChildren().get(appService.getSysDateTime().getDayOfWeek().getValue()).setStyle("-fx-background-color: #8425A4; -fx-text-fill: #FFFFFF");
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
-        lowerHeader.getDayButtons().getChildren().(appService.getSysDateTime().getDayOfMonth()%7);
 
 
         HBox spacer = new HBox();                           // type 'yes' to show date or 'no' if date is not included

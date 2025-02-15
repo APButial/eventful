@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+import com.btp.appfx.service.AppService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,11 +10,20 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
 public class Sidebar {
     private VBox sidebar;
+    private CreateEventUI createEventUI;
+    private Stage stage;
+    private AppService appService;
 
-    public Sidebar(String activePage) {
+
+    public Sidebar(String activePage, Stage stage, AppService appService) {
+        this.stage = stage;
+        this.appService = appService;
+        createEventUI = new CreateEventUI(appService);
+
         sidebar = new VBox(20);
         sidebar.setPadding(new Insets(40, 20, 40, 0)); // Adjust left padding for indicator space
         sidebar.setStyle("-fx-background-color: #F5F6FA; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");
@@ -44,6 +54,32 @@ public class Sidebar {
 
         Button button = new Button(text);
         button.setStyle("-fx-background-color: transparent; -fx-border: none; -fx-font-size: 14px; -fx-text-fill: " + (isActive ? "#6A0DAD" : "#AAB2C8") + ";");
+
+        switch (text) {
+            case "Create Event": {
+                button.setOnAction(event -> {
+                    try {
+                        createEventUI.start(stage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+            }
+            case "My Events": {
+                break;
+            }
+            case "Event Timeline": {
+                break;
+            }
+            case "Logs": {
+                break;
+            }
+            default: {
+                System.out.println("Error in sidebar");
+                break;
+            }
+        }
 
         // HBox to ensure text stays left-aligned
         HBox textContainer = new HBox(button);

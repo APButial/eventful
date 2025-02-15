@@ -36,7 +36,7 @@ public class LowerHeader {
             dateLabel = new Label();
             dateLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
-            HBox dayButtons = new HBox(5);
+            dayButtons = new HBox(5);
             dayButtons.setAlignment(Pos.CENTER_LEFT);
             for (String day : new String[]{"SU", "MO", "TU", "WE", "TH", "FR", "SA"}) {
                 Button dayButton = new Button(day);

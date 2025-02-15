@@ -19,6 +19,8 @@ import java.time.LocalDate;
 
 public class EventDetails {
     private VBox component;
+    private Button cancelButton;
+    private Button confirmButton;
 
     public EventDetails() {
         component = new VBox(10);
@@ -83,11 +85,11 @@ public class EventDetails {
 
 
         // Buttons
-        Button cancelButton = new Button("Cancel");
+        cancelButton = new Button("Cancel");
         cancelButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         cancelButton.setPrefSize(100, 10);
 
-        Button confirmButton = new Button("Confirm");
+        confirmButton = new Button("Confirm");
         confirmButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         confirmButton.setPrefSize(100, 10);
 
@@ -106,5 +108,13 @@ public class EventDetails {
 
     public VBox getComponent() {
         return component;
+    }
+
+    public Button getConfirmButton() {
+        return confirmButton;
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
     }
 }
