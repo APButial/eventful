@@ -99,6 +99,11 @@ public class SignupUI extends Application {
                 if(ValidateNewUserService.validate(new User(usernameField.getText(), passwordField.getText()))) {
                     alert.setHeaderText("Signup Successful");
                     alert.setContentText("New user account created successfully.");
+                    try {
+                        appService.getPrevApplication().start(primaryStage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     alert.setHeaderText("Signup Unsuccessful");
                     alert.setContentText("Entered username already exists.");

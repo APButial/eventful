@@ -1,6 +1,7 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
+import com.btp.dashboard.service.DashNavigateListener;
 import com.btp.dashboard.service.DateTimeListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -16,9 +17,11 @@ import java.time.LocalDateTime;
 
 public class DashboardUI extends Application {
     private AppService appService;
+    private DashNavigateListener listener;
 
-    public DashboardUI(AppService appService) {
+    public DashboardUI(AppService appService, DashNavigateListener listener) {
         this.appService = appService;
+        this.listener = listener;
     }
 
     @Override
@@ -26,7 +29,7 @@ public class DashboardUI extends Application {
         appService.setPrevApplication(this);
         primaryStage.setTitle("Dashboard");
 
-        Sidebar sidebar = new Sidebar("None", primaryStage, appService);//type the name of which page being used for indicator
+        Sidebar sidebar = new Sidebar("None", primaryStage, appService, listener);//type the name of which page being used for indicator
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");

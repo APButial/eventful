@@ -1,6 +1,7 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
+import com.btp.dashboard.service.DashNavigateListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,15 +15,14 @@ import javafx.stage.Stage;
 
 public class Sidebar {
     private VBox sidebar;
-    private CreateEventUI createEventUI;
     private Stage stage;
     private AppService appService;
+    private DashNavigateListener listener;
 
-
-    public Sidebar(String activePage, Stage stage, AppService appService) {
+    public Sidebar(String activePage, Stage stage, AppService appService, DashNavigateListener listener) {
         this.stage = stage;
+        this.listener = listener;
         this.appService = appService;
-        createEventUI = new CreateEventUI(appService);
 
         sidebar = new VBox(20);
         sidebar.setPadding(new Insets(40, 20, 40, 0)); // Adjust left padding for indicator space
@@ -58,21 +58,26 @@ public class Sidebar {
         switch (text) {
             case "Create Event": {
                 button.setOnAction(event -> {
-                    try {
-                        createEventUI.start(stage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    listener.createEventTriggered();
                 });
                 break;
             }
             case "My Events": {
+                button.setOnAction(event -> {
+                    listener.myEventsTriggered();
+                });
                 break;
             }
             case "Event Timeline": {
+                button.setOnAction(event -> {
+                    listener.eventTimelineTriggered();
+                });
                 break;
             }
             case "Logs": {
+                button.setOnAction(event -> {
+                    listener.logsTriggered();
+                });
                 break;
             }
             default: {

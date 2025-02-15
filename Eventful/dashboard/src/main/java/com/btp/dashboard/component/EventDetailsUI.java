@@ -1,6 +1,7 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
+import com.btp.dashboard.service.DashNavigateListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
@@ -12,16 +13,18 @@ import javafx.application.Application;
 
 public class EventDetailsUI extends Application {
     private AppService appService;
+    private DashNavigateListener listener;
 
-    public EventDetailsUI(AppService appService) {
+    public EventDetailsUI(AppService appService, DashNavigateListener listener) {
         this.appService = appService;
+        this.listener = listener;
     }
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Event Details");
 
-        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService);
+        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService, listener);
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
