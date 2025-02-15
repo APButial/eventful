@@ -1,6 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,15 +14,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 
-public class WriteEventsService {
-    public static void write(BaseEvent newEvent, AppService appService) {
+public class InitEventsXML {
+    public static void init(BaseEvent newEvent, AppService appService) {
         try {
-            File file = new File("Eventful/dat/" + appService.getCurrUser() + ".xml");
+            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + ".xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-            Document document = documentBuilder.parse(file);
-            document.getDocumentElement().normalize();
+            Document document = documentBuilder.newDocument();
+
+            Element root = document.createElement("events");
+            document.appendChild(root);
 
             Element event = document.createElement("event");
 

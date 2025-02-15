@@ -1,6 +1,7 @@
 package com.btp.appfx.service;
 
 import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.model.User;
 import javafx.application.Application;
 
 import java.time.LocalDate;
@@ -42,8 +43,6 @@ public interface AppService {
     void addGuest(String guest);
     void removeGuest(String guest);
     void inviteGuest(String guest);
-    String getCreator();
-    void setCreator(String user);
     LocalDateTime getLastAccessed();
     void setLastAccessed(LocalDateTime dateTime);
 
@@ -54,4 +53,6 @@ public interface AppService {
     void setLogIn(boolean loggedIn);
     LocalDateTime getSysDateTime();
     void setSysDateTime(LocalDateTime localDateTime);
+    User getCurrUser();
+    void setCurrUser(User user);
 }

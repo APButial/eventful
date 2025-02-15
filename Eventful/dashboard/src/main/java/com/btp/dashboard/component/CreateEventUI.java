@@ -1,6 +1,7 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
+import com.btp.dashboard.service.CreateEventListener;
 import com.btp.dashboard.service.DashNavigateListener;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -14,10 +15,13 @@ import javafx.stage.Stage;
 public class CreateEventUI extends Application {
     private AppService appService;
     private DashNavigateListener listener;
+    private CreateEventListener listener1;
+    private EventDetails eventDetails;
 
-    public CreateEventUI(AppService appService, DashNavigateListener listener) {
+    public CreateEventUI(AppService appService, DashNavigateListener listener, CreateEventListener listener1) {
         this.appService = appService;
         this.listener = listener;
+        this.listener1 = listener1;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class CreateEventUI extends Application {
 // Add a spacer to push bottomBar down
         Region bottomSpacer = new Region();
         VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
-        EventDetails eventDetails = new EventDetails();
+        eventDetails = new EventDetails();
 
         eventDetails.getCancelButton().setOnAction(event -> {
             try {
@@ -53,6 +57,9 @@ public class CreateEventUI extends Application {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        });
+        eventDetails.getConfirmButton().setOnAction(event -> {
+            listener1.onConfirm();
         });
 
 // Add components in order, ensuring bottomSpacer is included
@@ -72,6 +79,10 @@ public class CreateEventUI extends Application {
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public EventDetails getEventDetails() {
+        return eventDetails;
     }
 
     public static void main(String[] args) {

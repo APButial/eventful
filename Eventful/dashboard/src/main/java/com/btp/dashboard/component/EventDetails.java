@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+import com.btp.dashboard.service.CreateEventListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -21,6 +22,9 @@ public class EventDetails {
     private VBox component;
     private Button cancelButton;
     private Button confirmButton;
+    private TextField eventNameField;
+    private CustomDatePicker startDatePicker;
+    private CustomDatePicker endDatePicker;
 
     public EventDetails() {
         component = new VBox(10);
@@ -38,7 +42,7 @@ public class EventDetails {
         form.setAlignment(Pos.CENTER_LEFT); // Align form content to the left
 
         Label eventNameLabel = new Label("Event Name");
-        TextField eventNameField = new TextField();
+        eventNameField = new TextField();
         eventNameField.setPromptText("Enter event name");
         eventNameField.setPrefWidth(215);
         eventNameField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
@@ -47,7 +51,7 @@ public class EventDetails {
         nameIcon.setPreserveRatio(true);
 
         Label startDateLabel = new Label("Start Date");
-        CustomDatePicker startDatePicker = new CustomDatePicker();
+        startDatePicker = new CustomDatePicker();
         startDatePicker.setPrefWidth(250);
         startDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
                 "-fx-border-color: transparent; " +
@@ -63,7 +67,7 @@ public class EventDetails {
         form.add(new HBox(5, startDatePicker), 0, 3);
 
         Label endDateLabel = new Label("End Date");
-        CustomDatePicker endDatePicker = new CustomDatePicker();
+        endDatePicker = new CustomDatePicker();
         endDatePicker.setPrefWidth(250);
         endDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
                 "-fx-border-color: transparent; " +
@@ -116,5 +120,17 @@ public class EventDetails {
 
     public Button getCancelButton() {
         return cancelButton;
+    }
+
+    public TextField getEventNameField() {
+        return eventNameField;
+    }
+
+    public CustomDatePicker getStartDatePicker() {
+        return startDatePicker;
+    }
+
+    public CustomDatePicker getEndDatePicker() {
+        return endDatePicker;
     }
 }

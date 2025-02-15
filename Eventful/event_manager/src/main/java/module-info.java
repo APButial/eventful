@@ -4,8 +4,8 @@ module event_manager {
     requires appfx;
     requires static lombok;
     requires dashboard;
-    requires javafx.graphics;
     requires java.xml;
+    requires javafx.controls;
 
     exports com.btp.event_manager;
     exports com.btp.event_manager.component;

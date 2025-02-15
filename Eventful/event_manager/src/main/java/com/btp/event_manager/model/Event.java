@@ -9,7 +9,7 @@ import java.util.List;
 public class Event extends BaseEvent {
     private BudgetTracker budgetTracker;
 
-    Event(String eventName, LocalDate startDate, LocalDate endDate) {
+    public Event(String eventName, LocalDate startDate, LocalDate endDate) {
         super(eventName, startDate, endDate);
     }
 }

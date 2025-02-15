@@ -3,14 +3,19 @@ import com.btp.appfx.service.AppService;
 import com.btp.dashboard.component.CreateEventUI;
 import com.btp.dashboard.component.DashboardUI;
 import com.btp.dashboard.component.Sidebar;
+import com.btp.dashboard.service.CreateEventListener;
 import com.btp.dashboard.service.DashNavigateListener;
+import com.btp.event_manager.model.Event;
 import com.btp.event_manager.service.EventManAppService;
 import com.btp.event_manager.model.EventManState;
 import com.btp.event_manager.service.EventManCommandService;
+import com.btp.event_manager.service.ValidateNewEventService;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.LoginSuccessListener;
 import javafx.application.Application;
 import javafx.stage.Stage;
+
+import java.time.LocalDate;
 
 public class MainFrame extends Application {
     private AppService appService;
@@ -57,8 +62,24 @@ public class MainFrame extends Application {
 
             }
         };
+        CreateEventListener listener1 = new CreateEventListener() {
+            @Override
+            public void onConfirm() {
+                String eventName = createEventUI.getEventDetails().getEventNameField().getText();
+                LocalDate startDate = createEventUI.getEventDetails().getStartDatePicker().getValue();
+                LocalDate endDate = createEventUI.getEventDetails().getStartDatePicker().getValue();
+
+                if(ValidateNewEventService.validate(eventName, startDate, endDate)) {
+                    Event event = new Event(eventName, startDate, endDate);
+                    appService.getCurrUser().getEvents().add(event);
+                    ValidateNewEventService.addEvent(event, appService);
+                }
+            }
+        };
+
+
         dashboardUI = new DashboardUI(appService, listener);
-        createEventUI = new CreateEventUI(appService, listener);
+        createEventUI = new CreateEventUI(appService, listener, listener1);
 
 ///////////////////////////////////////////////////////////
         eventManAppService.setMainFrame(this);

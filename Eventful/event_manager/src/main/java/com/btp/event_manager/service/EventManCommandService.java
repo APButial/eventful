@@ -1,6 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import javafx.application.Application;
 
@@ -155,16 +156,6 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public String getCreator() {
-        return "";
-    }
-
-    @Override
-    public void setCreator(String user) {
-
-    }
-
-    @Override
     public LocalDateTime getLastAccessed() {
         return null;
     }
@@ -202,6 +193,16 @@ public class EventManCommandService implements AppService {
     @Override
     public void setSysDateTime(LocalDateTime localDateTime) {
         appService.setSysDateTime(localDateTime);
+    }
+
+    @Override
+    public User getCurrUser() {
+        return appService.getCurrUser();
+    }
+
+    @Override
+    public void setCurrUser(User user) {
+        appService.setCurrUser(user);
     }
 
 }

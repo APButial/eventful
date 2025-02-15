@@ -1,5 +1,6 @@
 package com.btp.login.components;
 
+import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import com.btp.login.service.LoginSuccessListener;
 import com.btp.login.service.VerifyLoginService;
@@ -89,7 +90,7 @@ public class LoginUI extends Application {
         loginButton.setOnAction(event -> {
             if(VerifyLoginService.verify(usernameField.getText(),passwordField.getText())) {
                 appService.setPrevApplication(this);
-                appService.setCreator(usernameField.getText());
+                appService.setCurrUser(new User(usernameField.getText(), passwordField.getText()));
                 listener.onLoginSuccess();
             } else {
                 alert.setHeaderText("Login Unsuccessful");

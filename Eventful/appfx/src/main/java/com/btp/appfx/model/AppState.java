@@ -13,7 +13,7 @@ public class AppState {
     protected BaseEvent currSelectedEvent;
     protected Scene currentScene;
     protected Scene prevScene;
-    protected String currUser;
+    protected User currUser;
     protected LocalDateTime currDateTime;
     protected boolean isLoggedIn;
 
@@ -33,11 +33,11 @@ public class AppState {
         currDateTime = localDateTime;
     }
 
-    public String getCurrUser() {
-        return getCurrUser();
+    public User getCurrUser() {
+        return currUser;
     }
 
-    public void setCurrUser(String currUser) {
+    public void setCurrUser(User currUser) {
         this.currUser = currUser;
     }
 }

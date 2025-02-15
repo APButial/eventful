@@ -1,6 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.component.DashboardUI;
 import com.btp.event_manager.component.MainFrame;
@@ -159,16 +160,6 @@ public class EventManAppService implements AppService {
     }
 
     @Override
-    public String getCreator() {
-        return eventManState.getCurrUser();
-    }
-
-    @Override
-    public void setCreator(String user) {
-        eventManState.setCurrUser(user);
-    }
-
-    @Override
     public LocalDateTime getLastAccessed() {
         return null;
     }
@@ -206,6 +197,16 @@ public class EventManAppService implements AppService {
     @Override
     public void setSysDateTime(LocalDateTime localDateTime) {
         eventManState.setCurrDateTime(localDateTime);
+    }
+
+    @Override
+    public User getCurrUser() {
+        return eventManState.getCurrUser();
+    }
+
+    @Override
+    public void setCurrUser(User user) {
+        eventManState.setCurrUser(user);
     }
 
     // components
