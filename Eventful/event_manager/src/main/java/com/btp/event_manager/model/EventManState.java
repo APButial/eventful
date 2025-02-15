@@ -3,12 +3,10 @@ package com.btp.event_manager.model;
 import com.btp.appfx.model.AppState;
 import com.btp.budget_tracker.model.BudgetTracker;
 import com.btp.budget_tracker.model.ExpenseEntry;
-import com.btp.event_manager.service.DateTimeListener;
-import com.btp.event_manager.service.DateTimeService;
+import com.btp.dashboard.service.DateTimeListener;
+import com.btp.dashboard.service.DateTimeService;
 import javafx.application.Application;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

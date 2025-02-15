@@ -197,6 +197,16 @@ public class EventManAppService implements AppService {
         eventManState.setLoggedIn(loggedIn);
     }
 
+    @Override
+    public LocalDateTime getSysDateTime() {
+        return eventManState.getCurrDateTime();
+    }
+
+    @Override
+    public void setSysDateTime(LocalDateTime localDateTime) {
+        eventManState.setCurrDateTime(localDateTime);
+    }
+
     // components
     public MainFrame getMainFrame() {
         return mainFrame;

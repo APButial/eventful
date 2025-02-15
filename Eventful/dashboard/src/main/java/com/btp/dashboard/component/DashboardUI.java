@@ -1,12 +1,18 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
+import com.btp.dashboard.service.DateTimeListener;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.time.LocalDateTime;
 
 public class DashboardUI extends Application {
     private AppService appService;
@@ -27,6 +33,21 @@ public class DashboardUI extends Application {
 
         UpperHeader upperHeader = new UpperHeader();
         LowerHeader lowerHeader = new LowerHeader("Recent Events","yes");//requires string for page name
+        lowerHeader.setDateLabel(appService.getSysDateTime());
+        lowerHeader.setDateTimeListener(new DateTimeListener() {
+            @Override
+            public void updateDateTime(LocalDateTime localDateTime) {
+                lowerHeader.setDateLabel(localDateTime);
+            }
+        });
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            lowerHeader.setDateLabel(appService.getSysDateTime());
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+        lowerHeader.getDayButtons().getChildren().(appService.getSysDateTime().getDayOfMonth()%7);
+
+
         HBox spacer = new HBox();                           // type 'yes' to show date or 'no' if date is not included
 
         spacer.setPrefHeight(3);

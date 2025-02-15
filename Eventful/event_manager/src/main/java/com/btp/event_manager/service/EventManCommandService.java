@@ -193,4 +193,15 @@ public class EventManCommandService implements AppService {
     public void setLogIn(boolean loggedIn) {
         appService.setLogIn(loggedIn);
     }
+
+    @Override
+    public LocalDateTime getSysDateTime() {
+        return appService.getSysDateTime();
+    }
+
+    @Override
+    public void setSysDateTime(LocalDateTime localDateTime) {
+        appService.setSysDateTime(localDateTime);
+    }
+
 }

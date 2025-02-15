@@ -52,4 +52,6 @@ public interface AppService {
     void setPrevApplication(Application application);
     boolean isLoggedIn();
     void setLogIn(boolean loggedIn);
+    LocalDateTime getSysDateTime();
+    void setSysDateTime(LocalDateTime localDateTime);
 }

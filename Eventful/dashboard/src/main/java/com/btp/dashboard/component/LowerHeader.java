@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+import com.btp.dashboard.service.DateTimeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,8 +10,14 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class LowerHeader {
     private HBox lowerHeader;
+    private HBox dayButtons;
+    private Label dateLabel;
+    private DateTimeListener dateTimeListener;
 
     public LowerHeader(String headerText, String showDate) { // 'showDate' controls visibility
         lowerHeader = new HBox(20);
@@ -26,14 +33,14 @@ public class LowerHeader {
         lowerHeader.getChildren().addAll(headerLabel, headerSpacer);
 
         if (showDate.equalsIgnoreCase("yes")) { // Check if date section should be included
-            Label dateLabel = new Label("February 26, 2025 17:00");
+            dateLabel = new Label();
             dateLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
             HBox dayButtons = new HBox(5);
             dayButtons.setAlignment(Pos.CENTER_LEFT);
             for (String day : new String[]{"SU", "MO", "TU", "WE", "TH", "FR", "SA"}) {
                 Button dayButton = new Button(day);
-                dayButton.setStyle("-fx-background-color: #CCC; -fx-border-radius: 5;");
+                dayButton.setStyle("-fx-background-color: #555555; -fx-border-radius: 5; -fx-text-fill: #FFFFFF;");
                 dayButtons.getChildren().add(dayButton);
             }
 
@@ -44,5 +51,33 @@ public class LowerHeader {
 
     public HBox getComponent() {
         return lowerHeader;
+    }
+
+    public Label getDateLabel() {
+        return dateLabel;
+    }
+
+    public void setDateLabel(LocalDateTime date) {
+        StringBuilder dateStringBuilder = new StringBuilder();
+
+        String month = date.getMonth().name().toLowerCase();
+        month = Character.toUpperCase(month.charAt(0)) + month.substring(1);
+        dateStringBuilder.append(month).append(" ");
+
+        dateStringBuilder.append(date.getDayOfMonth()).append(", ");
+        dateStringBuilder.append(date.getYear()).append(" ");
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        dateStringBuilder.append(date.format(timeFormatter));
+
+        dateLabel.setText(dateStringBuilder.toString());
+    }
+
+    public void setDateTimeListener(DateTimeListener listener) {
+        this.dateTimeListener = listener;
+    }
+
+    public HBox getDayButtons() {
+        return dayButtons;
     }
 }

@@ -23,4 +23,12 @@ public class AppState {
     public void setLoggedIn(boolean loggedIn) {
         isLoggedIn = loggedIn;
     }
+
+    public LocalDateTime getCurrDateTime() {
+        return currDateTime;
+    }
+
+    public void setCurrDateTime(LocalDateTime localDateTime) {
+        currDateTime = localDateTime;
+    }
 }
