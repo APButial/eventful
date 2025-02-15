@@ -32,4 +32,12 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public List<BaseEvent> getEvents() {
+        return events;
+    }
+
+    public void setEvents(List<BaseEvent> events) {
+        this.events = events;
+    }
 }

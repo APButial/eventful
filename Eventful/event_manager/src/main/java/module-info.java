@@ -5,6 +5,7 @@ module event_manager {
     requires static lombok;
     requires dashboard;
     requires javafx.graphics;
+    requires java.xml;
 
     exports com.btp.event_manager;
     exports com.btp.event_manager.component;
