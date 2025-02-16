@@ -46,7 +46,7 @@ public class DashboardUI extends Application {
         });
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
             lowerHeader.setDateLabel(appService.getSysDateTime());
-            lowerHeader.getDayButtons().getChildren().get(appService.getSysDateTime().getDayOfWeek().getValue()).setStyle("-fx-background-color: #8425A4; -fx-text-fill: #FFFFFF");
+            lowerHeader.getDayButtons().getChildren().get(appService.getSysDateTime().getDayOfWeek().getValue() % 7).setStyle("-fx-background-color: #8425A4; -fx-text-fill: #FFFFFF");
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
