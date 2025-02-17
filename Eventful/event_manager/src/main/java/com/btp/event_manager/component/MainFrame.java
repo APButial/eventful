@@ -90,7 +90,6 @@ public class MainFrame extends Application {
         createEventUI = new CreateEventUI(appService, listener, listener1);
 
 ///////////////////////////////////////////////////////////
-        eventManAppService.setMainFrame(this);
         try {
             appService.setPrevApplication(this);
             loginUI.start(primaryStage);
