@@ -22,6 +22,7 @@ public class LoadUserEvents {
                 LocalDate endDate = LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent());
                 LocalDateTime lastAccessed = LocalDateTime.parse(event.getElementsByTagName("lastAccessed").item(0).getTextContent());
 
+
                 Event savedEvent = new Event(eventName, startDate, endDate);
                 savedEvent.setLastAccessed(lastAccessed);
 

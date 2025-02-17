@@ -11,7 +11,12 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class EventList {
     private VBox eventList;
@@ -20,15 +25,32 @@ public class EventList {
         eventList = new VBox(10);
         eventList.setPadding(new Insets(10, 20, 10, 20));
 
+        // sorts events in descending order by their lastAccessed
+        Collections.sort(events, new Comparator<BaseEvent>() {
+            @Override
+            public int compare(BaseEvent e1, BaseEvent e2) {
+                return e2.getLastAccessed().compareTo(e1.getLastAccessed());
+            }
+        });
+
+        int count = 0;
         for (BaseEvent event : events) { // Simulating multiple events
+            if(count >= 5) {break;}     // limit to 5 recent events
             HBox eventBox = new HBox(20);
+            VBox eventText = new VBox();
             eventBox.setPadding(new Insets(15));
             eventBox.setAlignment(Pos.CENTER_LEFT);
             eventBox.setStyle("-fx-background-color: #F5F6FA; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
             eventBox.setMaxWidth(900);
 
-            Label eventTitle = new Label(event.getEventName() + "\n" + event.getStartDate().toString() + " - " + event.getEndDate().toString());
-            eventTitle.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+            Label eventTitle = new Label(event.getEventName());
+            eventTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+            Label eventLastAccessed = new Label("Last Accessed: " +
+                                                event.getLastAccessed().getMonth().getDisplayName(TextStyle.SHORT,Locale.ENGLISH) + " " +
+                                                event.getLastAccessed().getDayOfMonth() + " " +
+                                                event.getLastAccessed().format(DateTimeFormatter.ofPattern("HH:mm")));
+            eventLastAccessed.setStyle("-fx-font-size: 14px; -fx-text-fill: #AAB2C8");
+            eventText.getChildren().addAll(eventTitle, eventLastAccessed);
 
             Button guestsButton = new Button("👥 Guests");
             Button settingsButton = new Button("⚙ Settings");
@@ -44,11 +66,12 @@ public class EventList {
             Region eventSpacer = new Region();
             HBox.setHgrow(eventSpacer, Priority.ALWAYS);
 
-            eventBox.getChildren().addAll(eventTitle, eventSpacer, guestsButton, settingsButton, statusButton, menuButton2);
+            eventBox.getChildren().addAll(eventText, eventSpacer, guestsButton, settingsButton, statusButton, menuButton2);
 
             StackPane eventWrapper = new StackPane(eventBox);
             eventWrapper.setMaxWidth(900);
             eventList.getChildren().add(eventWrapper);
+            count++;
         }
     }
 

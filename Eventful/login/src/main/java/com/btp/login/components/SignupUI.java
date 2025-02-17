@@ -114,7 +114,7 @@ public class SignupUI extends Application {
 
         // Cancel Button
         Button cancelButton = new Button("Cancel");
-        cancelButton.setStyle("-fx-border-color: purple; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
+        cancelButton.setStyle("-fx-border-color: purple; -fx-background-color: #FFFFFF; -fx-text-fill: purple; -fx-font-size: 14px; -fx-border-radius: 5px;");
         cancelButton.setMaxWidth(300);
         cancelButton.setOnAction(event -> {
             try{
