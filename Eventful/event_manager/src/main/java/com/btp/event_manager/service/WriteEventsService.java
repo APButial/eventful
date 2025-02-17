@@ -16,7 +16,7 @@ import java.io.File;
 public class WriteEventsService {
     public static void write(BaseEvent newEvent, AppService appService) {
         try {
-            File file = new File("Eventful/dat/" + appService.getCurrUser() + ".xml");
+            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + ".xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 

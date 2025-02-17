@@ -19,18 +19,22 @@ public class ValidateNewEventService {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Create Event");
 
-        if (eventName.isEmpty()) {
+        if (eventName.isBlank()) {
             alert.setHeaderText("Invalid Event");
             alert.setContentText("Please enter event name.");
+            alert.showAndWait();
             return false;
-        } else if (endDate.isBefore(startDate)) {
+        }
+        if (startDate.isAfter(endDate)) {
             alert.setHeaderText("Invalid Event");
             alert.setContentText("End date should not be earlier than Start date.");
+            alert.showAndWait();
             return false;
         }
 
         alert.setHeaderText("Event Created");
         alert.setContentText("The event, " + eventName + ", is successfully created.");
+        alert.showAndWait();
         return true;
     }
     public static void addEvent(BaseEvent event, AppService appService) {

@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+import com.btp.appfx.model.BaseEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -10,21 +11,23 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 
+import java.util.List;
+
 public class EventList {
     private VBox eventList;
 
-    public EventList() {
+    public EventList(List<BaseEvent> events) {
         eventList = new VBox(10);
         eventList.setPadding(new Insets(10, 20, 10, 20));
 
-        for (int i = 0; i < 2; i++) { // Simulating multiple events
-            HBox event = new HBox(20);
-            event.setPadding(new Insets(15));
-            event.setAlignment(Pos.CENTER_LEFT);
-            event.setStyle("-fx-background-color: #F5F6FA; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
-            event.setMaxWidth(900);
+        for (BaseEvent event : events) { // Simulating multiple events
+            HBox eventBox = new HBox(20);
+            eventBox.setPadding(new Insets(15));
+            eventBox.setAlignment(Pos.CENTER_LEFT);
+            eventBox.setStyle("-fx-background-color: #F5F6FA; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
+            eventBox.setMaxWidth(900);
 
-            Label eventTitle = new Label("Event " + (i + 1) + "\nJan " + (i + 5) + " 09:30");
+            Label eventTitle = new Label(event.getEventName() + "\n" + event.getStartDate().toString() + " - " + event.getEndDate().toString());
             eventTitle.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
             Button guestsButton = new Button("👥 Guests");
@@ -41,9 +44,9 @@ public class EventList {
             Region eventSpacer = new Region();
             HBox.setHgrow(eventSpacer, Priority.ALWAYS);
 
-            event.getChildren().addAll(eventTitle, eventSpacer, guestsButton, settingsButton, statusButton, menuButton2);
+            eventBox.getChildren().addAll(eventTitle, eventSpacer, guestsButton, settingsButton, statusButton, menuButton2);
 
-            StackPane eventWrapper = new StackPane(event);
+            StackPane eventWrapper = new StackPane(eventBox);
             eventWrapper.setMaxWidth(900);
             eventList.getChildren().add(eventWrapper);
         }

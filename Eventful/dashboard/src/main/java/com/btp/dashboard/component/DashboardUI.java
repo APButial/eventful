@@ -57,7 +57,7 @@ public class DashboardUI extends Application {
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
 
-        EventList eventList = new EventList();
+        EventList eventList = new EventList(appService.getCurrUser().getEvents());
 
         mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(),spacer, eventList.getComponent());
 

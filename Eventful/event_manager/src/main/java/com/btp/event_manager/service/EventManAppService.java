@@ -3,8 +3,6 @@ package com.btp.event_manager.service;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
-import com.btp.dashboard.component.DashboardUI;
-import com.btp.event_manager.component.MainFrame;
 import com.btp.event_manager.model.EventManState;
 import javafx.application.Application;
 
@@ -15,7 +13,6 @@ import java.util.List;
 
 public class EventManAppService implements AppService {
     private EventManState eventManState;
-    private MainFrame mainFrame;
 
     public EventManAppService(EventManState eventManState) { this.eventManState = eventManState;}
 
@@ -209,12 +206,4 @@ public class EventManAppService implements AppService {
         eventManState.setCurrUser(user);
     }
 
-    // components
-    public MainFrame getMainFrame() {
-        return mainFrame;
-    }
-
-    public void setMainFrame(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
-    }
 }

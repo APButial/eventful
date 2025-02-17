@@ -14,6 +14,7 @@ import com.btp.event_manager.service.ValidateNewEventService;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.LoginSuccessListener;
 import javafx.application.Application;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -39,8 +40,8 @@ public class MainFrame extends Application {
         loginUI = new LoginUI(appService, new LoginSuccessListener() {
             @Override
             public void onLoginSuccess() {
-                dashboardUI.start(primaryStage);
                 LoadUserEvents.load(appService);
+                dashboardUI.start(primaryStage);
             }
         });
 
@@ -74,7 +75,7 @@ public class MainFrame extends Application {
             public void onConfirm() {
                 String eventName = createEventUI.getEventDetails().getEventNameField().getText();
                 LocalDate startDate = createEventUI.getEventDetails().getStartDatePicker().getValue();
-                LocalDate endDate = createEventUI.getEventDetails().getStartDatePicker().getValue();
+                LocalDate endDate = createEventUI.getEventDetails().getEndDatePicker().getValue();
 
                 if(ValidateNewEventService.validate(eventName, startDate, endDate)) {
                     Event event = new Event(eventName, startDate, endDate);
