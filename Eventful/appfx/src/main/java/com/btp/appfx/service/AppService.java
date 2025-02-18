@@ -25,8 +25,8 @@ public interface AppService {
     void createEvent();
     void updateEvent(BaseEvent baseEvent);
     void removeEvent(BaseEvent baseEvent);
-    BaseEvent getEvent();
-    void setEvent(BaseEvent baseEvent);
+    BaseEvent getSelectedEvent();
+    void setSelectedEvent(BaseEvent baseEvent);
     String getEventName();
     void setEventName(String eventName);
     LocalDate getStartDate();

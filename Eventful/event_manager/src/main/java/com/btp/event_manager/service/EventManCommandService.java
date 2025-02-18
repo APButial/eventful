@@ -66,13 +66,13 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public BaseEvent getEvent() {
-        return null;
+    public BaseEvent getSelectedEvent() {
+        return appService.getSelectedEvent();
     }
 
     @Override
-    public void setEvent(BaseEvent baseEvent) {
-
+    public void setSelectedEvent(BaseEvent baseEvent) {
+        appService.setSelectedEvent(baseEvent);
     }
 
     @Override

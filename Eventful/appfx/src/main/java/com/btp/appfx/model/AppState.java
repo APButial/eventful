@@ -11,8 +11,6 @@ import java.util.List;
 public class AppState {
     protected List<BaseEvent> currEvents;
     protected BaseEvent currSelectedEvent;
-    protected Scene currentScene;
-    protected Scene prevScene;
     protected User currUser;
     protected LocalDateTime currDateTime;
     protected boolean isLoggedIn;
@@ -39,5 +37,21 @@ public class AppState {
 
     public void setCurrUser(User currUser) {
         this.currUser = currUser;
+    }
+
+    public List<BaseEvent> getCurrEvents() {
+        return currEvents;
+    }
+
+    public void setCurrEvents(List<BaseEvent> currEvents) {
+        this.currEvents = currEvents;
+    }
+
+    public BaseEvent getCurrSelectedEvent() {
+        return currSelectedEvent;
+    }
+
+    public void setCurrSelectedEvent(BaseEvent currSelectedEvent) {
+        this.currSelectedEvent = currSelectedEvent;
     }
 }

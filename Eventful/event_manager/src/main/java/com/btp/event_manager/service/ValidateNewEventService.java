@@ -13,9 +13,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ValidateNewEventService {
-    public static boolean validate(String eventName, LocalDate startDate, LocalDate endDate) {
+    public static boolean validate(String eventName, LocalDate startDate, LocalDate endDate, AppService appService) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Create Event");
 
@@ -31,6 +32,26 @@ public class ValidateNewEventService {
             alert.showAndWait();
             return false;
         }
+
+        try {
+            NodeList events = ReadEventsService.read(appService);
+            for (int i = 0; i < events.getLength(); i++) {
+                Element event = (Element) events.item(i);
+
+                if (eventName.equals(event.getElementsByTagName("title").item(0).getTextContent()) &&
+                    startDate.equals(LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent())) &&
+                    endDate.equals(LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent()))) {
+                    alert.setHeaderText("Invalid Event");
+                    alert.setContentText("An event already exists with the entered details.");
+                    alert.showAndWait();
+                    return false;
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         alert.setHeaderText("Event Created");
         alert.setContentText("The event, " + eventName + ", is successfully created.");

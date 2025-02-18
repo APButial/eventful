@@ -14,21 +14,21 @@ import javafx.stage.Stage;
 
 public class CreateEventUI extends Application {
     private AppService appService;
-    private DashNavigateListener listener;
-    private CreateEventListener listener1;
+    private DashNavigateListener dashNavigateListener;
+    private CreateEventListener createEventListener;
     private EventDetails eventDetails;
 
-    public CreateEventUI(AppService appService, DashNavigateListener listener, CreateEventListener listener1) {
+    public CreateEventUI(AppService appService, DashNavigateListener dashNavigateListener, CreateEventListener createEventListener) {
         this.appService = appService;
-        this.listener = listener;
-        this.listener1 = listener1;
+        this.dashNavigateListener = dashNavigateListener;
+        this.createEventListener = createEventListener;
     }
 
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Create Event");
 
-        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService, listener);//type the name of page for indicator
+        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService, dashNavigateListener);//type the name of page for indicator
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
@@ -59,7 +59,7 @@ public class CreateEventUI extends Application {
             }
         });
         eventDetails.getConfirmButton().setOnAction(event -> {
-            listener1.onConfirm();
+            createEventListener.onConfirm();
         });
 
 // Add components in order, ensuring bottomSpacer is included

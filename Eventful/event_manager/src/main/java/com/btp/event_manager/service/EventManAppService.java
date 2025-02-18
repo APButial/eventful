@@ -67,13 +67,13 @@ public class EventManAppService implements AppService {
     }
 
     @Override
-    public BaseEvent getEvent() {
-        return null;
+    public BaseEvent getSelectedEvent() {
+        return eventManState.getCurrSelectedEvent();
     }
 
     @Override
-    public void setEvent(BaseEvent baseEvent) {
-
+    public void setSelectedEvent(BaseEvent baseEvent) {
+        eventManState.setCurrSelectedEvent(baseEvent);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class EventManAppService implements AppService {
 
     @Override
     public void setEventName(String eventName) {
-
+        eventManState.getCurrSelectedEvent().setEventName(eventName);
     }
 
     @Override

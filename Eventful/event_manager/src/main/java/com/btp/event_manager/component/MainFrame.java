@@ -2,19 +2,16 @@ package com.btp.event_manager.component;
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.component.CreateEventUI;
 import com.btp.dashboard.component.DashboardUI;
-import com.btp.dashboard.component.Sidebar;
+import com.btp.dashboard.component.EventDetailsUI;
 import com.btp.dashboard.service.CreateEventListener;
 import com.btp.dashboard.service.DashNavigateListener;
+import com.btp.dashboard.service.EventDetailListener;
 import com.btp.event_manager.model.Event;
-import com.btp.event_manager.service.EventManAppService;
+import com.btp.event_manager.service.*;
 import com.btp.event_manager.model.EventManState;
-import com.btp.event_manager.service.EventManCommandService;
-import com.btp.event_manager.service.LoadUserEvents;
-import com.btp.event_manager.service.ValidateNewEventService;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.LoginSuccessListener;
 import javafx.application.Application;
-import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
@@ -26,6 +23,8 @@ public class MainFrame extends Application {
     private LoginUI loginUI;
     private DashboardUI dashboardUI;
     private CreateEventUI createEventUI;
+    private EventDetailsUI eventDetailsUI;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -45,14 +44,10 @@ public class MainFrame extends Application {
             }
         });
 
-        DashNavigateListener listener = new DashNavigateListener() {
+        DashNavigateListener dashListener = new DashNavigateListener() {
             @Override
             public void createEventTriggered() {
-                try {
                     createEventUI.start(primaryStage);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override
@@ -70,24 +65,34 @@ public class MainFrame extends Application {
 
             }
         };
-        CreateEventListener listener1 = new CreateEventListener() {
+        CreateEventListener ceventListener = new CreateEventListener() {
             @Override
             public void onConfirm() {
                 String eventName = createEventUI.getEventDetails().getEventNameField().getText();
                 LocalDate startDate = createEventUI.getEventDetails().getStartDatePicker().getValue();
                 LocalDate endDate = createEventUI.getEventDetails().getEndDatePicker().getValue();
 
-                if(ValidateNewEventService.validate(eventName, startDate, endDate)) {
+                if(ValidateNewEventService.validate(eventName, startDate, endDate, appService)) {
                     Event event = new Event(eventName, startDate, endDate);
+                    event.setLastAccessed(appService.getSysDateTime());
                     appService.getCurrUser().getEvents().add(event);
                     ValidateNewEventService.addEvent(event, appService);
+
+                    appService.setSelectedEvent(event);
+                    eventDetailsUI.start(primaryStage);
                 }
             }
         };
+        EventDetailListener eventDetailListener = new EventDetailListener() {
+            @Override
+            public void onOpen() {
+                PopulateEventDetails.populate(appService, eventDetailsUI);
+            }
+        };
 
-
-        dashboardUI = new DashboardUI(appService, listener);
-        createEventUI = new CreateEventUI(appService, listener, listener1);
+        dashboardUI = new DashboardUI(appService, dashListener);
+        createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
+        eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener);
 
 ///////////////////////////////////////////////////////////
         try {

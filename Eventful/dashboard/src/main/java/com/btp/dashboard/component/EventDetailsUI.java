@@ -2,6 +2,7 @@ package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.service.DashNavigateListener;
+import com.btp.dashboard.service.EventDetailListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
@@ -13,18 +14,22 @@ import javafx.application.Application;
 
 public class EventDetailsUI extends Application {
     private AppService appService;
-    private DashNavigateListener listener;
+    private DashNavigateListener dashNavigateListener;
+    private EventDetailListener eventDetailListener;
+    private EventForm eventForm;
 
-    public EventDetailsUI(AppService appService, DashNavigateListener listener) {
+    public EventDetailsUI(AppService appService, DashNavigateListener dashNavigateListener, EventDetailListener eventDetailListener) {
         this.appService = appService;
-        this.listener = listener;
+        this.dashNavigateListener = dashNavigateListener;
+        this.eventDetailListener = eventDetailListener;
+        this.eventForm = new EventForm();
     }
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Event Details");
+        primaryStage.setTitle("Event Details - " + appService.getSelectedEvent().getEventName());
 
-        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService, listener);
+        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService, dashNavigateListener);
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
@@ -48,14 +53,12 @@ public class EventDetailsUI extends Application {
         Region bottomSpacer = new Region();
         VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
 
-        EventFormUI eventFormUI = new EventFormUI();
-
         // Add components in order, ensuring bottomSpacer is included
         mainContent.getChildren().addAll(
                 upperHeader.getComponent(),
                 lowerHeader.getComponent(),
                 spacer,
-                eventFormUI.getComponent() // Ensure this method exists in EventFormUI
+                eventForm.getComponent() // Ensure this method exists in EventForm
 
         );
 
@@ -67,6 +70,11 @@ public class EventDetailsUI extends Application {
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
+        eventDetailListener.onOpen();
+    }
+
+    public EventForm getEventForm() {
+        return eventForm;
     }
 
     public static void main(String[] args) {

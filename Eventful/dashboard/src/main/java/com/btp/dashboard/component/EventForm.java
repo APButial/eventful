@@ -9,7 +9,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import java.time.LocalDate;
 
-public class EventFormUI {
+public class EventForm {
+    private DatePicker startDatePicker;
+    private DatePicker endDatePicker;
+
     public Node getComponent() {
         GridPane form = new GridPane();
         form.setHgap(10);
@@ -17,7 +20,7 @@ public class EventFormUI {
 
         // Start Date
         Label startDateLabel = new Label("Start Date*");
-        DatePicker startDatePicker = new DatePicker(LocalDate.now());
+        startDatePicker = new DatePicker();
         startDatePicker.setPrefWidth(240);
 
         startDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
@@ -31,7 +34,7 @@ public class EventFormUI {
 
         // End Date
         Label endDateLabel = new Label("End Date*");
-        DatePicker endDatePicker = new DatePicker(LocalDate.now().plusDays(1));
+        endDatePicker = new DatePicker();
         endDatePicker.setPrefWidth(240);
 
         endDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
@@ -134,5 +137,21 @@ public class EventFormUI {
         formContainer.setStyle("-fx-background-color: #FFFFFF; -fx-border-radius: 10px; -fx-padding: 20px; -fx-border-color: #CCCCCC; -fx-border-width: 1px;");
 
         return formContainer; // Return as Node
+    }
+
+    public DatePicker getStartDatePicker() {
+        return startDatePicker;
+    }
+
+    public void setStartDatePicker(DatePicker startDatePicker) {
+        this.startDatePicker = startDatePicker;
+    }
+
+    public DatePicker getEndDatePicker() {
+        return endDatePicker;
+    }
+
+    public void setEndDatePicker(DatePicker endDatePicker) {
+        this.endDatePicker = endDatePicker;
     }
 }
