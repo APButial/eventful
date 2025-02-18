@@ -1,5 +1,6 @@
 package com.btp.event_manager.service;
 
+import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
@@ -77,92 +78,92 @@ public class EventManCommandService implements AppService {
 
     @Override
     public String getEventName() {
-        return "";
+        return appService.getEventName();
     }
 
     @Override
     public void setEventName(String eventName) {
-
+        appService.setEventName(eventName);
     }
 
     @Override
     public LocalDate getStartDate() {
-        return null;
+        return appService.getStartDate();
     }
 
     @Override
     public void setEventStartDate(LocalDate date) {
-
+        appService.setEventStartDate(date);
     }
 
     @Override
     public LocalDate getEndDate() {
-        return null;
+        return appService.getEndDate();
     }
 
     @Override
     public void setEndDate(LocalDate date) {
-
+        appService.setEndDate(date);
     }
 
     @Override
     public LocalTime getStartTime() {
-        return null;
+        return appService.getStartTime();
     }
 
     @Override
     public void setStartTime(LocalTime time) {
-
+        appService.setStartTime(time);
     }
 
     @Override
     public LocalTime getEndTime() {
-        return null;
+        return appService.getEndTime();
     }
 
     @Override
     public void setEndTime(LocalTime time) {
-
+        appService.setEndTime(time);
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return appService.getDescription();
     }
 
     @Override
     public void setDescription(String description) {
-
+        appService.setDescription(description);
     }
 
     @Override
     public List<String> getGuests() {
-        return List.of();
+        return appService.getGuests();
     }
 
     @Override
     public void addGuest(String guest) {
-
+        appService.addGuest(guest);
     }
 
     @Override
     public void removeGuest(String guest) {
-
+        appService.removeGuest(guest);
     }
 
     @Override
     public void inviteGuest(String guest) {
-
+        appService.inviteGuest(guest);
     }
 
     @Override
     public LocalDateTime getLastAccessed() {
-        return null;
+        return appService.getLastAccessed();
     }
 
     @Override
     public void setLastAccessed(LocalDateTime dateTime) {
-
+        appService.setLastAccessed(dateTime);
     }
 
     @Override
@@ -203,6 +204,16 @@ public class EventManCommandService implements AppService {
     @Override
     public void setCurrUser(User user) {
         appService.setCurrUser(user);
+    }
+
+    @Override
+    public SaveStatus getSaveStatus() {
+        return appService.getSaveStatus();
+    }
+
+    @Override
+    public void setSaveStatus(SaveStatus saveStatus) {
+        appService.setSaveStatus(saveStatus);
     }
 
 }

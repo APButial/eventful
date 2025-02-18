@@ -38,7 +38,17 @@ public class WriteEventsService {
             endDate.appendChild(document.createTextNode(newEvent.getEndDate().toString()));
             event.appendChild(endDate);
             //////////////////////////////////////////////////////////////////////////////////
-
+            // optional
+            try {
+                Element description = document.createElement("description");
+                if (newEvent.getDescription() == null) {
+                    description.appendChild(document.createTextNode(newEvent.getDescription()));
+                }
+                event.appendChild(description);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            /// //////////////////////////////////////////////////////////////////////////////
             // metadata
             Element creator = document.createElement("creator");
             creator.appendChild(document.createTextNode(appService.getCurrUser().getUsername()));

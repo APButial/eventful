@@ -22,9 +22,16 @@ public class LoadUserEvents {
                 LocalDate endDate = LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent());
                 LocalDateTime lastAccessed = LocalDateTime.parse(event.getElementsByTagName("lastAccessed").item(0).getTextContent());
 
-
                 Event savedEvent = new Event(eventName, startDate, endDate);
                 savedEvent.setLastAccessed(lastAccessed);
+
+                // optional
+                String description;
+
+//                if(event.getElementsByTagName("description").item(0).getTextContent() != null) {
+//                    description = event.getElementsByTagName("description").item(0).getTextContent();
+//                    savedEvent.setDescription(description);
+//                }
 
                 appService.getCurrUser().getEvents().add(savedEvent);
             }

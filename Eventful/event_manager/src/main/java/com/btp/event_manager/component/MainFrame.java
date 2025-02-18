@@ -6,6 +6,7 @@ import com.btp.dashboard.component.EventDetailsUI;
 import com.btp.dashboard.service.CreateEventListener;
 import com.btp.dashboard.service.DashNavigateListener;
 import com.btp.dashboard.service.EventDetailListener;
+import com.btp.dashboard.service.EventFormListener;
 import com.btp.event_manager.model.Event;
 import com.btp.event_manager.service.*;
 import com.btp.event_manager.model.EventManState;
@@ -89,10 +90,31 @@ public class MainFrame extends Application {
                 PopulateEventDetails.populate(appService, eventDetailsUI);
             }
         };
+        EventFormListener eventFormListener = new EventFormListener() {
+            @Override
+            public void inputUpdated() {
+
+            }
+
+            @Override
+            public void enteredGuest() {
+
+            }
+
+            @Override
+            public void onUpdate() {
+
+            }
+
+            @Override
+            public void onReturn() {
+
+            }
+        };
 
         dashboardUI = new DashboardUI(appService, dashListener);
         createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
-        eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener);
+        eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener, eventFormListener);
 
 ///////////////////////////////////////////////////////////
         try {

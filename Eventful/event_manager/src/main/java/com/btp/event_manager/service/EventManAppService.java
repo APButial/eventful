@@ -1,5 +1,6 @@
 package com.btp.event_manager.service;
 
+import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
@@ -88,67 +89,67 @@ public class EventManAppService implements AppService {
 
     @Override
     public LocalDate getStartDate() {
-        return null;
+        return eventManState.getCurrSelectedEvent().getStartDate();
     }
 
     @Override
     public void setEventStartDate(LocalDate date) {
-
+        eventManState.getCurrSelectedEvent().setStartDate(date);
     }
 
     @Override
     public LocalDate getEndDate() {
-        return null;
+        return eventManState.getCurrSelectedEvent().getEndDate();
     }
 
     @Override
     public void setEndDate(LocalDate date) {
-
+        eventManState.getCurrSelectedEvent().setEndDate(date);
     }
 
     @Override
     public LocalTime getStartTime() {
-        return null;
+        return eventManState.getCurrSelectedEvent().getStartTime();
     }
 
     @Override
     public void setStartTime(LocalTime time) {
-
+        eventManState.getCurrSelectedEvent().setStartTime(time);
     }
 
     @Override
     public LocalTime getEndTime() {
-        return null;
+        return eventManState.getCurrSelectedEvent().getEndTime();
     }
 
     @Override
     public void setEndTime(LocalTime time) {
-
+        eventManState.getCurrSelectedEvent().setEndTime(time);
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return eventManState.getCurrSelectedEvent().getDescription();
     }
 
     @Override
     public void setDescription(String description) {
-
+        eventManState.getCurrSelectedEvent().setDescription(description);
     }
 
     @Override
     public List<String> getGuests() {
-        return List.of();
+        return eventManState.getCurrSelectedEvent().getGuests();
     }
 
     @Override
     public void addGuest(String guest) {
-
+        eventManState.getCurrSelectedEvent().getGuests().add(guest);
     }
 
     @Override
     public void removeGuest(String guest) {
-
+        eventManState.getCurrSelectedEvent().getGuests().remove(guest);
     }
 
     @Override
@@ -158,12 +159,12 @@ public class EventManAppService implements AppService {
 
     @Override
     public LocalDateTime getLastAccessed() {
-        return null;
+        return eventManState.getCurrSelectedEvent().getLastAccessed();
     }
 
     @Override
     public void setLastAccessed(LocalDateTime dateTime) {
-
+        eventManState.getCurrSelectedEvent().setLastAccessed(dateTime);
     }
 
     @Override
@@ -204,6 +205,16 @@ public class EventManAppService implements AppService {
     @Override
     public void setCurrUser(User user) {
         eventManState.setCurrUser(user);
+    }
+
+    @Override
+    public SaveStatus getSaveStatus() {
+        return eventManState.getSaveStatus();
+    }
+
+    @Override
+    public void setSaveStatus(SaveStatus saveStatus) {
+        eventManState.setSaveStatus(saveStatus);
     }
 
 }

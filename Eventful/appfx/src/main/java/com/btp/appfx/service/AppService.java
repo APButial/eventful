@@ -1,5 +1,6 @@
 package com.btp.appfx.service;
 
+import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import javafx.application.Application;
@@ -55,4 +56,6 @@ public interface AppService {
     void setSysDateTime(LocalDateTime localDateTime);
     User getCurrUser();
     void setCurrUser(User user);
+    SaveStatus getSaveStatus();
+    void setSaveStatus(SaveStatus saveStatus);
 }

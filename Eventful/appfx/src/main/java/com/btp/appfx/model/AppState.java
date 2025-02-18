@@ -1,5 +1,6 @@
 package com.btp.appfx.model;
 
+import com.btp.appfx.enums.SaveStatus;
 import javafx.scene.Scene;
 import lombok.Data;
 
@@ -14,6 +15,15 @@ public class AppState {
     protected User currUser;
     protected LocalDateTime currDateTime;
     protected boolean isLoggedIn;
+    protected SaveStatus saveStatus;
+
+    public SaveStatus getSaveStatus() {
+        return saveStatus;
+    }
+
+    public void setSaveStatus(SaveStatus saveStatus) {
+        this.saveStatus = saveStatus;
+    }
 
     public boolean isLoggedIn() {
         return isLoggedIn;

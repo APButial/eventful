@@ -3,6 +3,7 @@ package com.btp.dashboard.component;
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.service.DashNavigateListener;
 import com.btp.dashboard.service.EventDetailListener;
+import com.btp.dashboard.service.EventFormListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
@@ -16,13 +17,15 @@ public class EventDetailsUI extends Application {
     private AppService appService;
     private DashNavigateListener dashNavigateListener;
     private EventDetailListener eventDetailListener;
+    private EventFormListener eventFormListener;
     private EventForm eventForm;
 
-    public EventDetailsUI(AppService appService, DashNavigateListener dashNavigateListener, EventDetailListener eventDetailListener) {
+    public EventDetailsUI(AppService appService, DashNavigateListener dashNavigateListener, EventDetailListener eventDetailListener, EventFormListener eventFormListener) {
         this.appService = appService;
         this.dashNavigateListener = dashNavigateListener;
         this.eventDetailListener = eventDetailListener;
-        this.eventForm = new EventForm();
+        this.eventFormListener = eventFormListener;
+        this.eventForm = new EventForm(eventFormListener);
     }
 
     @Override

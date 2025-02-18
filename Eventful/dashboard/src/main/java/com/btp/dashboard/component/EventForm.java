@@ -1,6 +1,9 @@
 package com.btp.dashboard.component;
 
-import javafx.geometry.Insets;
+    import com.btp.dashboard.service.EventFormListener;
+    import javafx.beans.value.ChangeListener;
+    import javafx.beans.value.ObservableValue;
+    import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -12,6 +15,17 @@ import java.time.LocalDate;
 public class EventForm {
     private DatePicker startDatePicker;
     private DatePicker endDatePicker;
+    private TextArea eventDescArea;
+    private TextField guestsField;
+    private TextArea guestEmailsArea;
+    private Button sendEmailButton;
+    private EventFormListener eventFormListener;
+    private Button returnButton;
+    private Button updateButton;
+
+    public EventForm (EventFormListener eventFormListener) {
+        this.eventFormListener = eventFormListener;
+    }
 
     public Node getComponent() {
         GridPane form = new GridPane();
@@ -21,8 +35,13 @@ public class EventForm {
         // Start Date
         Label startDateLabel = new Label("Start Date*");
         startDatePicker = new DatePicker();
+        startDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
+                eventFormListener.inputUpdated();
+            }
+        });
         startDatePicker.setPrefWidth(240);
-
         startDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
                 "-fx-border-color: transparent; " +
                 "-fx-padding: 5px; " +
@@ -35,6 +54,12 @@ public class EventForm {
         // End Date
         Label endDateLabel = new Label("End Date*");
         endDatePicker = new DatePicker();
+        endDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
+            @Override
+            public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate localDate, LocalDate t1) {
+                eventFormListener.inputUpdated();
+            }
+        });
         endDatePicker.setPrefWidth(240);
 
         endDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
@@ -69,7 +94,13 @@ public class EventForm {
 
         // Event Description
         Label eventDescLabel = new Label("Event Description");
-        TextArea eventDescArea = new TextArea();
+        eventDescArea = new TextArea();
+        eventDescArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                eventFormListener.inputUpdated();
+            }
+        });
         eventDescArea.setPrefWidth(400);
         eventDescArea.setPrefHeight(100);
         eventDescArea.setPromptText("Enter Event Description (Optional)");
@@ -85,8 +116,7 @@ public class EventForm {
 
         // Right Section
         Label guestsLabel = new Label("No. of Guests");
-        TextField guestsField = new TextField("");
-
+        guestsField = new TextField("");
         guestsField.setPromptText("0");
         guestsField.setStyle(
                 "-fx-background-color: #F5F5F5; " +
@@ -101,7 +131,14 @@ public class EventForm {
         viewSeatsBox.setAlignment(Pos.TOP_RIGHT);
 
         Label guestEmailsLabel = new Label("Guests");
-        TextArea guestEmailsArea = new TextArea();
+        guestEmailsArea = new TextArea();
+        guestEmailsArea.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                eventFormListener.inputUpdated();
+                eventFormListener.enteredGuest();
+            }
+        });
         guestEmailsArea.setPromptText("Enter guests’ email addresses (Optional)");
         guestEmailsArea.setPrefHeight(165);
         guestEmailsArea.setStyle(
@@ -111,7 +148,7 @@ public class EventForm {
                         "-fx-border-radius: 5px; " +
                         "-fx-control-inner-background: #F5F5F5;");
 
-        Button sendEmailButton = new Button("Send Email Invitation");
+        sendEmailButton = new Button("Send Email Invitation");
         sendEmailButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         sendEmailButton.setPrefWidth(200);
 
@@ -123,13 +160,26 @@ public class EventForm {
         expensesTrackerButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         expensesTrackerButton.setPrefWidth(200);
 
+        returnButton = new Button("Return");
+        returnButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
+        returnButton.setPrefWidth(200);
+
+        updateButton = new Button("Update");
+        updateButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
+        updateButton.setPrefWidth(200);
+
+        VBox confirmVBox = new VBox(10, returnButton, updateButton);
+        confirmVBox.setAlignment(Pos.TOP_RIGHT);
+        confirmVBox.setPrefHeight(100);
 
         VBox buttonBox = new VBox(10, sendEmailButton, configureLayoutButton, expensesTrackerButton);
         buttonBox.setPrefHeight(100);
-        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setAlignment(Pos.CENTER_LEFT);
+
+        HBox grouper = new HBox(20, buttonBox, confirmVBox);
 
 
-        VBox rightSection = new VBox(10, guestsLabel, guestsField, viewSeatsButton,viewSeatsBox, guestEmailsLabel, guestEmailsArea, buttonBox);
+        VBox rightSection = new VBox(10, guestsLabel, guestsField, viewSeatsButton,viewSeatsBox, guestEmailsLabel, guestEmailsArea, grouper);
 
         // Main Container
         HBox formContainer = new HBox(20, leftSection, rightSection);
