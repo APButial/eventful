@@ -39,7 +39,7 @@ public class EventDetailsUI extends Application {
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader();
-        LowerHeader lowerHeader = new LowerHeader("Event Details - " + appService.getEventName(), "no"); // "no" to hide date
+        LowerHeader lowerHeader = new LowerHeader("Event Details - " + appService.getEventName().toUpperCase(), "no"); // "no" to hide date
         HBox spacer = new HBox();
 
         spacer.setPrefHeight(3);
