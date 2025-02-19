@@ -28,10 +28,13 @@ public class LoadUserEvents {
                 // optional
                 String description;
 
-//                if(event.getElementsByTagName("description").item(0).getTextContent() != null) {
-//                    description = event.getElementsByTagName("description").item(0).getTextContent();
-//                    savedEvent.setDescription(description);
-//                }
+                try {
+                    description = event.getElementsByTagName("description").item(0).getTextContent();
+                    savedEvent.setDescription(description);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
 
                 appService.getCurrUser().getEvents().add(savedEvent);
             }

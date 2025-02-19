@@ -92,8 +92,8 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public void setEventStartDate(LocalDate date) {
-        appService.setEventStartDate(date);
+    public void setStartDate(LocalDate date) {
+        appService.setStartDate(date);
     }
 
     @Override

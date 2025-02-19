@@ -1,4 +1,5 @@
 package com.btp.event_manager.component;
+import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.component.CreateEventUI;
 import com.btp.dashboard.component.DashboardUI;
@@ -92,23 +93,47 @@ public class MainFrame extends Application {
         };
         EventFormListener eventFormListener = new EventFormListener() {
             @Override
-            public void inputUpdated() {
-
+            public void startDateUpdated() {
+                appService.setStartDate(eventDetailsUI.getEventForm().getStartDatePicker().getValue());
+                appService.setSaveStatus(SaveStatus.UNSAVED);
             }
 
             @Override
-            public void enteredGuest() {
+            public void endDateUpdated() {
+                appService.setEndDate(eventDetailsUI.getEventForm().getEndDatePicker().getValue());
+                appService.setSaveStatus(SaveStatus.UNSAVED);
+            }
+
+            @Override
+            public void startTimeUpdated() {
+            }
+
+            @Override
+            public void endTimeUpdated() {
+            }
+
+            @Override
+            public void descriptionUpdated() {
+                appService.setDescription(eventDetailsUI.getEventForm().getEventDescArea().getText().strip());
+                appService.setSaveStatus(SaveStatus.UNSAVED);
+            }
+
+            @Override
+            public void guestsUpdated() {
 
             }
 
             @Override
             public void onUpdate() {
-
+                WriteEventsService.overwrite(appService);
+                appService.setSaveStatus(SaveStatus.SAVED);
             }
 
             @Override
             public void onReturn() {
+                if(appService.getSaveStatus().equals(SaveStatus.UNSAVED)) {
 
+                }
             }
         };
 

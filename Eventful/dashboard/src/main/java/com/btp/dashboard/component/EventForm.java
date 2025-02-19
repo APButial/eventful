@@ -38,7 +38,7 @@ public class EventForm {
         startDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
-                eventFormListener.inputUpdated();
+                eventFormListener.startDateUpdated();
             }
         });
         startDatePicker.setPrefWidth(240);
@@ -57,7 +57,7 @@ public class EventForm {
         endDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate localDate, LocalDate t1) {
-                eventFormListener.inputUpdated();
+                eventFormListener.endDateUpdated();
             }
         });
         endDatePicker.setPrefWidth(240);
@@ -98,7 +98,7 @@ public class EventForm {
         eventDescArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                eventFormListener.inputUpdated();
+                eventFormListener.descriptionUpdated();
             }
         });
         eventDescArea.setPrefWidth(400);
@@ -135,8 +135,7 @@ public class EventForm {
         guestEmailsArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                eventFormListener.inputUpdated();
-                eventFormListener.enteredGuest();
+                eventFormListener.guestsUpdated();
             }
         });
         guestEmailsArea.setPromptText("Enter guests’ email addresses (Optional)");
@@ -165,6 +164,9 @@ public class EventForm {
         returnButton.setPrefWidth(200);
 
         updateButton = new Button("Update");
+        updateButton.setOnAction(event -> {
+            eventFormListener.onUpdate();
+        });
         updateButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         updateButton.setPrefWidth(200);
 
@@ -199,6 +201,62 @@ public class EventForm {
 
     public DatePicker getEndDatePicker() {
         return endDatePicker;
+    }
+
+    public TextArea getEventDescArea() {
+        return eventDescArea;
+    }
+
+    public void setEventDescArea(TextArea eventDescArea) {
+        this.eventDescArea = eventDescArea;
+    }
+
+    public TextField getGuestsField() {
+        return guestsField;
+    }
+
+    public void setGuestsField(TextField guestsField) {
+        this.guestsField = guestsField;
+    }
+
+    public TextArea getGuestEmailsArea() {
+        return guestEmailsArea;
+    }
+
+    public void setGuestEmailsArea(TextArea guestEmailsArea) {
+        this.guestEmailsArea = guestEmailsArea;
+    }
+
+    public Button getSendEmailButton() {
+        return sendEmailButton;
+    }
+
+    public void setSendEmailButton(Button sendEmailButton) {
+        this.sendEmailButton = sendEmailButton;
+    }
+
+    public EventFormListener getEventFormListener() {
+        return eventFormListener;
+    }
+
+    public void setEventFormListener(EventFormListener eventFormListener) {
+        this.eventFormListener = eventFormListener;
+    }
+
+    public Button getReturnButton() {
+        return returnButton;
+    }
+
+    public void setReturnButton(Button returnButton) {
+        this.returnButton = returnButton;
+    }
+
+    public Button getUpdateButton() {
+        return updateButton;
+    }
+
+    public void setUpdateButton(Button updateButton) {
+        this.updateButton = updateButton;
     }
 
     public void setEndDatePicker(DatePicker endDatePicker) {

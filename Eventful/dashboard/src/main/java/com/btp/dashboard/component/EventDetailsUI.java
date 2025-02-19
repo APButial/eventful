@@ -30,7 +30,7 @@ public class EventDetailsUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Event Details - " + appService.getSelectedEvent().getEventName());
+        primaryStage.setTitle("Event Details");
 
         Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService, dashNavigateListener);
         VBox mainContent = new VBox(0);
@@ -39,7 +39,7 @@ public class EventDetailsUI extends Application {
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader();
-        LowerHeader lowerHeader = new LowerHeader("Event Details", "no"); // "no" to hide date
+        LowerHeader lowerHeader = new LowerHeader("Event Details - " + appService.getEventName(), "no"); // "no" to hide date
         HBox spacer = new HBox();
 
         spacer.setPrefHeight(3);

@@ -79,7 +79,7 @@ public class EventManAppService implements AppService {
 
     @Override
     public String getEventName() {
-        return "";
+        return eventManState.getCurrSelectedEvent().getEventName();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class EventManAppService implements AppService {
     }
 
     @Override
-    public void setEventStartDate(LocalDate date) {
+    public void setStartDate(LocalDate date) {
         eventManState.getCurrSelectedEvent().setStartDate(date);
     }
 
