@@ -1,6 +1,7 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.service.AppService;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -20,13 +21,15 @@ import java.util.Locale;
 
 public class EventList {
     private VBox eventList;
+    private AppService appService;
 
-    public EventList(List<BaseEvent> events) {
+    public EventList(AppService appService) {
+        this.appService = appService;
         eventList = new VBox(10);
         eventList.setPadding(new Insets(10, 20, 10, 20));
 
         // sorts events in descending order by their lastAccessed
-        Collections.sort(events, new Comparator<BaseEvent>() {
+        Collections.sort(appService.getCurrUser().getEvents(), new Comparator<BaseEvent>() {
             @Override
             public int compare(BaseEvent e1, BaseEvent e2) {
                 return e2.getLastAccessed().compareTo(e1.getLastAccessed());
@@ -34,7 +37,7 @@ public class EventList {
         });
 
         int count = 0;
-        for (BaseEvent event : events) { // Simulating multiple events
+        for (BaseEvent event : appService.getCurrUser().getEvents()) { // Simulating multiple events
             if(count >= 5) {break;}     // limit to 5 recent events
             HBox eventBox = new HBox(20);
             VBox eventText = new VBox();
