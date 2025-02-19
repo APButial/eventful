@@ -10,7 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import java.time.LocalDate;
+
+    import javax.mail.internet.AddressException;
+    import java.time.LocalDate;
 
 public class EventForm {
     private DatePicker startDatePicker;
@@ -117,6 +119,7 @@ public class EventForm {
         // Right Section
         Label guestsLabel = new Label("No. of Guests");
         guestsField = new TextField("");
+        guestsField.setEditable(false);
         guestsField.setPromptText("0");
         guestsField.setStyle(
                 "-fx-background-color: #F5F5F5; " +
@@ -148,6 +151,13 @@ public class EventForm {
                         "-fx-control-inner-background: #F5F5F5;");
 
         sendEmailButton = new Button("Send Email Invitation");
+        sendEmailButton.setOnAction(event -> {
+            try {
+                eventFormListener.sendEmail();
+            } catch (AddressException e) {
+                throw new RuntimeException(e);
+            }
+        });
         sendEmailButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         sendEmailButton.setPrefWidth(200);
 
@@ -160,6 +170,9 @@ public class EventForm {
         expensesTrackerButton.setPrefWidth(200);
 
         returnButton = new Button("Return");
+        returnButton.setOnAction(event -> {
+            eventFormListener.onReturn();
+        });
         returnButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         returnButton.setPrefWidth(200);
 

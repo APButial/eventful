@@ -16,6 +16,7 @@ import com.btp.login.service.LoginSuccessListener;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import javax.mail.internet.AddressException;
 import java.time.LocalDate;
 
 public class MainFrame extends Application {
@@ -81,6 +82,7 @@ public class MainFrame extends Application {
                     ValidateNewEventService.addEvent(event, appService);
 
                     appService.setSelectedEvent(event);
+                    appService.setSaveStatus(SaveStatus.SAVED);
                     eventDetailsUI.start(primaryStage);
                 }
             }
@@ -96,12 +98,14 @@ public class MainFrame extends Application {
             public void startDateUpdated() {
                 appService.setStartDate(eventDetailsUI.getEventForm().getStartDatePicker().getValue());
                 appService.setSaveStatus(SaveStatus.UNSAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
             }
 
             @Override
             public void endDateUpdated() {
                 appService.setEndDate(eventDetailsUI.getEventForm().getEndDatePicker().getValue());
                 appService.setSaveStatus(SaveStatus.UNSAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
             }
 
             @Override
@@ -116,23 +120,44 @@ public class MainFrame extends Application {
             public void descriptionUpdated() {
                 appService.setDescription(eventDetailsUI.getEventForm().getEventDescArea().getText().strip());
                 appService.setSaveStatus(SaveStatus.UNSAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void guestsUpdated() {
+                appService.setSaveStatus(SaveStatus.UNSAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
+            }
 
+            @Override
+            public void sendEmail() throws AddressException {
+                if(appService.getEmailAdd() == null || appService.getEmailPass() == null) {
+                    MailService.authenticate(appService);
+                }
+                if(MailService.validMailArea(eventDetailsUI.getEventForm().getGuestEmailsArea().getText(), appService)) {
+                    MailService.sendMail(appService);
+                }
             }
 
             @Override
             public void onUpdate() {
                 WriteEventsService.overwrite(appService);
                 appService.setSaveStatus(SaveStatus.SAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
             }
 
             @Override
             public void onReturn() {
                 if(appService.getSaveStatus().equals(SaveStatus.UNSAVED)) {
-
+                    if(MainFrameAlerts.saveChanges()) {
+                        WriteEventsService.overwrite(appService);
+                        appService.setSaveStatus(SaveStatus.SAVED);
+                    }
+                }
+                try {
+                    appService.getPrevApplication().start(primaryStage);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         };

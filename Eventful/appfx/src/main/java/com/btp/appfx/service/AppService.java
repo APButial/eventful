@@ -41,6 +41,7 @@ public interface AppService {
     String getDescription();
     void setDescription(String description);
     List<String> getGuests();
+    void setGuests(List<String> guests);
     void addGuest(String guest);
     void removeGuest(String guest);
     void inviteGuest(String guest);
@@ -58,4 +59,9 @@ public interface AppService {
     void setCurrUser(User user);
     SaveStatus getSaveStatus();
     void setSaveStatus(SaveStatus saveStatus);
+
+    String getEmailAdd();
+    void setEmailAdd(String emailAdd);
+    String getEmailPass();
+    void setEmailPass(String emailPass);
 }

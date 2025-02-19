@@ -143,6 +143,11 @@ public class EventManAppService implements AppService {
     }
 
     @Override
+    public void setGuests(List<String> guests) {
+        eventManState.getCurrSelectedEvent().setGuests(guests);
+    }
+
+    @Override
     public void addGuest(String guest) {
         eventManState.getCurrSelectedEvent().getGuests().add(guest);
     }
@@ -215,6 +220,26 @@ public class EventManAppService implements AppService {
     @Override
     public void setSaveStatus(SaveStatus saveStatus) {
         eventManState.setSaveStatus(saveStatus);
+    }
+
+    @Override
+    public String getEmailAdd() {
+        return eventManState.getEmailAdd();
+    }
+
+    @Override
+    public void setEmailAdd(String emailAdd) {
+        eventManState.setEmailAdd(emailAdd);
+    }
+
+    @Override
+    public String getEmailPass() {
+        return eventManState.getEmailPass();
+    }
+
+    @Override
+    public void setEmailPass(String emailPass) {
+        eventManState.setEmailPass(emailPass);
     }
 
 }

@@ -16,6 +16,8 @@ public class AppState {
     protected LocalDateTime currDateTime;
     protected boolean isLoggedIn;
     protected SaveStatus saveStatus;
+    protected String emailAdd;
+    protected String emailPass;
 
     public SaveStatus getSaveStatus() {
         return saveStatus;
@@ -63,5 +65,21 @@ public class AppState {
 
     public void setCurrSelectedEvent(BaseEvent currSelectedEvent) {
         this.currSelectedEvent = currSelectedEvent;
+    }
+
+    public String getEmailAdd() {
+        return emailAdd;
+    }
+
+    public void setEmailAdd(String emailAdd) {
+        this.emailAdd = emailAdd;
+    }
+
+    public String getEmailPass() {
+        return emailPass;
+    }
+
+    public void setEmailPass(String emailPass) {
+        this.emailPass = emailPass;
     }
 }

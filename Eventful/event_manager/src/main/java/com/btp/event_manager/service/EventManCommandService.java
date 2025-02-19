@@ -142,6 +142,11 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
+    public void setGuests(List<String> guests) {
+        appService.setGuests(guests);
+    }
+
+    @Override
     public void addGuest(String guest) {
         appService.addGuest(guest);
     }
@@ -214,6 +219,26 @@ public class EventManCommandService implements AppService {
     @Override
     public void setSaveStatus(SaveStatus saveStatus) {
         appService.setSaveStatus(saveStatus);
+    }
+
+    @Override
+    public String getEmailAdd() {
+        return appService.getEmailAdd();
+    }
+
+    @Override
+    public void setEmailAdd(String emailAdd) {
+        appService.setEmailAdd(emailAdd);
+    }
+
+    @Override
+    public String getEmailPass() {
+        return appService.getEmailPass();
+    }
+
+    @Override
+    public void setEmailPass(String emailPass) {
+        appService.setEmailPass(emailPass);
     }
 
 }
