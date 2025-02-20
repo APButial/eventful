@@ -141,9 +141,11 @@ public class MainFrame extends Application {
 
             @Override
             public void onUpdate() {
-                WriteEventsService.overwrite(appService);
-                appService.setSaveStatus(SaveStatus.SAVED);
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
+                if(MainFrameAlerts.sendEmailConfirmation()) {
+                    WriteEventsService.overwrite(appService);
+                    appService.setSaveStatus(SaveStatus.SAVED);
+                    eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
+                }
             }
 
             @Override

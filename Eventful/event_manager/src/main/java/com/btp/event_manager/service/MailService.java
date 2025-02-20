@@ -47,7 +47,10 @@ public class MailService {
                                 "This is an auto-generated mail sent from Eventful. Please contact the sender for more details.");
 
                 Transport.send(message);
-                System.out.println("Email sent successfully.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Event Detail");
+                alert.setHeaderText("Invitation Sent Successfully");
+                alert.setContentText("Your event invitation is sent successfully to entered email addresses.");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -71,7 +74,7 @@ public class MailService {
         public static void authenticate(AppService appService) {
             TextInputDialog textInputDialog = new TextInputDialog();
             textInputDialog.setTitle("Email Authentication");
-            textInputDialog.setContentText("Email Address");
+            textInputDialog.setHeaderText("Email Address");
             textInputDialog.setContentText("Please enter your email address:");
 
             Optional<String> result = textInputDialog.showAndWait();
