@@ -164,6 +164,7 @@ public class MainFrame extends Application {
             }
         };
 
+        /// modified
         dashboardUI = new DashboardUI(appService, dashListener);
         createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
         eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener, eventFormListener);
