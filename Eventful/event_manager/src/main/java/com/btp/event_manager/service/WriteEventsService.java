@@ -3,6 +3,7 @@ package com.btp.event_manager.service;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
 import com.btp.event_manager.model.Event;
+import javafx.scene.control.Alert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -131,6 +132,12 @@ public class WriteEventsService {
                 DOMSource domSource = new DOMSource(document);
                 StreamResult streamResult = new StreamResult(file);
                 transformer.transform(domSource, streamResult);
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Event Detail");
+                alert.setHeaderText("Updated Successful");
+                alert.setContentText("The event details of this even has been successfully updated.");
+                alert.showAndWait();
                 System.out.println("Event updated successfully");
             } else {
                 System.out.println("Event not found for update");

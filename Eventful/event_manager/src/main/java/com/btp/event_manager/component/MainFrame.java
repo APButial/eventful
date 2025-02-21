@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class MainFrame extends Application {
@@ -111,6 +112,7 @@ public class MainFrame extends Application {
 
             @Override
             public void startTimeUpdated() {
+
             }
 
             @Override

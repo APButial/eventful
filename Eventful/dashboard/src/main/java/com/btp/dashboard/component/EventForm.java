@@ -24,6 +24,8 @@ public class EventForm {
     private EventFormListener eventFormListener;
     private Button returnButton;
     private Button updateButton;
+    private MilitaryTimePicker timeStartField;
+    private MilitaryTimePicker timeEndField;
 
     public EventForm (EventFormListener eventFormListener) {
         this.eventFormListener = eventFormListener;
@@ -74,8 +76,13 @@ public class EventForm {
 
         // Time Start
         Label timeStartLabel = new Label("Time Start");
-        TextField timeStartField = new TextField();
-        timeStartField.setPromptText("Enter start time (e.g., 12:00 PM)");
+        timeStartField = new MilitaryTimePicker();
+        timeStartField.getHourDropdown().setOnAction(event -> {
+            eventFormListener.startTimeUpdated();
+        });
+        timeStartField.getMinuteDropdown().setOnAction(event -> {
+            eventFormListener.startTimeUpdated();
+        });
         timeStartField.setPrefWidth(210);
         timeStartField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
         ImageView timeStartIcon = new ImageView(new Image("/time.png"));
@@ -85,8 +92,13 @@ public class EventForm {
 
         // Time End
         Label timeEndLabel = new Label("Time End");
-        TextField timeEndField = new TextField();
-        timeEndField.setPromptText("Enter end time (e.g., 3:00 PM)");
+        timeEndField.getHourDropdown().setOnAction(event -> {
+            eventFormListener.endTimeUpdated();
+        });
+        timeEndField = new MilitaryTimePicker();
+        timeEndField.getMinuteDropdown().setOnAction(event ->  {
+            eventFormListener.endTimeUpdated();;
+        });
         timeEndField.setPrefWidth(210);
         timeEndField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
         ImageView timeEndIcon = new ImageView(new Image("/time.png"));
