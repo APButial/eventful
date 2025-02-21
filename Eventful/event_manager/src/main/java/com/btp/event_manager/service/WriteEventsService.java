@@ -41,18 +41,8 @@ public class WriteEventsService {
             Element endDate = document.createElement("endDate");
             endDate.appendChild(document.createTextNode(newEvent.getEndDate().toString()));
             event.appendChild(endDate);
+
             //////////////////////////////////////////////////////////////////////////////////
-            // optional
-            try {
-                Element description = document.createElement("description");
-                if (newEvent.getDescription() == null) {
-                    description.appendChild(document.createTextNode(newEvent.getDescription()));
-                }
-                event.appendChild(description);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            /// //////////////////////////////////////////////////////////////////////////////
             // metadata
             Element creator = document.createElement("creator");
             creator.appendChild(document.createTextNode(appService.getCurrUser().getUsername()));
@@ -113,6 +103,17 @@ public class WriteEventsService {
                             description.appendChild(document.createTextNode(appService.getDescription()));
                             event.appendChild(description);
                         }
+                    }
+                    if (appService.getGuests() != null) {
+                        Element guests = (Element)  event.getElementsByTagName("guests").item(0);
+                        if (guests != null) {
+                            guests.setTextContent(appService.getDescription());
+                        } else {
+                            guests = document.createElement("guests");
+                            guests.appendChild(document.createTextNode(String.join(";", appService.getGuests())));
+                            event.appendChild(guests);
+                        }
+                        System.out.println("guest updated");
                     }
 
                     // Update metadata if needed

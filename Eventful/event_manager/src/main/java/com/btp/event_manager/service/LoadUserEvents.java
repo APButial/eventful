@@ -7,6 +7,8 @@ import org.w3c.dom.NodeList;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 // This class loads all events created by a user that were saved from
 // Eventful/dat/[username].xml
@@ -27,10 +29,16 @@ public class LoadUserEvents {
 
                 // optional
                 String description;
-
                 try {
                     description = event.getElementsByTagName("description").item(0).getTextContent();
                     savedEvent.setDescription(description);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String guests;
+                try {
+                    guests = event.getElementsByTagName("guests").item(0).getTextContent(); // delimited by ;
+                    savedEvent.setGuests(List.of(guests.split(";")));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

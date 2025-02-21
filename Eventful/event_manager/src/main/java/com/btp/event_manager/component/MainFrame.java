@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
 import java.time.LocalDate;
+import java.util.List;
 
 public class MainFrame extends Application {
     private AppService appService;
@@ -126,6 +127,7 @@ public class MainFrame extends Application {
             @Override
             public void guestsUpdated() {
                 appService.setSaveStatus(SaveStatus.UNSAVED);
+                eventDetailsUI.getEventForm().getGuestsField().setText(RegexService.parse(eventDetailsUI.getEventForm().getGuestEmailsArea().getText()));
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -134,18 +136,26 @@ public class MainFrame extends Application {
                 if(appService.getEmailAdd() == null || appService.getEmailPass() == null) {
                     MailService.authenticate(appService);
                 }
-                if(MailService.validMailArea(eventDetailsUI.getEventForm().getGuestEmailsArea().getText(), appService)) {
-                    MailService.sendMail(appService);
+
+                if (MainFrameAlerts.sendEmailConfirmation()) {
+                    if(MailService.validMailArea(eventDetailsUI.getEventForm().getGuestEmailsArea().getText(), appService)) {
+                        MailService.sendMail(appService);
+                    }
                 }
             }
 
             @Override
             public void onUpdate() {
-                if(MainFrameAlerts.sendEmailConfirmation()) {
-                    WriteEventsService.overwrite(appService);
-                    appService.setSaveStatus(SaveStatus.SAVED);
-                    eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
+                if (!RegexService.validate(eventDetailsUI.getEventForm().getGuestEmailsArea().getText())){
+                    return;
                 }
+
+                appService.setGuests(List.of(eventDetailsUI.getEventForm().getGuestEmailsArea().getText().split(";")));
+
+                WriteEventsService.overwrite(appService);
+
+                appService.setSaveStatus(SaveStatus.SAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
             }
 
             @Override

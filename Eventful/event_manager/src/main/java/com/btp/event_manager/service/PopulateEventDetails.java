@@ -11,5 +11,6 @@ public class PopulateEventDetails {
 
         eventDetailsUI.getEventForm().getStartDatePicker().setValue(event.getStartDate());
         eventDetailsUI.getEventForm().getEndDatePicker().setValue(event.getEndDate());
+        eventDetailsUI.getEventForm().getEventDescArea().setText(String.join(";", appService.getGuests()));
     }
 }
