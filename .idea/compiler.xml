@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="appfx" />
         <module name="budget_tracker" />
+        <module name="timeline" />
         <module name="login" />
         <module name="dashboard" />
         <module name="event_manager" />
