@@ -7,6 +7,8 @@ import org.w3c.dom.NodeList;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,20 @@ public class LoadUserEvents {
                 try {
                     guests = event.getElementsByTagName("guests").item(0).getTextContent(); // delimited by ;
                     savedEvent.setGuests(List.of(guests.split(";")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String startTime;
+                try {
+                    startTime = event.getElementsByTagName("startTime").item(0).getTextContent();
+                    savedEvent.setStartTime(LocalTime.parse(startTime, DateTimeFormatter.ofPattern("HH:mm")));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String endTime;
+                try {
+                    endTime = event.getElementsByTagName("endTime").item(0).getTextContent();
+                    savedEvent.setStartTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

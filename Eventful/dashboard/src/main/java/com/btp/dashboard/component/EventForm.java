@@ -92,12 +92,12 @@ public class EventForm {
 
         // Time End
         Label timeEndLabel = new Label("Time End");
+        timeEndField = new MilitaryTimePicker();
         timeEndField.getHourDropdown().setOnAction(event -> {
             eventFormListener.endTimeUpdated();
         });
-        timeEndField = new MilitaryTimePicker();
         timeEndField.getMinuteDropdown().setOnAction(event ->  {
-            eventFormListener.endTimeUpdated();;
+            eventFormListener.endTimeUpdated();
         });
         timeEndField.setPrefWidth(210);
         timeEndField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
@@ -286,5 +286,21 @@ public class EventForm {
 
     public void setEndDatePicker(DatePicker endDatePicker) {
         this.endDatePicker = endDatePicker;
+    }
+
+    public MilitaryTimePicker getTimeStartField() {
+        return timeStartField;
+    }
+
+    public void setTimeStartField(MilitaryTimePicker timeStartField) {
+        this.timeStartField = timeStartField;
+    }
+
+    public MilitaryTimePicker getTimeEndField() {
+        return timeEndField;
+    }
+
+    public void setTimeEndField(MilitaryTimePicker timeEndField) {
+        this.timeEndField = timeEndField;
     }
 }

@@ -2,6 +2,7 @@ package com.btp.dashboard.component;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
+import com.btp.dashboard.service.EventDetailListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -22,9 +23,11 @@ import java.util.Locale;
 public class EventList {
     private VBox eventList;
     private AppService appService;
+    private EventDetailListener eventDetailListener;
 
-    public EventList(AppService appService) {
+    public EventList(AppService appService, EventDetailListener eventDetailListener) {
         this.appService = appService;
+        this.eventDetailListener = eventDetailListener;
         eventList = new VBox(10);
         eventList.setPadding(new Insets(10, 20, 10, 20));
 
@@ -55,8 +58,12 @@ public class EventList {
             eventLastAccessed.setStyle("-fx-font-size: 14px; -fx-text-fill: #AAB2C8");
             eventText.getChildren().addAll(eventTitle, eventLastAccessed);
 
-            Button guestsButton = new Button("👥 Guests");
-            Button settingsButton = new Button("⚙ Settings");
+            Button guestsButton = new Button("👥 " + event.getGuests().size());
+            Button settingsButton = new Button("⚙ Configure");
+            settingsButton.setOnAction(event1 -> {
+                appService.setSelectedEvent(event);
+                eventDetailListener.onSelectEvent();
+            });
             Button statusButton = new Button("📊 Status");
             Button menuButton2 = new Button("⋮");
 

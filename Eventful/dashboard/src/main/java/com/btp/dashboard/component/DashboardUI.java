@@ -3,6 +3,7 @@ package com.btp.dashboard.component;
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.service.DashNavigateListener;
 import com.btp.dashboard.service.DateTimeListener;
+import com.btp.dashboard.service.EventDetailListener;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -18,10 +19,12 @@ import java.time.LocalDateTime;
 public class DashboardUI extends Application {
     private AppService appService;
     private DashNavigateListener listener;
+    private EventDetailListener eventDetailListener;
 
-    public DashboardUI(AppService appService, DashNavigateListener listener) {
+    public DashboardUI(AppService appService, DashNavigateListener listener, EventDetailListener eventDetailListener) {
         this.appService = appService;
         this.listener = listener;
+        this.eventDetailListener = eventDetailListener;
     }
 
     @Override
@@ -57,7 +60,7 @@ public class DashboardUI extends Application {
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
 
-        EventList eventList = new EventList(appService);
+        EventList eventList = new EventList(appService, eventDetailListener);
 
         mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(),spacer, eventList.getComponent());
 

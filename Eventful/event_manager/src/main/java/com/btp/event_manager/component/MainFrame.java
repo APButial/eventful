@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javax.mail.internet.AddressException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class MainFrame extends Application {
@@ -86,6 +87,7 @@ public class MainFrame extends Application {
                     appService.setSelectedEvent(event);
                     appService.setSaveStatus(SaveStatus.SAVED);
                     eventDetailsUI.start(primaryStage);
+
                 }
             }
         };
@@ -94,29 +96,44 @@ public class MainFrame extends Application {
             public void onOpen() {
                 PopulateEventDetails.populate(appService, eventDetailsUI);
             }
+
+            @Override
+            public void onSelectEvent() {
+                appService.setSaveStatus(SaveStatus.SAVED);
+                eventDetailsUI.start(primaryStage);
+            }
         };
         EventFormListener eventFormListener = new EventFormListener() {
             @Override
             public void startDateUpdated() {
                 appService.setStartDate(eventDetailsUI.getEventForm().getStartDatePicker().getValue());
                 appService.setSaveStatus(SaveStatus.UNSAVED);
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void endDateUpdated() {
                 appService.setEndDate(eventDetailsUI.getEventForm().getEndDatePicker().getValue());
                 appService.setSaveStatus(SaveStatus.UNSAVED);
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void startTimeUpdated() {
-
+                String hour = eventDetailsUI.getEventForm().getTimeStartField().getHourDropdown().getValue();
+                String min = eventDetailsUI.getEventForm().getTimeStartField().getMinuteDropdown().getValue();
+                appService.setStartTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
+                appService.setSaveStatus(SaveStatus.UNSAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void endTimeUpdated() {
+                String hour = eventDetailsUI.getEventForm().getTimeEndField().getHourDropdown().getValue();
+                String min = eventDetailsUI.getEventForm().getTimeEndField().getMinuteDropdown().getValue();
+                appService.setEndTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
+                appService.setSaveStatus(SaveStatus.UNSAVED);
+                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
@@ -177,7 +194,7 @@ public class MainFrame extends Application {
         };
 
         /// modified
-        dashboardUI = new DashboardUI(appService, dashListener);
+        dashboardUI = new DashboardUI(appService, dashListener, eventDetailListener);
         createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
         eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener, eventFormListener);
 

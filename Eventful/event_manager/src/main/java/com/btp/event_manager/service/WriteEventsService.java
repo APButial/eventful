@@ -105,6 +105,26 @@ public class WriteEventsService {
                             event.appendChild(description);
                         }
                     }
+                    if (appService.getStartTime() != null) {
+                        Element timeStart = (Element) event.getElementsByTagName("timeStart").item(0);
+                        if (timeStart != null) {
+                            timeStart.setTextContent(appService.getStartTime().toString());
+                        } else {
+                            timeStart = document.createElement("timeStart");
+                            timeStart.appendChild(document.createTextNode(appService.getStartTime().toString()));
+                            event.appendChild(timeStart);
+                        }
+                    }
+                    if (appService.getEndTime() != null) {
+                        Element timeEnd = (Element) event.getElementsByTagName("timeEnd").item(0);
+                        if (timeEnd != null) {
+                            timeEnd.setTextContent(appService.getEndTime().toString());
+                        } else {
+                            timeEnd = document.createElement("timeEnd");
+                            timeEnd.appendChild(document.createTextNode(appService.getEndTime().toString()));
+                            event.appendChild(timeEnd);
+                        }
+                    }
                     if (appService.getGuests() != null) {
                         Element guests = (Element)  event.getElementsByTagName("guests").item(0);
                         if (guests != null) {
@@ -136,7 +156,7 @@ public class WriteEventsService {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Event Detail");
                 alert.setHeaderText("Updated Successful");
-                alert.setContentText("The event details of this even has been successfully updated.");
+                alert.setContentText("The event details of this event has been successfully updated.");
                 alert.showAndWait();
                 System.out.println("Event updated successfully");
             } else {
