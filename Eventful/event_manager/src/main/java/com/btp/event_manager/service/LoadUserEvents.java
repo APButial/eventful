@@ -17,6 +17,7 @@ import java.util.List;
 public class LoadUserEvents {
     public static void load(AppService appService) {
         try {
+            appService.getCurrUser().getEvents().clear();
             NodeList events = ReadEventsService.read(appService);
             for (int i = 0; i < events.getLength(); i++) {
                 Element event = (Element) events.item(i);
@@ -54,7 +55,7 @@ public class LoadUserEvents {
                 String endTime;
                 try {
                     endTime = event.getElementsByTagName("endTime").item(0).getTextContent();
-                    savedEvent.setStartTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
+                    savedEvent.setEndTime(LocalTime.parse(endTime, DateTimeFormatter.ofPattern("HH:mm")));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

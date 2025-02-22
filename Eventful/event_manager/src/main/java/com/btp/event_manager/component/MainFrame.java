@@ -4,6 +4,7 @@ import com.btp.appfx.service.AppService;
 import com.btp.dashboard.component.CreateEventUI;
 import com.btp.dashboard.component.DashboardUI;
 import com.btp.dashboard.component.EventDetailsUI;
+import com.btp.dashboard.component.MyEventUI;
 import com.btp.dashboard.service.CreateEventListener;
 import com.btp.dashboard.service.DashNavigateListener;
 import com.btp.dashboard.service.EventDetailListener;
@@ -30,6 +31,7 @@ public class MainFrame extends Application {
     private DashboardUI dashboardUI;
     private CreateEventUI createEventUI;
     private EventDetailsUI eventDetailsUI;
+    private MyEventUI myEventUI;
 
 
     public static void main(String[] args) {
@@ -58,7 +60,7 @@ public class MainFrame extends Application {
 
             @Override
             public void myEventsTriggered() {
-
+                myEventUI.start(primaryStage);
             }
 
             @Override
@@ -172,6 +174,7 @@ public class MainFrame extends Application {
                 appService.setGuests(List.of(eventDetailsUI.getEventForm().getGuestEmailsArea().getText().split(";")));
 
                 WriteEventsService.overwrite(appService);
+                LoadUserEvents.load(appService);
 
                 appService.setSaveStatus(SaveStatus.SAVED);
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
@@ -195,6 +198,7 @@ public class MainFrame extends Application {
 
         /// modified
         dashboardUI = new DashboardUI(appService, dashListener, eventDetailListener);
+        myEventUI = new MyEventUI(appService, dashListener, eventDetailListener);
         createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
         eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener, eventFormListener);
 

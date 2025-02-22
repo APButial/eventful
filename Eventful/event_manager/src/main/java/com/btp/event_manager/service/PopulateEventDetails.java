@@ -35,10 +35,11 @@ public class PopulateEventDetails {
         }
         try {
             eventDetailsUI.getEventForm().getGuestEmailsArea().setText(String.join(";", event.getGuests()));
+            if(!eventDetailsUI.getEventForm().getGuestEmailsArea().getText().isEmpty()) {
+                eventDetailsUI.getEventForm().getGuestEmailsArea().setText(eventDetailsUI.getEventForm().getGuestEmailsArea().getText() + ";");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }

@@ -1,14 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<events>
-    <event>
-        <title>birthday celeb</title>
-        <startDate>2025-04-05</startDate>
-        <endDate>2025-04-05</endDate>
-        <creator>aivann</creator>
-        <lastAccessed>2025-02-22T02:10:55.670159958</lastAccessed>
-        <description>This is John's Birthday Celebration</description>
-        <timeStart>09:00</timeStart>
-        <timeEnd>20:00</timeEnd>
-        <guests>butial9253@gmail.com</guests>
-    </event>
-</events>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><events><event><title>event</title><startDate>2025-02-22</startDate><endDate>2025-02-23</endDate><creator>aivann</creator><lastAccessed>2025-02-22T13:40:23.572214158</lastAccessed><description>This is a new event.</description><startTime>05:00</startTime><endTime>08:00</endTime><guests>apobutial@gmail.com;
+butial9253@gmail.com;
+apobutial@mymail.mapua.edu.ph</guests></event><event><title>anevent</title><startDate>2025-02-22</startDate><endDate>2025-02-23</endDate><creator>aivann</creator><lastAccessed>2025-02-22T13:44:19.953004337</lastAccessed></event><event><title>xevent</title><startDate>2025-02-22</startDate><endDate>2025-02-23</endDate><creator>aivann</creator><lastAccessed>2025-02-22T13:48:14.233541135</lastAccessed><guests>butial9252@gmail.com;
+apobutial@mymail.mapua.edu.ph</guests><endTime>06:00</endTime><startTime>04:00</startTime><description>This is a new event.</description></event></events>

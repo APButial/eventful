@@ -71,6 +71,7 @@ public class WriteEventsService {
 
     public static void overwrite(AppService appService) {
         try {
+            BaseEvent selectedEvent = appService.getSelectedEvent();
             File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + ".xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -85,53 +86,53 @@ public class WriteEventsService {
                 Element event = (Element) events.item(i);
 
                 // Check if the event matches the criteria
-                if (appService.getEventName().equals(event.getElementsByTagName("title").item(0).getTextContent()) &&
-                        appService.getSelectedEvent().getStartDate().equals(LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent())) &&
-                        appService.getSelectedEvent().getEndDate().equals(LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent()))) {
+                if (selectedEvent.getEventName().equals(event.getElementsByTagName("title").item(0).getTextContent()) &&
+                        selectedEvent.getStartDate().equals(LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent())) &&
+                        selectedEvent.getEndDate().equals(LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent()))) {
 
                     // Update the event details
-                    event.getElementsByTagName("title").item(0).setTextContent(appService.getEventName());
-                    event.getElementsByTagName("startDate").item(0).setTextContent(appService.getStartDate().toString());
-                    event.getElementsByTagName("endDate").item(0).setTextContent(appService.getEndDate().toString());
+                    event.getElementsByTagName("title").item(0).setTextContent(selectedEvent.getEventName());
+                    event.getElementsByTagName("startDate").item(0).setTextContent(selectedEvent.getStartDate().toString());
+                    event.getElementsByTagName("endDate").item(0).setTextContent(selectedEvent.getEndDate().toString());
 
                     // Optional
-                    if (appService.getDescription() != null) {
+                    if (selectedEvent.getDescription() != null) {
                         Element description = (Element) event.getElementsByTagName("description").item(0);
                         if (description != null) {
-                            description.setTextContent(appService.getDescription());
+                            description.setTextContent(selectedEvent.getDescription());
                         } else {
                             description = document.createElement("description");
-                            description.appendChild(document.createTextNode(appService.getDescription()));
+                            description.appendChild(document.createTextNode(selectedEvent.getDescription()));
                             event.appendChild(description);
                         }
                     }
-                    if (appService.getStartTime() != null) {
-                        Element timeStart = (Element) event.getElementsByTagName("timeStart").item(0);
+                    if (selectedEvent.getStartTime() != null) {
+                        Element timeStart = (Element) event.getElementsByTagName("startTime").item(0);
                         if (timeStart != null) {
-                            timeStart.setTextContent(appService.getStartTime().toString());
+                            timeStart.setTextContent(selectedEvent.getStartTime().toString());
                         } else {
-                            timeStart = document.createElement("timeStart");
-                            timeStart.appendChild(document.createTextNode(appService.getStartTime().toString()));
+                            timeStart = document.createElement("startTime");
+                            timeStart.appendChild(document.createTextNode(selectedEvent.getStartTime().toString()));
                             event.appendChild(timeStart);
                         }
                     }
                     if (appService.getEndTime() != null) {
-                        Element timeEnd = (Element) event.getElementsByTagName("timeEnd").item(0);
+                        Element timeEnd = (Element) event.getElementsByTagName("endTime").item(0);
                         if (timeEnd != null) {
-                            timeEnd.setTextContent(appService.getEndTime().toString());
+                            timeEnd.setTextContent(selectedEvent.getEndTime().toString());
                         } else {
-                            timeEnd = document.createElement("timeEnd");
-                            timeEnd.appendChild(document.createTextNode(appService.getEndTime().toString()));
+                            timeEnd = document.createElement("endTime");
+                            timeEnd.appendChild(document.createTextNode(selectedEvent.getEndTime().toString()));
                             event.appendChild(timeEnd);
                         }
                     }
-                    if (appService.getGuests() != null) {
+                    if (selectedEvent.getGuests() != null) {
                         Element guests = (Element)  event.getElementsByTagName("guests").item(0);
                         if (guests != null) {
-                            guests.setTextContent(appService.getDescription());
+                            guests.setTextContent(String.join(";", selectedEvent.getGuests()));
                         } else {
                             guests = document.createElement("guests");
-                            guests.appendChild(document.createTextNode(String.join(";", appService.getGuests())));
+                            guests.appendChild(document.createTextNode(String.join(";", selectedEvent.getGuests())));
                             event.appendChild(guests);
                         }
                         System.out.println("guest updated");
