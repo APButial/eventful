@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<events>
+    <event>
+        <title>birthday celeb</title>
+        <startDate>2025-04-05</startDate>
+        <endDate>2025-04-05</endDate>
+        <creator>aivann</creator>
+        <lastAccessed>2025-02-22T02:10:55.670159958</lastAccessed>
+        <description>This is John's Birthday Celebration</description>
+        <timeStart>09:00</timeStart>
+        <timeEnd>20:00</timeEnd>
+        <guests>butial9253@gmail.com</guests>
+    </event>
+</events>
