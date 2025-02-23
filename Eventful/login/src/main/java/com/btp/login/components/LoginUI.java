@@ -90,7 +90,7 @@ public class LoginUI extends Application {
         loginButton.setOnAction(event -> {
             if(VerifyLoginService.verify(usernameField.getText(),passwordField.getText())) {
                 appService.setPrevApplication(this);
-                appService.setCurrUser(new User(usernameField.getText(), passwordField.getText()));
+                appService.login(new User(usernameField.getText(), passwordField.getText()));
                 listener.onLoginSuccess();
             } else {
                 alert.setHeaderText("Login Unsuccessful");

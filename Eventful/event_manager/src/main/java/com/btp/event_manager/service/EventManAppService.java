@@ -33,8 +33,8 @@ public class EventManAppService implements AppService {
     }
 
     @Override
-    public void login() {
-
+    public void login(User user) {
+        eventManState.setCurrUser(user);
     }
 
     @Override

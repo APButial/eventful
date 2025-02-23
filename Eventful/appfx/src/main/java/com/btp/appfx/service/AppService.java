@@ -17,7 +17,7 @@ public interface AppService {
     void close();
 
     // Login
-    void login();
+    void login(User user);
     void logout();
     void createAccount();
     void deleteAccount();
