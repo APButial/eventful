@@ -15,6 +15,7 @@
       <module>event_manager</module>
       <module>appfx</module>
       <module>budget_tracker</module>
+      <module>logs</module>
     </modules>
 
     <properties>

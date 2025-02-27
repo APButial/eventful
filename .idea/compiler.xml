@@ -10,6 +10,7 @@
         <module name="appfx" />
         <module name="budget_tracker" />
         <module name="login" />
+        <module name="logs" />
         <module name="dashboard" />
         <module name="event_manager" />
       </profile>
