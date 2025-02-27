@@ -15,7 +15,6 @@
       <module>event_manager</module>
       <module>appfx</module>
       <module>budget_tracker</module>
-        <module>timeline</module>
     </modules>
 
     <properties>
@@ -55,6 +54,13 @@
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <version>1.6.2</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.calendarfx/view -->
+    <dependency>
+      <groupId>com.calendarfx</groupId>
+      <artifactId>view</artifactId>
+      <version>11.12.7</version>
     </dependency>
 
   </dependencies>

@@ -9,11 +9,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="appfx" />
         <module name="budget_tracker" />
-        <module name="timeline" />
         <module name="login" />
         <module name="dashboard" />
         <module name="event_manager" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="timeline" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

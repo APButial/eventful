@@ -1,10 +1,7 @@
 package com.btp.event_manager.component;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.service.AppService;
-import com.btp.dashboard.component.CreateEventUI;
-import com.btp.dashboard.component.DashboardUI;
-import com.btp.dashboard.component.EventDetailsUI;
-import com.btp.dashboard.component.MyEventUI;
+import com.btp.dashboard.component.*;
 import com.btp.dashboard.service.CreateEventListener;
 import com.btp.dashboard.service.DashNavigateListener;
 import com.btp.dashboard.service.EventDetailListener;
@@ -32,6 +29,7 @@ public class MainFrame extends Application {
     private CreateEventUI createEventUI;
     private EventDetailsUI eventDetailsUI;
     private MyEventUI myEventUI;
+    private EventTimelineUI eventTimelineUI;
 
 
     public static void main(String[] args) {
@@ -65,7 +63,12 @@ public class MainFrame extends Application {
 
             @Override
             public void eventTimelineTriggered() {
-
+                try {
+                    eventTimelineUI.start(primaryStage);
+                    LoadEventTimeline.load(appService, eventTimelineUI.getEventTimeline().getEvents());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             @Override
@@ -201,6 +204,7 @@ public class MainFrame extends Application {
         myEventUI = new MyEventUI(appService, dashListener, eventDetailListener);
         createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
         eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener, eventFormListener);
+        eventTimelineUI = new EventTimelineUI(appService, dashListener);
 
 ///////////////////////////////////////////////////////////
         try {

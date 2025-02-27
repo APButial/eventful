@@ -52,10 +52,6 @@ public class ValidateNewEventService {
             e.printStackTrace();
         }
 
-
-        alert.setHeaderText("Event Created");
-        alert.setContentText("The event, " + eventName + ", is successfully created.");
-        alert.showAndWait();
         return true;
     }
     public static void addEvent(BaseEvent event, AppService appService) {
