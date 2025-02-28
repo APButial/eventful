@@ -1,20 +1,20 @@
-package com.btp.component;
+package com.btp.dashboard.component;
 
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 import javafx.geometry.Insets;
 
-public class Logs {
+public class LogsArea{
     private VBox component;
     private TextArea logArea;
 
-    public Logs() {
+    public LogsArea() {
         component = new VBox();
-        component.setPadding(new Insets(15));
 
         logArea = new TextArea();
         logArea.setWrapText(true);
+        logArea.setEditable(false);
 
         logArea.setStyle(
                 "-fx-font-size: 14px; " +
@@ -34,5 +34,13 @@ public class Logs {
 
     public VBox getComponent() {
         return component;
+    }
+
+    public TextArea getLogArea() {
+        return logArea;
+    }
+
+    public void setLogArea(TextArea logArea) {
+        this.logArea = logArea;
     }
 }

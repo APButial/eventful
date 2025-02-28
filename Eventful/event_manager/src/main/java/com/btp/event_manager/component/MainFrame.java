@@ -23,13 +23,13 @@ import java.util.List;
 public class MainFrame extends Application {
     private AppService appService;
     private EventManState eventManState;
-    private EventManAppService eventManAppService;
     private LoginUI loginUI;
     private DashboardUI dashboardUI;
     private CreateEventUI createEventUI;
     private EventDetailsUI eventDetailsUI;
     private MyEventUI myEventUI;
     private EventTimelineUI eventTimelineUI;
+    private LogsUI logsUI;
 
 
     public static void main(String[] args) {
@@ -39,8 +39,7 @@ public class MainFrame extends Application {
     @Override
     public void start(Stage primaryStage) {
         eventManState = new EventManState();
-        eventManAppService = new EventManAppService(eventManState);
-        appService = new EventManCommandService(eventManAppService);
+        appService = new EventManAppService(eventManState);
 
         loginUI = new LoginUI(appService, new LoginSuccessListener() {
             @Override
@@ -73,7 +72,7 @@ public class MainFrame extends Application {
 
             @Override
             public void logsTriggered() {
-
+                logsUI.start(primaryStage);
             }
         };
         CreateEventListener ceventListener = new CreateEventListener() {
@@ -84,13 +83,8 @@ public class MainFrame extends Application {
                 LocalDate endDate = createEventUI.getEventDetails().getEndDatePicker().getValue();
 
                 if(ValidateNewEventService.validate(eventName, startDate, endDate, appService)) {
-                    Event event = new Event(eventName, startDate, endDate);
-                    event.setLastAccessed(appService.getSysDateTime());
-                    appService.getCurrUser().getEvents().add(event);
-                    ValidateNewEventService.addEvent(event, appService);
-
-                    appService.setSelectedEvent(event);
-                    appService.setSaveStatus(SaveStatus.SAVED);
+                    appService.createEvent(new Event(eventName,startDate,endDate));
+                    ValidateNewEventService.addEvent(appService.getSelectedEvent(), appService);
                     eventDetailsUI.start(primaryStage);
 
                 }
@@ -205,6 +199,7 @@ public class MainFrame extends Application {
         createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
         eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener, eventFormListener);
         eventTimelineUI = new EventTimelineUI(appService, dashListener);
+        logsUI = new LogsUI(appService, dashListener);
 
 ///////////////////////////////////////////////////////////
         try {

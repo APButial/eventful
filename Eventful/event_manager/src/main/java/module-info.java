@@ -7,6 +7,7 @@ module event_manager {
     requires java.mail;
     requires com.calendarfx.view;
     requires java.xml;
+    requires logs;
 
     exports com.btp.event_manager;
     exports com.btp.event_manager.component;

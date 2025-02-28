@@ -26,6 +26,9 @@ public class RegexService {
         return String.valueOf(validEmailCount);
     }
     public static boolean validate(String input) {
+        if(input.isEmpty() || input.strip().equals(";"))
+            return false;
+
         List<String> emails = new ArrayList<>(List.of(input.strip().split(";")));
 
         Pattern pattern = Pattern.compile(emailPattern);

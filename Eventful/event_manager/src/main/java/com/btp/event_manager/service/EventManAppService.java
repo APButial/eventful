@@ -5,15 +5,24 @@ import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import com.btp.event_manager.model.EventManState;
+import com.btp.logs.service.LogService;
 import javafx.application.Application;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
-public class EventManAppService implements AppService {
+public class EventManAppService implements AppService, LogService {
     private EventManState eventManState;
+    final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd HH:mm:ss");
+    final String filename = "Eventful/dat/logs.txt";
 
     public EventManAppService(EventManState eventManState) { this.eventManState = eventManState;}
 
@@ -35,6 +44,7 @@ public class EventManAppService implements AppService {
     @Override
     public void login(User user) {
         eventManState.setCurrUser(user);
+        _loggedIn();
     }
 
     @Override
@@ -53,8 +63,11 @@ public class EventManAppService implements AppService {
     }
 
     @Override
-    public void createEvent() {
-
+    public void createEvent(BaseEvent baseEvent) {
+            baseEvent.setLastAccessed(getSysDateTime());
+            eventManState.getCurrUser().getEvents().add(baseEvent);
+            setSelectedEvent(baseEvent);
+            setSaveStatus(SaveStatus.SAVED);
     }
 
     @Override
@@ -242,4 +255,94 @@ public class EventManAppService implements AppService {
         eventManState.setEmailPass(emailPass);
     }
 
+    // methods prefixed with '_' are for logging purposes
+
+    @Override
+    public void _updateLogs(String text) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("(" + getCurrUser().getUsername() + ") [" + getSysDateTime().format(formatter) + "]: " + text + "\n");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String _loadLogs() {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while((line = reader.readLine() ) != null) {
+                content.append(line).append("\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return content.toString();
+    }
+
+    @Override
+    public void _loggedIn() {
+        _updateLogs("Successfully logged in into this user account.");
+    }
+
+    @Override
+    public void _eventsLoaded() {
+        _updateLogs("Loaded a total of " + eventManState.getCurrEvents().size() + " user created events.");
+    }
+
+    @Override
+    public void _accessedEvent() {
+        _updateLogs("Accessed event details of " + eventManState.getCurrSelectedEvent().getEventName() + ".");
+    }
+
+    @Override
+    public void _createdEvent() {
+        _updateLogs("Created an event named, " + eventManState.getCurrSelectedEvent().getEventName() + ", scheduled from " + 
+                    eventManState.getCurrSelectedEvent().getStartDate() + " to " + eventManState.getCurrSelectedEvent().getEndDate());
+    }
+
+    @Override
+    public void _savedEvent() {
+    }
+
+    @Override
+    public void _startDateUpdated() {
+
+    }
+
+    @Override
+    public void _endDateUpdated() {
+
+    }
+
+    @Override
+    public void _startTimeUpdated() {
+
+    }
+
+    @Override
+    public void _endTimeUpdated() {
+
+    }
+
+    @Override
+    public void _descriptionUpdated() {
+
+    }
+
+    @Override
+    public void _guestsUpdated() {
+
+    }
+
+    @Override
+    public void _budgetTrackerUpdated() {
+
+    }
+
+    @Override
+    public void _printedTimeline() {
+
+    }
 }

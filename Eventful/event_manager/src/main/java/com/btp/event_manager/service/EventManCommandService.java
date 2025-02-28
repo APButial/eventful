@@ -4,6 +4,7 @@ import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
+import com.btp.logs.service.LogService;
 import javafx.application.Application;
 
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
+// Currently unused. Will need to use this when undo and redo is implemented.
 public class EventManCommandService implements AppService {
     private AppService appService;
 
@@ -52,8 +54,8 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public void createEvent() {
-
+    public void createEvent(BaseEvent baseEvent) {
+        appService.createEvent(baseEvent);
     }
 
     @Override

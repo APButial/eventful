@@ -23,7 +23,7 @@ public interface AppService {
     void deleteAccount();
 
     // BaseEvent
-    void createEvent();
+    void createEvent(BaseEvent baseEvent);
     void updateEvent(BaseEvent baseEvent);
     void removeEvent(BaseEvent baseEvent);
     BaseEvent getSelectedEvent();
