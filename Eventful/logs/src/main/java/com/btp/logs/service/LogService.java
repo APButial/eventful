@@ -17,7 +17,7 @@ public interface LogService {
     public void _startTimeUpdated();
     public void _endTimeUpdated();
     public void _descriptionUpdated();
-    public void _guestsUpdated();
+    public void _guestsInvited();
 
     public void _budgetTrackerUpdated();
     public void _printedTimeline();

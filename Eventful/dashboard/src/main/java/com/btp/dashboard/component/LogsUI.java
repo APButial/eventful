@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class LogsUI extends Application {
     private AppService appService;
     private DashNavigateListener dashNavigateListener;
+    private LogsArea logsArea;
 
     public LogsUI(AppService appService, DashNavigateListener dashNavigateListener) {
         this.appService = appService;
@@ -43,7 +44,7 @@ public class LogsUI extends Application {
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
 
-        LogsArea logsArea = new LogsArea();
+        logsArea = new LogsArea();
 
         mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(), spacer, logsArea.getComponent());
 
@@ -53,6 +54,10 @@ public class LogsUI extends Application {
         Scene scene = new Scene(layout, 1024, 600);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public LogsArea getLogsArea() {
+        return logsArea;
     }
 
     public static void main(String[] args) {

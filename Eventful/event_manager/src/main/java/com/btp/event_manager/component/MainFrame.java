@@ -1,4 +1,5 @@
 package com.btp.event_manager.component;
+import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.component.*;
@@ -18,7 +19,6 @@ import javax.mail.internet.AddressException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class MainFrame extends Application {
     private AppService appService;
@@ -44,7 +44,6 @@ public class MainFrame extends Application {
         loginUI = new LoginUI(appService, new LoginSuccessListener() {
             @Override
             public void onLoginSuccess() {
-                LoadUserEvents.load(appService);
                 dashboardUI.start(primaryStage);
             }
         });
@@ -73,6 +72,7 @@ public class MainFrame extends Application {
             @Override
             public void logsTriggered() {
                 logsUI.start(primaryStage);
+                logsUI.getLogsArea().getLogArea().setText(((EventManAppService) appService)._loadLogs());
             }
         };
         CreateEventListener ceventListener = new CreateEventListener() {
@@ -105,15 +105,13 @@ public class MainFrame extends Application {
         EventFormListener eventFormListener = new EventFormListener() {
             @Override
             public void startDateUpdated() {
-                appService.setStartDate(eventDetailsUI.getEventForm().getStartDatePicker().getValue());
-                appService.setSaveStatus(SaveStatus.UNSAVED);
+                appService.updateEvent(EventFormEvents.START_DATE, eventDetailsUI.getEventForm().getStartDatePicker().getValue());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void endDateUpdated() {
-                appService.setEndDate(eventDetailsUI.getEventForm().getEndDatePicker().getValue());
-                appService.setSaveStatus(SaveStatus.UNSAVED);
+                appService.updateEvent(EventFormEvents.END_DATE, eventDetailsUI.getEventForm().getEndDatePicker().getValue());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -121,8 +119,7 @@ public class MainFrame extends Application {
             public void startTimeUpdated() {
                 String hour = eventDetailsUI.getEventForm().getTimeStartField().getHourDropdown().getValue();
                 String min = eventDetailsUI.getEventForm().getTimeStartField().getMinuteDropdown().getValue();
-                appService.setStartTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
-                appService.setSaveStatus(SaveStatus.UNSAVED);
+                appService.updateEvent(EventFormEvents.START_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -130,50 +127,31 @@ public class MainFrame extends Application {
             public void endTimeUpdated() {
                 String hour = eventDetailsUI.getEventForm().getTimeEndField().getHourDropdown().getValue();
                 String min = eventDetailsUI.getEventForm().getTimeEndField().getMinuteDropdown().getValue();
-                appService.setEndTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
-                appService.setSaveStatus(SaveStatus.UNSAVED);
+                appService.updateEvent(EventFormEvents.END_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void descriptionUpdated() {
-                appService.setDescription(eventDetailsUI.getEventForm().getEventDescArea().getText().strip());
-                appService.setSaveStatus(SaveStatus.UNSAVED);
+                appService.updateEvent(EventFormEvents.DESC, eventDetailsUI.getEventForm().getEventDescArea().getText());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void guestsUpdated() {
                 appService.setSaveStatus(SaveStatus.UNSAVED);
-                eventDetailsUI.getEventForm().getGuestsField().setText(RegexService.parse(eventDetailsUI.getEventForm().getGuestEmailsArea().getText()));
+                eventDetailsUI.getEventForm().getGuestsField().setText(RegexService.parse(eventDetailsUI.getEventForm().getGuestEmailsArea().getText())); // if email add is valid, increment guests counter
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void sendEmail() throws AddressException {
-                if(appService.getEmailAdd() == null || appService.getEmailPass() == null) {
-                    MailService.authenticate(appService);
-                }
-
-                if (MainFrameAlerts.sendEmailConfirmation()) {
-                    if(MailService.validMailArea(eventDetailsUI.getEventForm().getGuestEmailsArea().getText(), appService)) {
-                        MailService.sendMail(appService);
-                    }
-                }
+                appService.inviteGuests(eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
             }
 
             @Override
             public void onUpdate() {
-                if (!RegexService.validate(eventDetailsUI.getEventForm().getGuestEmailsArea().getText())){
-                    return;
-                }
-
-                appService.setGuests(List.of(eventDetailsUI.getEventForm().getGuestEmailsArea().getText().split(";")));
-
-                WriteEventsService.overwrite(appService);
-                LoadUserEvents.load(appService);
-
-                appService.setSaveStatus(SaveStatus.SAVED);
+                appService.updateEvent(EventFormEvents.UPDATE_CHANGES, eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
             }
 
@@ -208,8 +186,5 @@ public class MainFrame extends Application {
         } catch (Exception e){
             e.printStackTrace();
         }
-
     }
-
-
 }

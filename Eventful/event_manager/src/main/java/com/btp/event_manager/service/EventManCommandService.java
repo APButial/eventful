@@ -1,10 +1,10 @@
 package com.btp.event_manager.service;
 
+import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
-import com.btp.logs.service.LogService;
 import javafx.application.Application;
 
 import java.time.LocalDate;
@@ -59,7 +59,22 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public void updateEvent(BaseEvent baseEvent) {
+    public void updateEvent(EventFormEvents update) {
+
+    }
+
+    @Override
+    public void updateEvent(EventFormEvents update, String input) {
+
+    }
+
+    @Override
+    public void updateEvent(EventFormEvents update, LocalDate input) {
+
+    }
+
+    @Override
+    public void updateEvent(EventFormEvents update, LocalTime input) {
 
     }
 
@@ -159,8 +174,8 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public void inviteGuest(String guest) {
-        appService.inviteGuest(guest);
+    public void inviteGuests(String guests) {
+
     }
 
     @Override

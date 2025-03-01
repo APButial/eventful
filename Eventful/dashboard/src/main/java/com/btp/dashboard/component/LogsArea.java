@@ -28,6 +28,7 @@ public class LogsArea{
         ScrollPane scrollPane = new ScrollPane(logArea);
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
         component.getChildren().add(scrollPane);
     }
@@ -38,9 +39,5 @@ public class LogsArea{
 
     public TextArea getLogArea() {
         return logArea;
-    }
-
-    public void setLogArea(TextArea logArea) {
-        this.logArea = logArea;
     }
 }
