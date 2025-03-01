@@ -30,7 +30,7 @@ public class MainFrame extends Application {
     private MyEventUI myEventUI;
     private EventTimelineUI eventTimelineUI;
     private LogsUI logsUI;
-
+    private BudgetTrackerUI budgetTrackerUI;
 
     public static void main(String[] args) {
         launch(args);
@@ -177,6 +177,7 @@ public class MainFrame extends Application {
         createEventUI = new CreateEventUI(appService, dashListener, ceventListener);
         eventDetailsUI = new EventDetailsUI(appService, dashListener, eventDetailListener, eventFormListener);
         eventTimelineUI = new EventTimelineUI(appService, dashListener);
+        budgetTrackerUI = new BudgetTrackerUI(appService, dashListener);
         logsUI = new LogsUI(appService, dashListener);
 
 ///////////////////////////////////////////////////////////
