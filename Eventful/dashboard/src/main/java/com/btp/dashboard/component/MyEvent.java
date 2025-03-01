@@ -91,6 +91,7 @@ public class MyEvent {
             Label eventTitle = new Label(event.getEventName());
             eventTitle.setFont(new Font(14));
             eventTitle.setPrefWidth(100);
+            eventTitle.setMaxWidth(100);
             eventTitle.setStyle("-fx-font-weight: bold;");
 
             // Configure Icon
@@ -102,6 +103,7 @@ public class MyEvent {
             configureButton.setTextFill(Color.PURPLE);
             configureButton.setStyle("-fx-background-color: transparent; -fx-font-size: 14px; -fx-padding: 2px;");
             configureButton.setPrefWidth(50);
+            configureButton.setMaxWidth(50);
             configureButton.setPrefHeight(20);
 
             // Status Dropdown with Styling
@@ -120,14 +122,12 @@ public class MyEvent {
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
                     setText(empty ? "" : item);
-                    setTextFill(Color.WHITE); // Set selected text color to white
+                    setTextFill(Color.WHITE); // Set selected text color to whifte
                 }
             });
 
             statusDropdown.setPrefWidth(70);
             statusDropdown.setPrefHeight(25);
-            statusDropdown.setMinWidth(70);
-            statusDropdown.setMinHeight(25);
             statusDropdown.setMaxWidth(70);
             statusDropdown.setMaxHeight(25);
 
