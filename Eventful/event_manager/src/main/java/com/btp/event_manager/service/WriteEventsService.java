@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class WriteEventsService {
     public static void write(BaseEvent newEvent, AppService appService) {
         try {
-            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + ".xml");
+            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + "/events.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -72,7 +72,7 @@ public class WriteEventsService {
     public static void overwrite(AppService appService) {
         try {
             BaseEvent selectedEvent = appService.getSelectedEvent();
-            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + ".xml");
+            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + "/events.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 

@@ -15,7 +15,7 @@ public class ReadEventsService {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
 
-            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + ".xml") ;
+            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + "/events.xml") ;
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
 

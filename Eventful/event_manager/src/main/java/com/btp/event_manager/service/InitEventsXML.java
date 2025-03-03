@@ -17,7 +17,15 @@ import java.io.File;
 public class InitEventsXML {
     public static void init(BaseEvent newEvent, AppService appService) {
         try {
-            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + ".xml");
+            String userDirPath = "Eventful/dat/" + appService.getCurrUser().getUsername();
+            File userDir = new File(userDirPath);
+
+            if (!userDir.exists()) {
+                userDir.mkdirs();
+            }
+
+            File file = new File(userDirPath + "/events.xml");
+
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 

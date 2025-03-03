@@ -18,12 +18,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class EventManAppService implements AppService, LogService {
     private EventManState eventManState;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd HH:mm:ss");
-    final String filename = "Eventful/dat/logs.txt";
+    final String filepath = "Eventful/dat/";
 
     public EventManAppService(EventManState eventManState) { this.eventManState = eventManState;}
 
@@ -324,7 +326,7 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void _updateLogs(String text) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath + getCurrUser().getUsername() + "/logs.txt", true))) {
             writer.write("(" + getCurrUser().getUsername() + ") [" + getSysDateTime().format(formatter) + "]: " + text);
             writer.newLine();
         } catch (Exception e) {
@@ -335,11 +337,18 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public String _loadLogs() {
         StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filepath + getCurrUser().getUsername() + "/logs.txt"))) {
             String line;
+            List<String> entries = new ArrayList<>();
             while((line = reader.readLine() ) != null) {
-                content.append(line).append("\n");
+                entries.add(line);
             }
+
+            Collections.reverse(entries);
+            for (String entry: entries) {
+                content.append(entry).append("\n");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
