@@ -54,7 +54,6 @@ public class DashboardUI extends Application {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
-
         HBox spacer = new HBox();                           // type 'yes' to show date or 'no' if date is not included
 
         spacer.setPrefHeight(3);
