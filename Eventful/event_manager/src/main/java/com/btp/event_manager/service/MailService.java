@@ -1,9 +1,11 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.service.AppService;
-import javafx.scene.control.Alert;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextInputDialog;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 import javax.mail.*;
 import javax.mail.internet.AddressException;
@@ -71,21 +73,41 @@ public class MailService {
             System.out.println("Processed emails");
             return true;
         }
-        public static void authenticate(AppService appService) {
-            TextInputDialog textInputDialog = new TextInputDialog();
-            textInputDialog.setTitle("Email Authentication");
-            textInputDialog.setHeaderText("Email Address");
-            textInputDialog.setContentText("Please enter your email address:");
+        public static boolean authenticate(AppService appService) {
+            TextInputDialog emailDialog = new TextInputDialog();
+            emailDialog.setTitle("Email Authentication");
+            emailDialog.setHeaderText("Email Address");
+            emailDialog.setContentText("Please enter your email address:");
 
-            Optional<String> result = textInputDialog.showAndWait();
+            Optional<String> result = emailDialog.showAndWait();
+            if (result.isEmpty()) {return false;}
             result.ifPresent(appService::setEmailAdd);
 
-            textInputDialog = new TextInputDialog();
-            textInputDialog.getDialogPane().setContent(new PasswordField());
-            textInputDialog.setTitle("Email Authentication");
-            textInputDialog.setHeaderText("Email App Password");
-            textInputDialog.setContentText("Please enter your email app password:");
-            result = textInputDialog.showAndWait();
+            Dialog<String> passDialog = new Dialog<>();
+            passDialog.setTitle("Email Authentication");
+            passDialog.setHeaderText("Email Password");
+            passDialog.setGraphic(emailDialog.getGraphic()); // Custom graphic
+            passDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+            passDialog.getDialogPane().setPrefWidth(emailDialog.getWidth());
+            passDialog.getDialogPane().setPrefHeight(emailDialog.getHeight());
+
+            PasswordField pwd = new PasswordField();
+            HBox content = new HBox();
+            content.setAlignment(Pos.CENTER_LEFT);
+            content.setSpacing(10);
+            content.getChildren().addAll(new Label("Please enter your password:"), pwd);
+            passDialog.getDialogPane().setContent(content);
+            passDialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    return pwd.getText();
+                }
+                return null;
+            });
+
+            result = passDialog.showAndWait();
+            if (result.isEmpty()) {return false;}
             result.ifPresent(appService::setEmailPass);
+
+            return true;
         }
 }

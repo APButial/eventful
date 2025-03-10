@@ -230,14 +230,12 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void inviteGuests(String guests) throws AddressException {
-        if(getEmailAdd() == null || getEmailPass() == null) {
-            MailService.authenticate(this);
-        }
-
-        if (MainFrameAlerts.sendEmailConfirmation()) {
-            if(MailService.validMailArea(guests, this)) {
-                MailService.sendMail(this);
-                _guestsInvited();
+        if((getEmailAdd() == null || getEmailPass() == null) && MailService.authenticate(this)) {
+            if (MainFrameAlerts.sendEmailConfirmation()) {
+                if(MailService.validMailArea(guests, this)) {
+                    MailService.sendMail(this);
+                    _guestsInvited();
+                }
             }
         }
     }

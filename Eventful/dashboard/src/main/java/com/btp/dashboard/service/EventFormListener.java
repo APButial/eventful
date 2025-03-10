@@ -12,4 +12,5 @@ public interface EventFormListener {
     public void sendEmail() throws AddressException;
     public void onUpdate();
     public void onReturn();
+    public void onBudgetTracker();
 }

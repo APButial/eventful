@@ -74,6 +74,21 @@ public class MainFrame extends Application {
                 logsUI.start(primaryStage);
                 logsUI.getLogsArea().getLogArea().setText(((EventManAppService) appService)._loadLogs());
             }
+
+            @Override
+            public void logoTriggered() {
+                dashboardUI.start(primaryStage);
+                appService.setPrevApplication(dashboardUI);
+            }
+
+            @Override
+            public void returnTriggered() {
+                try {
+                    appService.getPrevApplication().start(primaryStage);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
         };
         CreateEventListener ceventListener = new CreateEventListener() {
             @Override
@@ -86,7 +101,6 @@ public class MainFrame extends Application {
                     appService.createEvent(new Event(eventName,startDate,endDate));
                     ValidateNewEventService.addEvent(appService.getSelectedEvent(), appService);
                     eventDetailsUI.start(primaryStage);
-
                 }
             }
         };
@@ -168,6 +182,12 @@ public class MainFrame extends Application {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+
+            @Override
+            public void onBudgetTracker() {
+                appService.setPrevApplication(eventDetailsUI);
+                budgetTrackerUI.start(primaryStage);
             }
         };
 

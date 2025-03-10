@@ -32,7 +32,7 @@ public class EventDetailsUI extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Event Details");
 
-        Sidebar sidebar = new Sidebar("Create Event", primaryStage, appService, dashNavigateListener);
+        Sidebar sidebar = new Sidebar("My Events", primaryStage, appService, dashNavigateListener);
         VBox mainContent = new VBox(0);
         mainContent.setPadding(new Insets(0));
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");

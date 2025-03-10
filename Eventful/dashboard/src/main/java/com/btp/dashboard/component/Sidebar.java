@@ -5,6 +5,7 @@ import com.btp.dashboard.service.DashNavigateListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -35,9 +36,27 @@ public class Sidebar {
         logo.setPadding(new Insets(0, 0, 20, 0));
         Image logoImage = new Image(getClass().getResourceAsStream("/logo.png"));
         ImageView logoView = new ImageView(logoImage);
+
+        Button logoButton = new Button();
+        logoButton.setGraphic(logoView);
+        logoButton.setBackground(null);
+
+        ColorAdjust colorAdjust = new ColorAdjust();
+        logoButton.setOnMousePressed(e -> {
+            colorAdjust.setBrightness(-0.2);
+            logoView.setEffect(colorAdjust);
+        });
+        logoButton.setOnMouseReleased(e -> {
+            colorAdjust.setBrightness(0);
+            logoView.setEffect(null);
+        });
+        logoButton.setOnAction(event -> {
+            listener.logoTriggered();
+        });
+
         logoView.setFitWidth(120);
         logoView.setPreserveRatio(true);
-        logo.getChildren().add(logoView);
+        logo.getChildren().add(logoButton);
 
         sidebar.getChildren().addAll(logo,
                 createButton("/create.png", "Create Event", activePage.equals("Create Event")),

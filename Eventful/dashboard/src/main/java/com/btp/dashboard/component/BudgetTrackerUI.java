@@ -9,6 +9,7 @@ import com.btp.dashboard.service.DashNavigateListener;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -35,11 +36,18 @@ public class BudgetTrackerUI extends Application {
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader();
-        LowerHeader lowerHeader = new LowerHeader("Budget - " + appService.getSelectedEvent().getEventName(), "no");
+        LowerHeader lowerHeader = new LowerHeader("Budget Tracker - " + appService.getSelectedEvent().getEventName(), "no");
+
+        Button returnButton = new Button("Return");
+        returnButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
+        returnButton.setOnAction(event -> {
+            dashNavigateListener.returnTriggered();
+        });
+        lowerHeader.getLowerHeader().getChildren().add(returnButton);
+
         HBox spacer = new HBox();
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
-
         BudgetTable budgetTable = new BudgetTable();
 
         mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(), spacer, budgetTable.getComponent());

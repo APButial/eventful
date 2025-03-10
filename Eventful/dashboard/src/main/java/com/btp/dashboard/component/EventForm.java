@@ -180,6 +180,9 @@ public class EventForm {
         Button expensesTrackerButton = new Button("Expenses Tracker");
         expensesTrackerButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         expensesTrackerButton.setPrefWidth(200);
+        expensesTrackerButton.setOnAction(event -> {
+            eventFormListener.onBudgetTracker();
+        });
 
         returnButton = new Button("Return");
         returnButton.setOnAction(event -> {

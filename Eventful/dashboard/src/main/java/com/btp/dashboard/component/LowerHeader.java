@@ -73,6 +73,10 @@ public class LowerHeader {
         dateLabel.setText(dateStringBuilder.toString());
     }
 
+    public HBox getLowerHeader() {
+        return lowerHeader;
+    }
+
     public void setDateTimeListener(DateTimeListener listener) {
         this.dateTimeListener = listener;
     }

@@ -5,4 +5,6 @@ public interface DashNavigateListener {
     void myEventsTriggered();
     void eventTimelineTriggered();
     void logsTriggered();
+    void logoTriggered();
+    void returnTriggered();
 }
