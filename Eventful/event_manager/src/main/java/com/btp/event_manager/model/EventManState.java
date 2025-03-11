@@ -5,7 +5,9 @@ import com.btp.budget_tracker.model.BudgetTracker;
 import com.btp.budget_tracker.model.ExpenseEntry;
 import com.btp.dashboard.service.DateTimeListener;
 import com.btp.dashboard.service.DateTimeService;
+import com.btp.login.components.LoginUI;
 import javafx.application.Application;
+import javafx.stage.Stage;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ public class EventManState extends AppState {
     protected List<ExpenseEntry> currExpenses;
     protected DateTimeService dateTimeService;
     protected Application prevApplication;
+    protected Stage mainStage;
 
     public EventManState() {
         dateTimeService = new DateTimeService(new DateTimeListener() {
@@ -36,5 +39,13 @@ public class EventManState extends AppState {
     }
     public Application getPrevApplication() {
         return this.prevApplication;
+    }
+
+    public Stage getMainStage() {
+        return mainStage;
+    }
+
+    public void setMainStage(Stage mainStage) {
+        this.mainStage = mainStage;
     }
 }

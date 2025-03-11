@@ -33,8 +33,6 @@ public class LoginUI extends Application {
     public void start(Stage primaryStage) {
         signupUI = new SignupUI(appService);
 
-
-
         VBox leftPanel = new VBox(20);
         leftPanel.setStyle("-fx-background-color: white; -fx-padding: 40px; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");
         leftPanel.setPrefWidth(300);

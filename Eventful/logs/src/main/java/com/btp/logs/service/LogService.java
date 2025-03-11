@@ -5,6 +5,7 @@ public interface LogService {
     public String _loadLogs();
 
     public void _loggedIn();
+    public void _loggedOut();
     public void _eventsLoaded();
 
     public void _accessedEvent();

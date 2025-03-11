@@ -34,7 +34,7 @@ public class CreateEventUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader();
+        UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
         LowerHeader lowerHeader = new LowerHeader("Create Event", "no"); // "no" to hide date
         HBox spacer = new HBox();
 

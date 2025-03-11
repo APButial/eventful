@@ -6,8 +6,11 @@ import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import com.btp.event_manager.model.EventManState;
+import com.btp.login.components.LoginUI;
+import com.btp.login.service.ValidateNewUserService;
 import com.btp.logs.service.LogService;
 import javafx.application.Application;
+import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
 import java.io.BufferedReader;
@@ -24,6 +27,7 @@ import java.util.List;
 
 public class EventManAppService implements AppService, LogService {
     private EventManState eventManState;
+    private LoginUI loginUI;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd HH:mm:ss");
     final String filepath = "Eventful/dat/";
 
@@ -53,12 +57,16 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void logout() {
+        loginUI.start(getMainStage());
+        _loggedOut();
 
+        Stage temp = getMainStage();
+        eventManState = new EventManState();
+        setMainStage(temp);
     }
 
     @Override
-    public void createAccount() {
-
+    public void createAccount(String user, String pass, String passConfirm) {
     }
 
     @Override
@@ -320,6 +328,24 @@ public class EventManAppService implements AppService, LogService {
         eventManState.setEmailPass(emailPass);
     }
 
+    @Override
+    public void setMainStage(Stage stage) {
+        eventManState.setMainStage(stage);
+    }
+
+    @Override
+    public Stage getMainStage() {
+        return eventManState.getMainStage();
+    }
+
+    public void setLoginUI(LoginUI loginUI) {
+        this.loginUI = loginUI;
+    }
+
+    public LoginUI getLoginUI() {
+        return loginUI;
+    }
+
     // methods prefixed with '_' are for logging purposes
 
     @Override
@@ -357,6 +383,11 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public void _loggedIn() {
         _updateLogs("Successfully logged in into this user account.");
+    }
+
+    @Override
+    public void _loggedOut() {
+        _updateLogs("Successfully logged out from this user account.");
     }
 
     @Override

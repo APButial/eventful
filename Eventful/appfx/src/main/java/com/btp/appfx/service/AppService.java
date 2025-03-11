@@ -5,6 +5,7 @@ import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import javafx.application.Application;
+import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ public interface AppService {
     // Login
     void login(User user);
     void logout();
-    void createAccount();
+    void createAccount(String user, String pass, String passConfirm);
     void deleteAccount();
 
     // BaseEvent
@@ -69,4 +70,7 @@ public interface AppService {
     void setEmailAdd(String emailAdd);
     String getEmailPass();
     void setEmailPass(String emailPass);
+
+    void setMainStage(Stage stage);
+    Stage getMainStage();
 }

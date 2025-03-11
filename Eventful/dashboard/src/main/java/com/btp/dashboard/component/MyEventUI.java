@@ -37,7 +37,7 @@ public class MyEventUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader();
+        UpperHeader upperHeader = new UpperHeader(appService, listener);
         LowerHeader lowerHeader = new LowerHeader("My Events", "yes"); // Show date
         lowerHeader.setDateLabel(appService.getSysDateTime());
         lowerHeader.setDateTimeListener(new DateTimeListener() {

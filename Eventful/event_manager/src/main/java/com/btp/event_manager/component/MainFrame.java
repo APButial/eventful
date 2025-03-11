@@ -40,6 +40,7 @@ public class MainFrame extends Application {
     public void start(Stage primaryStage) {
         eventManState = new EventManState();
         appService = new EventManAppService(eventManState);
+        appService.setMainStage(primaryStage);
 
         loginUI = new LoginUI(appService, new LoginSuccessListener() {
             @Override
@@ -47,6 +48,7 @@ public class MainFrame extends Application {
                 dashboardUI.start(primaryStage);
             }
         });
+        ((EventManAppService) appService).setLoginUI(loginUI);
 
         DashNavigateListener dashListener = new DashNavigateListener() {
             @Override

@@ -38,7 +38,7 @@ public class DashboardUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader();
+        UpperHeader upperHeader = new UpperHeader(appService, listener);
         LowerHeader lowerHeader = new LowerHeader("Recent Events","yes");//requires string for page name
         lowerHeader.setDateLabel(appService.getSysDateTime());
         lowerHeader.setDateTimeListener(new DateTimeListener() {

@@ -1,17 +1,11 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
-import com.btp.dashboard.component.BudgetTable;
-import com.btp.dashboard.component.Sidebar;
-import com.btp.dashboard.component.UpperHeader;
-import com.btp.dashboard.component.LowerHeader;
 import com.btp.dashboard.service.DashNavigateListener;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -35,7 +29,7 @@ public class BudgetTrackerUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader();
+        UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
         LowerHeader lowerHeader = new LowerHeader("Budget Tracker - " + appService.getSelectedEvent().getEventName(), "no");
 
         Button returnButton = new Button("Return");

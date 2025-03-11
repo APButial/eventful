@@ -6,6 +6,7 @@ import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import javafx.application.Application;
+import javafx.stage.Stage;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,7 +45,7 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public void createAccount() {
+    public void createAccount(String user, String pass, String passConfirm) {
 
     }
 
@@ -258,4 +259,13 @@ public class EventManCommandService implements AppService {
         appService.setEmailPass(emailPass);
     }
 
+    @Override
+    public void setMainStage(Stage stage) {
+
+    }
+
+    @Override
+    public Stage getMainStage() {
+        return null;
+    }
 }

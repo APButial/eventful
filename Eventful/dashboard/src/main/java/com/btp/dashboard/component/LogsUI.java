@@ -2,20 +2,12 @@ package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
 import com.btp.dashboard.service.DashNavigateListener;
-import com.btp.dashboard.service.DateTimeListener;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import java.time.LocalDateTime;
 
 public class LogsUI extends Application {
     private AppService appService;
@@ -37,7 +29,7 @@ public class LogsUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader();
+        UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
         LowerHeader lowerHeader = new LowerHeader("Logs", "no"); // Show date
 
         HBox spacer = new HBox();
