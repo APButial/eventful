@@ -13,6 +13,8 @@ import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.LoginSuccessListener;
 import javafx.application.Application;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
@@ -41,6 +43,11 @@ public class MainFrame extends Application {
         eventManState = new EventManState();
         appService = new EventManAppService(eventManState);
         appService.setMainStage(primaryStage);
+
+        Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
+        ImageView logoView = new ImageView(logoImg);
+        primaryStage.getIcons().add(logoImg);
+
 
         loginUI = new LoginUI(appService, new LoginSuccessListener() {
             @Override

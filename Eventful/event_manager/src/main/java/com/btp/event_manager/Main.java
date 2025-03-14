@@ -11,6 +11,7 @@ public class Main extends Application {
         // Set Main Scene
         mainstage.setScene(new Splash(mainstage).getScene());
         mainstage.setTitle("Welcome to Eventful");
+        mainstage.setResizable(false);
         mainstage.show();
     }
 

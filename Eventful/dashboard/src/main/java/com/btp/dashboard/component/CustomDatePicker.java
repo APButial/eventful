@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class CustomDatePicker extends DatePicker {
+    private LocalDate selectedDate;
 
     public CustomDatePicker() {
         // Set placeholder text
@@ -19,6 +20,7 @@ public class CustomDatePicker extends DatePicker {
                 "-fx-padding: 5px; " +
                 "-fx-border-radius: 5px; " +
                 "-fx-control-inner-background: #F5F5F5;" );
+
 
         this.setEditable(false); // Prevent manual input
         this.getStyleClass().add("custom-datepicker"); // Apply CSS styles
@@ -43,12 +45,32 @@ public class CustomDatePicker extends DatePicker {
             public void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
                 if (!empty) {
-                    this.setOnMouseClicked(e -> {
-                        hide();
-                        setValue(item);
-                    });
+                    if (item.isBefore(LocalDate.now())) {
+                        this.setDisable(true);
+                        this.setStyle("-fx-background-color: #d3d3d3;"); // Optional: Change background color for disabled dates
+                    } else {
+                        if (item.equals(selectedDate)) {
+                            this.setStyle("-fx-background-color: #8425a4;");
+                        }
+
+                        this.setOnMouseClicked(e -> {
+                            hide();
+                            selectedDate = item;
+                            setValue(item);
+                        });
+                        this.setOnMouseEntered(e -> {
+                            this.setStyle("-fx-background-color: #8425a4;");
+                        });
+                        this.setOnMouseExited(e -> {
+                            if (!item.equals(selectedDate))
+                                this.setStyle("-fx-background-color: #f5f5f5");
+                        });
+                    }
+
                 }
             }
         });
+
+
     }
 }

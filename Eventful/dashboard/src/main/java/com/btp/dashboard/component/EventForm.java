@@ -15,8 +15,8 @@ import javafx.scene.layout.*;
     import java.time.LocalDate;
 
 public class EventForm {
-    private DatePicker startDatePicker;
-    private DatePicker endDatePicker;
+    private CustomDatePicker startDatePicker;
+    private CustomDatePicker endDatePicker;
     private TextArea eventDescArea;
     private TextField guestsField;
     private TextArea guestEmailsArea;
@@ -38,7 +38,7 @@ public class EventForm {
 
         // Start Date
         Label startDateLabel = new Label("Start Date*");
-        startDatePicker = new DatePicker();
+        startDatePicker = new CustomDatePicker();
         startDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
@@ -46,18 +46,13 @@ public class EventForm {
             }
         });
         startDatePicker.setPrefWidth(240);
-        startDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
-                "-fx-border-color: transparent; " +
-                "-fx-padding: 5px; " +
-                "-fx-border-radius: 5px; " +
-                "-fx-control-inner-background: #F5F5F5;" );
 
 
         HBox startDateBox = new HBox(5, startDatePicker);
 
         // End Date
         Label endDateLabel = new Label("End Date*");
-        endDatePicker = new DatePicker();
+        endDatePicker = new CustomDatePicker();
         endDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate localDate, LocalDate t1) {
@@ -65,12 +60,6 @@ public class EventForm {
             }
         });
         endDatePicker.setPrefWidth(240);
-
-        endDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
-                "-fx-border-color: transparent; " +
-                "-fx-padding: 5px; " +
-                "-fx-border-radius: 5px; " +
-                "-fx-control-inner-background: #F5F5F5;" );
 
         HBox endDateBox = new HBox(5, endDatePicker);
 
@@ -223,7 +212,7 @@ public class EventForm {
         return startDatePicker;
     }
 
-    public void setStartDatePicker(DatePicker startDatePicker) {
+    public void setStartDatePicker(CustomDatePicker startDatePicker) {
         this.startDatePicker = startDatePicker;
     }
 
@@ -287,7 +276,7 @@ public class EventForm {
         this.updateButton = updateButton;
     }
 
-    public void setEndDatePicker(DatePicker endDatePicker) {
+    public void setEndDatePicker(CustomDatePicker endDatePicker) {
         this.endDatePicker = endDatePicker;
     }
 

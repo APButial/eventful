@@ -48,9 +48,6 @@ public class BudgetTrackerUI extends Application {
 
         HBox layout = new HBox(sidebar.getComponent(), mainContent);
         layout.setSpacing(0);
-//        Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
-//        ImageView logoView = new ImageView(logoImg);
-//        primaryStage.getIcons().add(logoImg);
 
         Scene scene = new Scene(layout, 1024, 600);
         primaryStage.setScene(scene);
