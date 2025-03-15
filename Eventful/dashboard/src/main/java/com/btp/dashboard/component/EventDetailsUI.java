@@ -6,6 +6,10 @@ import com.btp.dashboard.service.EventDetailListener;
 import com.btp.dashboard.service.EventFormListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -40,6 +44,49 @@ public class EventDetailsUI extends Application {
 
         UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
         LowerHeader lowerHeader = new LowerHeader("Event Details - " + appService.getEventName().toUpperCase(), "no"); // "no" to hide date
+
+        Button inboxButton = new Button();
+        ImageView inboxImg = new ImageView("/inbox.png");
+        inboxButton.setGraphic(inboxImg);
+        inboxButton.setBackground(null);
+        inboxButton.setPrefWidth(15);
+        inboxButton.setPrefHeight(15);
+        inboxButton.setOnAction(event -> {
+            eventFormListener.onInbox();
+        });
+
+        ColorAdjust colorAdjust = new ColorAdjust();
+        inboxButton.setOnMousePressed(e -> {
+            colorAdjust.setBrightness(-0.2);
+            inboxImg.setEffect(colorAdjust);
+        });
+        inboxButton.setOnMouseReleased(e -> {
+            colorAdjust.setBrightness(0);
+            inboxImg.setEffect(null);
+        });
+
+        Button exportButton = new Button();
+        ImageView exportImg = new ImageView("/export.png");
+        exportButton.setGraphic(exportImg);
+        exportButton.setBackground(null);
+        exportButton.setPrefWidth(80);
+        exportButton.setPrefHeight(15);
+        exportButton.setOnAction(event -> {
+            eventFormListener.onExport();
+        });
+
+        exportButton.setOnMousePressed(e -> {
+            colorAdjust.setBrightness(-0.2);
+            exportImg.setEffect(colorAdjust);
+        });
+        exportButton.setOnMouseReleased(e -> {
+            colorAdjust.setBrightness(0);
+            exportImg.setEffect(null);
+        });
+
+        lowerHeader.getComponent().getChildren().add(inboxButton);
+        lowerHeader.getComponent().getChildren().add(exportButton);
+
         HBox spacer = new HBox();
 
         spacer.setPrefHeight(3);

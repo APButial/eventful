@@ -1,35 +1,37 @@
 package com.btp.dashboard.component;
 
 import com.btp.appfx.service.AppService;
+import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.time.chrono.Chronology;
+import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatter;
 
 public class CustomDatePicker extends DatePicker {
-    private LocalDate selectedDate;
     private boolean isEndDate;
     private AppService appService;
-
-    public void setSelectedDate(LocalDate selectedDate) {
-        this.selectedDate = selectedDate;
-    }
 
     public CustomDatePicker(AppService appService, Boolean isEndDate) {
         this.appService = appService;
         this.isEndDate = isEndDate;
 
         // Set placeholder text
-        this.setPromptText("MM/DD/YYYY");
+        this.setPromptText("");
 
         // Apply styling
         this.setStyle("-fx-background-color: #F5F5F5; " +
                 "-fx-border-color: transparent; " +
                 "-fx-padding: 5px; " +
                 "-fx-border-radius: 5px; " +
-                "-fx-control-inner-background: #F5F5F5;");
+                "-fx-control-inner-background: #F5F5F5;" +
+                "-fx-focus-color: #8425a4");
 
 
         this.setEditable(false); // Prevent manual input
@@ -40,7 +42,7 @@ public class CustomDatePicker extends DatePicker {
         this.setConverter(new StringConverter<LocalDate>() {
             @Override
             public String toString(LocalDate date) {
-                return (date != null) ? date.format(fieldFormatter) : "";
+                return (date != null) ? fieldFormatter.format(date) : "";
             }
 
             @Override
@@ -50,33 +52,22 @@ public class CustomDatePicker extends DatePicker {
         });
 
         // Close popup when a date is selected
-        this.setDayCellFactory(picker -> new DateCell() {
+        final Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-                if (!empty) {
-                    if (item.isBefore(LocalDate.now()) || (isEndDate && item.isBefore(appService.getStartDate()))) {
-                        this.setDisable(true);
-                        this.setStyle("-fx-background-color: #d3d3d3;"); // Optional: Change background color for disabled dates
-                    } else {
-                        if (item.equals(selectedDate)) {
-                            this.setStyle("-fx-background-color: #8425a4; -fx-text-fill: #ffffff");
+            public DateCell call(DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+
+                        if (item.isBefore(LocalDate.now()) || (isEndDate && item.isBefore(appService.getStartDate()))) {
+                            this.setDisable(true);
+                            this.setStyle("-fx-background-color: #d3d3d3;"); // Optional: Change background color for disabled dates
                         }
-                        this.setOnMouseClicked(e -> {
-                            hide();
-                            selectedDate = item;
-                            setValue(item);
-                        });
-                        this.setOnMouseEntered(e -> {
-                            this.setStyle("-fx-background-color: #8425a4; -fx-text-fill: #ffffff");
-                        });
-                        this.setOnMouseExited(e -> {
-                            if (!item.equals(selectedDate))
-                                this.setStyle("-fx-background-color: #f5f5f5; -fx-text-fill: #000000");
-                        });
                     }
-                }
+                };
             }
-        });
+        };
+        setDayCellFactory(dayCellFactory);
     }
 }

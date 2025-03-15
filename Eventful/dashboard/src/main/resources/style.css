@@ -26,3 +26,34 @@
     -fx-pref-height: 40px; /* Slightly larger text field */
     -fx-padding: 0px 50px 0px 0px; /* Adds space on the right for the button */
 }
+
+.date-picker .day-cell {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.date-picker .day-cell:hover {
+    -fx-background-color: #8425a4;
+    -fx-text-fill: white;
+}
+
+.date-picker .day-cell:focused {
+    -fx-background-color: #8425a4;
+    -fx-text-fill: white;
+}
+
+.date-picker .next-month {
+    -fx-background-color: #f5f5f5;
+}
+
+.date-picker .previous-month {
+    -fx-background-color: #f5f5f5;
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #8425a4;
+}
+
+.date-picker-popup .month-year-pane .label{
+    -fx-text-fill: white;
+}

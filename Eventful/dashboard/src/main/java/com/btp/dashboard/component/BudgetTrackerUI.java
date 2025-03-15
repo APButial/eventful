@@ -33,7 +33,7 @@ public class BudgetTrackerUI extends Application {
         LowerHeader lowerHeader = new LowerHeader("Budget Tracker - " + appService.getSelectedEvent().getEventName(), "no");
 
         Button returnButton = new Button("Return");
-        returnButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
+        returnButton.setStyle("-fx-background-color: #8425a4; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
         returnButton.setOnAction(event -> {
             dashNavigateListener.returnTriggered();
         });

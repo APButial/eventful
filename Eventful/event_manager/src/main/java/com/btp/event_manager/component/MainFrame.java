@@ -198,6 +198,16 @@ public class MainFrame extends Application {
                 appService.setPrevApplication(eventDetailsUI);
                 budgetTrackerUI.start(primaryStage);
             }
+
+            @Override
+            public void onExport() {
+
+            }
+
+            @Override
+            public void onInbox() {
+
+            }
         };
 
         /// modified

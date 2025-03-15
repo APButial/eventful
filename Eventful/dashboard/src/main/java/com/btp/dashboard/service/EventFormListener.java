@@ -13,4 +13,6 @@ public interface EventFormListener {
     public void onUpdate();
     public void onReturn();
     public void onBudgetTracker();
+    public void onExport();
+    public void onInbox();
 }
