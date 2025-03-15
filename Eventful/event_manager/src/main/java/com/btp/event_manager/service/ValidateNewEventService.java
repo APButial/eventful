@@ -26,12 +26,6 @@ public class ValidateNewEventService {
             alert.showAndWait();
             return false;
         }
-        if (startDate.isAfter(endDate)) {
-            alert.setHeaderText("Invalid Event");
-            alert.setContentText("End date should not be earlier than Start date.");
-            alert.showAndWait();
-            return false;
-        }
 
         try {
             NodeList events = ReadEventsService.read(appService);

@@ -1,5 +1,7 @@
 package com.btp.dashboard.component;
 
+import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.service.AppService;
 import com.btp.dashboard.service.CreateEventListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,8 +27,12 @@ public class EventDetails {
     private TextField eventNameField;
     private CustomDatePicker startDatePicker;
     private CustomDatePicker endDatePicker;
+    private AppService appService;
+    private BaseEvent tempEvent;
 
-    public EventDetails() {
+    public EventDetails(AppService appService) {
+        this.appService = appService;
+
         component = new VBox(10);
         component.setPadding(new Insets(20, 30, 40, 30)); // Reduced left padding
         component.setStyle("-fx-background-color: #FFFFFF;");
@@ -46,12 +52,16 @@ public class EventDetails {
         eventNameField.setPromptText("Enter event name");
         eventNameField.setPrefWidth(215);
         eventNameField.setStyle("-fx-background-color: #F5F5F5; -fx-border-color: transparent; -fx-padding: 5px; -fx-border-radius: 5px;");
+        eventNameField.setOnAction(event -> {
+            appService.setEventName(eventNameField.getText());
+        });
+
         ImageView nameIcon = new ImageView(new Image("/name.png"));
         nameIcon.setFitWidth(31);
         nameIcon.setPreserveRatio(true);
 
         Label startDateLabel = new Label("Start Date");
-        startDatePicker = new CustomDatePicker();
+        startDatePicker = new CustomDatePicker(appService, false);
         startDatePicker.setPrefWidth(250);
         startDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
                 "-fx-border-color: transparent; " +
@@ -60,14 +70,15 @@ public class EventDetails {
                 "-fx-control-inner-background: #F5F5F5;" );
         startDatePicker.setPromptText("Select start date");
         startDatePicker.setValue(LocalDate.now()); // Default to today's date
-
-
+        startDatePicker.setOnAction(event -> {
+            appService.setStartDate(startDatePicker.getValue());
+        });
 
         form.add(startDateLabel, 0, 2);
         form.add(new HBox(5, startDatePicker), 0, 3);
 
         Label endDateLabel = new Label("End Date");
-        endDatePicker = new CustomDatePicker();
+        endDatePicker = new CustomDatePicker(appService, true);
         endDatePicker.setPrefWidth(250);
         endDatePicker.setStyle("-fx-background-color: #F5F5F5; " +
                 "-fx-border-color: transparent; " +
@@ -76,17 +87,21 @@ public class EventDetails {
                 "-fx-control-inner-background: #F5F5F5;" );
         endDatePicker.setPromptText("Select end date");
         endDatePicker.setValue(LocalDate.now().plusDays(1)); // Default to tomorrow's date
+        endDatePicker.setOnAction(event -> {
+            appService.setEndDate(endDatePicker.getValue());
+        });
 
-
+        tempEvent = new BaseEvent(eventNameField.getText(), startDatePicker.getValue(), endDatePicker.getValue());
+        appService.setSelectedEvent(tempEvent);
+        appService.setStartDate(startDatePicker.getValue());
+        appService.setEndDate(endDatePicker.getValue());
+        appService.setEventName(eventNameField.getText());
 
         form.add(endDateLabel, 0, 4);
         form.add(new HBox(5, endDatePicker), 0, 5);
 
         form.add(eventNameLabel, 0, 0);
         form.add(new HBox(5, eventNameField, nameIcon), 0, 1);
-
-
-
 
         // Buttons
         cancelButton = new Button("Cancel");

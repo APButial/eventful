@@ -25,7 +25,7 @@ public class EventDetailsUI extends Application {
         this.dashNavigateListener = dashNavigateListener;
         this.eventDetailListener = eventDetailListener;
         this.eventFormListener = eventFormListener;
-        this.eventForm = new EventForm(eventFormListener);
+        this.eventForm = new EventForm(appService, eventFormListener);
     }
 
     @Override

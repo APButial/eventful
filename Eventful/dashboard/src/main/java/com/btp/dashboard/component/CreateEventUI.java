@@ -49,7 +49,7 @@ public class CreateEventUI extends Application {
 // Add a spacer to push bottomBar down
         Region bottomSpacer = new Region();
         VBox.setVgrow(bottomSpacer, Priority.ALWAYS);
-        eventDetails = new EventDetails();
+        eventDetails = new EventDetails(appService);
 
         eventDetails.getCancelButton().setOnAction(event -> {
             try {

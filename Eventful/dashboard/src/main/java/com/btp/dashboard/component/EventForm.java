@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+    import com.btp.appfx.service.AppService;
     import com.btp.dashboard.service.EventFormListener;
     import javafx.beans.value.ChangeListener;
     import javafx.beans.value.ObservableValue;
@@ -26,9 +27,11 @@ public class EventForm {
     private Button updateButton;
     private MilitaryTimePicker timeStartField;
     private MilitaryTimePicker timeEndField;
+    private AppService appService;
 
-    public EventForm (EventFormListener eventFormListener) {
+    public EventForm (AppService appService, EventFormListener eventFormListener) {
         this.eventFormListener = eventFormListener;
+        this.appService = appService;
     }
 
     public Node getComponent() {
@@ -38,7 +41,7 @@ public class EventForm {
 
         // Start Date
         Label startDateLabel = new Label("Start Date*");
-        startDatePicker = new CustomDatePicker();
+        startDatePicker = new CustomDatePicker(appService, false);
         startDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) {
@@ -52,7 +55,7 @@ public class EventForm {
 
         // End Date
         Label endDateLabel = new Label("End Date*");
-        endDatePicker = new CustomDatePicker();
+        endDatePicker = new CustomDatePicker(appService, true);
         endDatePicker.valueProperty().addListener(new ChangeListener<LocalDate>() {
             @Override
             public void changed(ObservableValue<? extends LocalDate> observableValue, LocalDate localDate, LocalDate t1) {
