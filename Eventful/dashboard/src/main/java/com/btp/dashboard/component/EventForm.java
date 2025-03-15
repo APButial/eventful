@@ -71,9 +71,6 @@ public class EventForm {
 
         HBox endDateBox = new HBox(5, endDatePicker);
 
-
-        String hour;
-        String min;
         // Time Start
         Label timeStartLabel = new Label("Time Start");
         timeStartField = new MilitaryTimePicker();
@@ -90,10 +87,6 @@ public class EventForm {
         timeStartIcon.setPreserveRatio(true);
         HBox timeStartBox = new HBox(5, timeStartField, timeStartIcon);
 
-        hour = getTimeStartField().getHourDropdown().getValue();
-        min = getTimeStartField().getMinuteDropdown().getValue();
-        appService.setStartTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
-
         // Time End
         Label timeEndLabel = new Label("Time End");
         timeEndField = new MilitaryTimePicker();
@@ -109,10 +102,6 @@ public class EventForm {
         timeEndIcon.setFitWidth(30);
         timeEndIcon.setPreserveRatio(true);
         HBox timeEndBox = new HBox(5, timeEndField, timeEndIcon);
-
-        hour = getTimeEndField().getHourDropdown().getValue();
-        min = getTimeEndField().getMinuteDropdown().getValue();
-        appService.setEndTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
 
         // Event Description
         Label eventDescLabel = new Label("Event Description");
@@ -139,7 +128,7 @@ public class EventForm {
 
         // Right Section
         Label guestsLabel = new Label("No. of Guests");
-        guestsField = new TextField("");
+        guestsField = new TextField();
         guestsField.setEditable(false);
         guestsField.setPromptText("0");
         guestsField.setStyle(
@@ -170,7 +159,6 @@ public class EventForm {
                         "-fx-padding: 5px; " +
                         "-fx-border-radius: 5px; " +
                         "-fx-control-inner-background: #F5F5F5;");
-        appService.setGuests(new ArrayList<>());
 
         sendEmailButton = new Button("Send Email Invitation");
         sendEmailButton.setOnAction(event -> {

@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.btp.appfx.enums.EventFormEvents.END_TIME;
-import static com.btp.appfx.enums.EventFormEvents.START_TIME;
-
 public class EventManAppService implements AppService, LogService {
     private EventManState eventManState;
     private LoginUI loginUI;
@@ -94,12 +91,12 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void updateEvent(AppService appService, EventFormEvents update) {
+    public void updateEvent(EventFormEvents update) {
 
     }
 
     @Override
-    public void updateEvent(AppService appService, EventFormEvents update, String input) {
+    public void updateEvent(EventFormEvents update, String input) {
         switch (update) {
             case DESC:
                 if (input != null)
@@ -111,12 +108,13 @@ public class EventManAppService implements AppService, LogService {
                 break;
             case UPDATE_CHANGES:
                 if (!RegexService.validate(input)){
-                    return;
+                    setGuests(new ArrayList<>());
+                } else {
+                    setGuests(List.of(input.split(";")));
                 }
 
-                setGuests(List.of(input.split(";")));
-                WriteEventsService.overwrite(appService, tempStartDate, tempEndDate);
-                LoadUserEvents.load(appService);
+                WriteEventsService.overwrite(this, tempStartDate, tempEndDate);
+                LoadUserEvents.load(this);
                 setSaveStatus(SaveStatus.SAVED);
                 _savedEvent();
                 break;
@@ -124,7 +122,7 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void updateEvent(AppService appService, EventFormEvents update, LocalDate input) {
+    public void updateEvent(EventFormEvents update, LocalDate input) {
         switch (update) {
             case START_DATE:
                 tempStartDate = input;
@@ -139,7 +137,7 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void updateEvent(AppService appService, EventFormEvents update, LocalTime input) {
+    public void updateEvent(EventFormEvents update, LocalTime input) {
         switch (update) {
             case START_TIME:
                 setStartTime(input);
@@ -251,10 +249,11 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void inviteGuests(String guests) throws AddressException {
-        if((getEmailAdd() == null || getEmailPass() == null) && MailService.authenticate(this)) {
+        if(MailService.authenticate(this)) {
             if (MainFrameAlerts.sendEmailConfirmation()) {
                 if(MailService.validMailArea(guests, this)) {
                     MailService.sendMail(this);
+                    System.out.println("passed");
                     _guestsInvited();
                 }
             }

@@ -88,8 +88,6 @@ public class MailService {
             passDialog.setHeaderText("Email Password");
             passDialog.setGraphic(emailDialog.getGraphic()); // Custom graphic
             passDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-            passDialog.getDialogPane().setPrefWidth(emailDialog.getWidth());
-            passDialog.getDialogPane().setPrefHeight(emailDialog.getHeight());
 
             PasswordField pwd = new PasswordField();
             HBox content = new HBox();

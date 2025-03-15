@@ -12,6 +12,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
 public class CreateEventUI extends Application {
     private AppService appService;
     private DashNavigateListener dashNavigateListener;
@@ -74,6 +78,9 @@ public class CreateEventUI extends Application {
 
         HBox layout = new HBox(sidebar.getComponent(),mainContent);
         layout.setSpacing(0);
+
+        appService.setDescription("");
+        appService.setGuests(new ArrayList<>());
 
         Scene scene = new Scene(layout, 1024, 600);
         scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());

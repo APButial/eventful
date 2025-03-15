@@ -24,7 +24,6 @@ import java.util.Optional;
 public class RemoveUserService {
     public static boolean delete(AppService appService) {
         Optional<String> input;
-        TextInputDialog textInputDialog = new TextInputDialog();
 
         Dialog<String> passDialog = new Dialog<>();
         passDialog.setTitle("Remove User Account");

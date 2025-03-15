@@ -8,6 +8,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.swing.tree.ExpandVetoException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -17,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class WriteEventsService {
     public static void write(BaseEvent newEvent, AppService appService) {
@@ -92,48 +94,59 @@ public class WriteEventsService {
 
                     // Update the event details
                     event.getElementsByTagName("title").item(0).setTextContent(selectedEvent.getEventName());
+
                     event.getElementsByTagName("startDate").item(0).setTextContent(tempStartDate.toString());
+                    appService.setStartDate(tempStartDate);
                     event.getElementsByTagName("endDate").item(0).setTextContent(tempEndDate.toString());
+                    appService.setEndDate(tempEndDate);
 
                     // Optional
                     if (selectedEvent.getDescription() != null) {
                         Element description = (Element) event.getElementsByTagName("description").item(0);
                         if (description != null) {
                             description.setTextContent(selectedEvent.getDescription());
+                            appService.setDescription(selectedEvent.getDescription());
                         } else {
                             description = document.createElement("description");
                             description.appendChild(document.createTextNode(selectedEvent.getDescription()));
                             event.appendChild(description);
+                            appService.setDescription(selectedEvent.getDescription());
                         }
                     }
                     if (selectedEvent.getStartTime() != null) {
                         Element timeStart = (Element) event.getElementsByTagName("startTime").item(0);
                         if (timeStart != null) {
                             timeStart.setTextContent(selectedEvent.getStartTime().toString());
+                            appService.setStartTime(selectedEvent.getStartTime());
                         } else {
                             timeStart = document.createElement("startTime");
                             timeStart.appendChild(document.createTextNode(selectedEvent.getStartTime().toString()));
                             event.appendChild(timeStart);
+                            appService.setStartTime(selectedEvent.getStartTime());
                         }
                     }
                     if (appService.getEndTime() != null) {
                         Element timeEnd = (Element) event.getElementsByTagName("endTime").item(0);
                         if (timeEnd != null) {
                             timeEnd.setTextContent(selectedEvent.getEndTime().toString());
+                            appService.setEndTime(selectedEvent.getEndTime());
                         } else {
                             timeEnd = document.createElement("endTime");
                             timeEnd.appendChild(document.createTextNode(selectedEvent.getEndTime().toString()));
                             event.appendChild(timeEnd);
+                            appService.setEndTime(selectedEvent.getEndTime());
                         }
                     }
                     if (selectedEvent.getGuests() != null) {
                         Element guests = (Element)  event.getElementsByTagName("guests").item(0);
                         if (guests != null) {
                             guests.setTextContent(String.join(";", selectedEvent.getGuests()));
+                            appService.setGuests(selectedEvent.getGuests());
                         } else {
                             guests = document.createElement("guests");
                             guests.appendChild(document.createTextNode(String.join(";", selectedEvent.getGuests())));
                             event.appendChild(guests);
+
                         }
                     }
 

@@ -32,13 +32,20 @@ import java.util.List;
 
 public class EventReportPDFService {
     private static final DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
+    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
     public static void generateReport(AppService appService) throws IOException {
         String eventName = appService.getEventName();
         LocalDate startDate = appService.getStartDate();
         LocalDate endDate = appService.getEndDate();
         LocalTime startTime = appService.getStartTime();
+        if (startTime == null) {
+            startTime = LocalTime.parse(LocalTime.parse("00:00").format(timeFormat));
+        }
         LocalTime endTime = appService.getEndTime();
+        if (endTime == null) {
+            endTime = LocalTime.parse(LocalTime.parse("00:00").format(timeFormat));
+        }
         String description = appService.getDescription();
         List<String> guests = appService.getGuests();
 

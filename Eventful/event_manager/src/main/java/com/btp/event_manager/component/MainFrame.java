@@ -19,9 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -132,13 +130,13 @@ public class MainFrame extends Application {
         EventFormListener eventFormListener = new EventFormListener() {
             @Override
             public void startDateUpdated() {
-                appService.updateEvent(appService, EventFormEvents.START_DATE, eventDetailsUI.getEventForm().getStartDatePicker().getValue());
+                appService.updateEvent(EventFormEvents.START_DATE, eventDetailsUI.getEventForm().getStartDatePicker().getValue());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void endDateUpdated() {
-                appService.updateEvent(appService, EventFormEvents.END_DATE, eventDetailsUI.getEventForm().getEndDatePicker().getValue());
+                appService.updateEvent(EventFormEvents.END_DATE, eventDetailsUI.getEventForm().getEndDatePicker().getValue());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -146,7 +144,7 @@ public class MainFrame extends Application {
             public void startTimeUpdated() {
                 String hour = eventDetailsUI.getEventForm().getTimeStartField().getHourDropdown().getValue();
                 String min = eventDetailsUI.getEventForm().getTimeStartField().getMinuteDropdown().getValue();
-                appService.updateEvent(appService, EventFormEvents.START_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
+                appService.updateEvent(EventFormEvents.START_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -154,13 +152,13 @@ public class MainFrame extends Application {
             public void endTimeUpdated() {
                 String hour = eventDetailsUI.getEventForm().getTimeEndField().getHourDropdown().getValue();
                 String min = eventDetailsUI.getEventForm().getTimeEndField().getMinuteDropdown().getValue();
-                appService.updateEvent(appService, EventFormEvents.END_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
+                appService.updateEvent(EventFormEvents.END_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void descriptionUpdated() {
-                appService.updateEvent(appService, EventFormEvents.DESC, eventDetailsUI.getEventForm().getEventDescArea().getText());
+                appService.updateEvent(EventFormEvents.DESC, eventDetailsUI.getEventForm().getEventDescArea().getText());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -178,7 +176,7 @@ public class MainFrame extends Application {
 
             @Override
             public void onUpdate() {
-                appService.updateEvent(appService, EventFormEvents.UPDATE_CHANGES, eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
+                appService.updateEvent(EventFormEvents.UPDATE_CHANGES, eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
             }
 
