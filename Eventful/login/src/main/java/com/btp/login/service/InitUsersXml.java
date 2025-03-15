@@ -15,6 +15,13 @@ import java.io.File;
 public class InitUsersXml {
     public static void init(User newUser) {
         try{
+            String datDirPath = "Eventful/dat";
+            File datDir = new File(datDirPath);
+
+            if (!datDir.exists()) {
+                datDir.mkdirs();
+            }
+
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 

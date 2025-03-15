@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+    import com.btp.appfx.enums.EventFormEvents;
     import com.btp.appfx.service.AppService;
     import com.btp.dashboard.service.EventFormListener;
     import javafx.beans.value.ChangeListener;
@@ -14,6 +15,10 @@ import javafx.scene.layout.*;
 
     import javax.mail.internet.AddressException;
     import java.time.LocalDate;
+    import java.time.LocalTime;
+    import java.time.format.DateTimeFormatter;
+    import java.util.ArrayList;
+    import java.util.List;
 
 public class EventForm {
     private CustomDatePicker startDatePicker;
@@ -66,6 +71,9 @@ public class EventForm {
 
         HBox endDateBox = new HBox(5, endDatePicker);
 
+
+        String hour;
+        String min;
         // Time Start
         Label timeStartLabel = new Label("Time Start");
         timeStartField = new MilitaryTimePicker();
@@ -81,6 +89,10 @@ public class EventForm {
         timeStartIcon.setFitWidth(30);
         timeStartIcon.setPreserveRatio(true);
         HBox timeStartBox = new HBox(5, timeStartField, timeStartIcon);
+
+        hour = getTimeStartField().getHourDropdown().getValue();
+        min = getTimeStartField().getMinuteDropdown().getValue();
+        appService.setStartTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
 
         // Time End
         Label timeEndLabel = new Label("Time End");
@@ -98,9 +110,13 @@ public class EventForm {
         timeEndIcon.setPreserveRatio(true);
         HBox timeEndBox = new HBox(5, timeEndField, timeEndIcon);
 
+        hour = getTimeEndField().getHourDropdown().getValue();
+        min = getTimeEndField().getMinuteDropdown().getValue();
+        appService.setEndTime(LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
+
         // Event Description
         Label eventDescLabel = new Label("Event Description");
-        eventDescArea = new TextArea();
+        eventDescArea = new TextArea("");
         eventDescArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -116,6 +132,7 @@ public class EventForm {
                         "-fx-padding: 5px; " +
                         "-fx-border-radius: 5px; " +
                         "-fx-control-inner-background: #F5F5F5;");
+        appService.setDescription(eventDescArea.getText());
 
         // Left Section
         VBox leftSection = new VBox(10, startDateLabel, startDateBox, endDateLabel, endDateBox, timeStartLabel, timeStartBox, timeEndLabel, timeEndBox, eventDescLabel, eventDescArea);
@@ -153,6 +170,7 @@ public class EventForm {
                         "-fx-padding: 5px; " +
                         "-fx-border-radius: 5px; " +
                         "-fx-control-inner-background: #F5F5F5;");
+        appService.setGuests(new ArrayList<>());
 
         sendEmailButton = new Button("Send Email Invitation");
         sendEmailButton.setOnAction(event -> {

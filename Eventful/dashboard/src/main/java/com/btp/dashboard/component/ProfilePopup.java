@@ -17,7 +17,7 @@ public class ProfilePopup extends Popup {
         HBox userBox = new HBox(10);
         userBox.setAlignment(Pos.CENTER);
         userBox.setPrefHeight(50);
-        Circle profileIcon = new Circle(20);
+        Circle profileIcon = new Circle(15);
         profileIcon.setFill(new ImagePattern(new Image("/profile.png")));
         Label username = new Label(appService.getCurrUser().getUsername());
         userBox.getChildren().addAll(profileIcon, username);
@@ -34,6 +34,10 @@ public class ProfilePopup extends Popup {
         });
         delAccountButton.setOnMouseExited(mouseEvent -> {
             delAccountButton.setStyle("-fx-text-fill: black; -fx-font-size: 12"); // Reset text color on mouse exit
+        });
+        delAccountButton.setOnAction(event -> {
+            appService.deleteAccount();
+            hide();
         });
 
 

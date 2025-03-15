@@ -18,8 +18,12 @@ import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
+import javafx.scene.control.Alert;
 
+import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,7 +33,7 @@ import java.util.List;
 public class EventReportPDFService {
     private static final DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 
-    public static void generateReport(AppService appService) throws FileNotFoundException, MalformedURLException {
+    public static void generateReport(AppService appService) throws IOException {
         String eventName = appService.getEventName();
         LocalDate startDate = appService.getStartDate();
         LocalDate endDate = appService.getEndDate();
@@ -39,7 +43,7 @@ public class EventReportPDFService {
         List<String> guests = appService.getGuests();
 
         String path = "Eventful/dat/";
-        path += appService.getCurrUser().getUsername() + "/" + eventName + ".pdf";
+        path += appService.getCurrUser().getUsername() + "/" + eventName.toLowerCase().replaceAll(" ", "_") + "_report.pdf";
 
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
@@ -122,6 +126,14 @@ public class EventReportPDFService {
         document.add(onespc);
         document.add(divider);
         document.close();
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Event Detail");
+        alert.setHeaderText("PDF file has been successfully exported.");
+        alert.setContentText("The PDF file is saved in " + path + ".");
+        alert.showAndWait();
+
+        openPDF(path);
     }
 
     static Cell getHeaderTextCell (String text) {
@@ -135,5 +147,12 @@ public class EventReportPDFService {
     static Cell getCell12fLeft (String text, Boolean isBold) {
         Cell cell = new Cell().add(text).setFontSize(12f).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.LEFT);
         return isBold ? cell.setBold().setUnderline():cell ;
+    }
+
+    private static void openPDF(String path) throws IOException {
+        File pdfFile = new File(path);
+        if (pdfFile.exists()) {
+            Desktop.getDesktop().open(pdfFile);
+        }
     }
 }

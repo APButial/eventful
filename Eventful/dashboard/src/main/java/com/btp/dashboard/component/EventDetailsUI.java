@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.application.Application;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class EventDetailsUI extends Application {
@@ -77,7 +78,7 @@ public class EventDetailsUI extends Application {
         exportButton.setOnAction(event -> {
             try {
                 eventFormListener.onExport();
-            } catch (FileNotFoundException | MalformedURLException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });

@@ -6,11 +6,11 @@ module event_manager {
     requires dashboard;
     requires java.mail;
     requires com.calendarfx.view;
-    requires java.xml;
     requires logs;
     requires kernel;
     requires layout;
     requires io;
+    requires java.desktop;
 
     exports com.btp.event_manager;
     exports com.btp.event_manager.component;

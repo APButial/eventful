@@ -2,6 +2,7 @@ package com.btp.dashboard.service;
 
 import javax.mail.internet.AddressException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 public interface EventFormListener {
@@ -15,6 +16,6 @@ public interface EventFormListener {
     public void onUpdate();
     public void onReturn();
     public void onBudgetTracker();
-    public void onExport() throws FileNotFoundException, MalformedURLException;
+    public void onExport() throws IOException;
     public void onInbox();
 }

@@ -22,7 +22,7 @@ public class MainFrameAlerts {
     }
     public static boolean sendEmailConfirmation() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Even Detail");
+        alert.setTitle("Event Detail");
         alert.setHeaderText("Sending Invitation");
         alert.setContentText("You are about to send an invitation to all email addresses listed. Would you like to proceed?");
 

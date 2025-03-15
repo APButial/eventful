@@ -7,6 +7,7 @@ import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
+import com.btp.login.service.RemoveUserService;
 import com.btp.logs.service.LogService;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -75,7 +76,12 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void deleteAccount() {
-
+        if (RemoveUserService.delete(this)) {
+            loginUI.start(getMainStage());
+            Stage temp = getMainStage();
+            eventManState = new EventManState();
+            setMainStage(temp);
+        }
     }
 
     @Override

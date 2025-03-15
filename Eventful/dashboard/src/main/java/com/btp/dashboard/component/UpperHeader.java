@@ -7,7 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+
 
 public class UpperHeader {
     private HBox upperHeader;
@@ -19,7 +19,11 @@ public class UpperHeader {
 
         upperHeader = new HBox(10);
         upperHeader.setPadding(new Insets(5, 20, 5, 20));
-        upperHeader.setAlignment(Pos.TOP_RIGHT);
+        upperHeader.setAlignment(Pos.CENTER);
+
+
+        HBox spacer = new HBox();
+        spacer.setPrefWidth(300);
 
         profilePopup = new ProfilePopup(appService);
         TextField searchBar = new TextField();
@@ -46,7 +50,7 @@ public class UpperHeader {
         HBox profileMenu = new HBox(profileButton, menuButton);
         profileMenu.setSpacing(0);
 
-        upperHeader.getChildren().addAll(searchBar, calendarButton, notificationsButton, profileMenu);
+        upperHeader.getChildren().addAll(searchBar, spacer, calendarButton, notificationsButton, profileMenu);
     }
 
     public HBox getComponent() {

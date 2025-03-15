@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -205,7 +206,7 @@ public class MainFrame extends Application {
             }
 
             @Override
-            public void onExport() throws FileNotFoundException, MalformedURLException {
+            public void onExport() throws IOException {
                 EventReportPDFService.generateReport(appService);
             }
 

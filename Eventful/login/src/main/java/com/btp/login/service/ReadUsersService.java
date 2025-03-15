@@ -19,7 +19,6 @@ public class ReadUsersService {
             document.getDocumentElement().normalize();
 
             Element root = document.getDocumentElement();
-            System.out.printf("Users read");
             return document.getElementsByTagName("user");
 
         } catch (Exception e) {
