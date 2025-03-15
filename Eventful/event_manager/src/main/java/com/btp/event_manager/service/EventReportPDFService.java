@@ -20,7 +20,6 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -54,7 +53,7 @@ public class EventReportPDFService {
         float x = pdfDocument.getDefaultPageSize().getWidth()/2;
         float y = pdfDocument.getDefaultPageSize().getHeight()/2;
         image.setFixedPosition(x,y);
-        image.setOpacity(0.1f);
+        image.setOpacity(1f);
         document.add(image);
 
         float threecol = 190f;
