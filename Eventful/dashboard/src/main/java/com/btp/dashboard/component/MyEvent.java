@@ -13,6 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.StringConverter;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -78,6 +80,19 @@ public class MyEvent {
             }
         });
 
+        DateTimeFormatter fieldFormatter = DateTimeFormatter.ofPattern("MM/dd/yy");
+        StringConverter<LocalDate> stringConverter = new StringConverter<LocalDate>() {
+            @Override
+            public String toString(LocalDate date) {
+                return (date != null) ? fieldFormatter.format(date) : "";
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                return (string != null && !string.isEmpty()) ? LocalDate.parse(string, fieldFormatter) : null;
+            }
+        };
+
         // Event List
         for (BaseEvent event : appService.getCurrUser().getEvents()) { // Simulating multiple events
             HBox eventBox = new HBox(15);
@@ -85,6 +100,8 @@ public class MyEvent {
             eventBox.setAlignment(Pos.CENTER_LEFT);
             eventBox.setStyle("-fx-background-color: #F5F6FA; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
             eventBox.setMaxWidth(900);
+
+
 
 
             // Event Title and Date
@@ -131,6 +148,7 @@ public class MyEvent {
             statusDropdown.setMaxWidth(70);
             statusDropdown.setMaxHeight(25);
 
+
             // Start Date and End Date Pickers
             DatePicker startDatePicker = new DatePicker(event.getStartDate());
             startDatePicker.setDisable(true);
@@ -139,6 +157,7 @@ public class MyEvent {
             startDatePicker.getEditor().setOpacity(1);
             startDatePicker.setPrefWidth(120);
             startDatePicker.setStyle("-fx-background-color: #8425A4; -fx-text-fill: white;");
+            startDatePicker.setConverter(stringConverter);
 
             DatePicker endDatePicker = new DatePicker(event.getEndDate());
             endDatePicker.setDisable(true);
@@ -147,6 +166,7 @@ public class MyEvent {
             endDatePicker.getEditor().setOpacity(1);
             endDatePicker.setPrefWidth(120);
             endDatePicker.setStyle("-fx-background-color: #8425A4; -fx-text-fill: white;");
+            endDatePicker.setConverter(stringConverter);
 
             // Last Modified Date
             Label modifiedDate = new Label(event.getLastAccessed().getMonth().getDisplayName(TextStyle.SHORT, Locale.ENGLISH) + " " +

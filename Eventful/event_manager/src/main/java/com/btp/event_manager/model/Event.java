@@ -12,4 +12,12 @@ public class Event extends BaseEvent {
     public Event(String eventName, LocalDate startDate, LocalDate endDate) {
         super(eventName, startDate, endDate);
     }
+
+    public BudgetTracker getBudgetTracker() {
+        return budgetTracker;
+    }
+
+    public void setBudgetTracker(BudgetTracker budgetTracker) {
+        this.budgetTracker = budgetTracker;
+    }
 }

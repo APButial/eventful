@@ -60,7 +60,6 @@ public class LoadUserEvents {
                     e.printStackTrace();
                 }
 
-
                 appService.getCurrUser().getEvents().add(savedEvent);
             }
         } catch (Exception e) {

@@ -17,6 +17,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.application.Application;
 
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+
 public class EventDetailsUI extends Application {
     private AppService appService;
     private DashNavigateListener dashNavigateListener;
@@ -72,7 +75,11 @@ public class EventDetailsUI extends Application {
         exportButton.setPrefWidth(80);
         exportButton.setPrefHeight(15);
         exportButton.setOnAction(event -> {
-            eventFormListener.onExport();
+            try {
+                eventFormListener.onExport();
+            } catch (FileNotFoundException | MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         exportButton.setOnMousePressed(e -> {

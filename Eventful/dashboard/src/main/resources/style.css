@@ -43,11 +43,11 @@
 }
 
 .date-picker .next-month {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #e0e0e0;
 }
 
 .date-picker .previous-month {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #e0e0e0;
 }
 
 .date-picker-popup .month-year-pane {

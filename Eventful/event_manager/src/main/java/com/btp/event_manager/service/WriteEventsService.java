@@ -69,7 +69,7 @@ public class WriteEventsService {
         }
     }
 
-    public static void overwrite(AppService appService) {
+    public static void overwrite(AppService appService, LocalDate tempStartDate, LocalDate tempEndDate) {
         try {
             BaseEvent selectedEvent = appService.getSelectedEvent();
             File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + "/events.xml");
@@ -92,8 +92,8 @@ public class WriteEventsService {
 
                     // Update the event details
                     event.getElementsByTagName("title").item(0).setTextContent(selectedEvent.getEventName());
-                    event.getElementsByTagName("startDate").item(0).setTextContent(selectedEvent.getStartDate().toString());
-                    event.getElementsByTagName("endDate").item(0).setTextContent(selectedEvent.getEndDate().toString());
+                    event.getElementsByTagName("startDate").item(0).setTextContent(tempStartDate.toString());
+                    event.getElementsByTagName("endDate").item(0).setTextContent(tempEndDate.toString());
 
                     // Optional
                     if (selectedEvent.getDescription() != null) {
@@ -135,14 +135,13 @@ public class WriteEventsService {
                             guests.appendChild(document.createTextNode(String.join(";", selectedEvent.getGuests())));
                             event.appendChild(guests);
                         }
-                        System.out.println("guest updated");
                     }
 
                     // Update metadata if needed
                     event.getElementsByTagName("lastAccessed").item(0).setTextContent(appService.getSysDateTime().toString());
 
                     eventFound = true;
-                    break; // Exit the loop once the event is found and updated
+                    break;
                 }
             }
 

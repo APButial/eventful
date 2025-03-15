@@ -60,22 +60,22 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public void updateEvent(EventFormEvents update) {
+    public void updateEvent(AppService appService, EventFormEvents update) {
 
     }
 
     @Override
-    public void updateEvent(EventFormEvents update, String input) {
+    public void updateEvent(AppService appService, EventFormEvents update, String input) {
 
     }
 
     @Override
-    public void updateEvent(EventFormEvents update, LocalDate input) {
+    public void updateEvent(AppService appService, EventFormEvents update, LocalDate input) {
 
     }
 
     @Override
-    public void updateEvent(EventFormEvents update, LocalTime input) {
+    public void updateEvent(AppService appService, EventFormEvents update, LocalTime input) {
 
     }
 

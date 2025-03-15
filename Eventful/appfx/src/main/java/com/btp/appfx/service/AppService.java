@@ -27,10 +27,10 @@ public interface AppService {
 
     // BaseEvent
     void createEvent(BaseEvent baseEvent);
-    void updateEvent(EventFormEvents update);
-    void updateEvent(EventFormEvents update, String input);
-    void updateEvent(EventFormEvents update, LocalDate input);
-    void updateEvent(EventFormEvents update, LocalTime input);
+    void updateEvent(AppService appService, EventFormEvents update);
+    void updateEvent(AppService appService, EventFormEvents update, String input);
+    void updateEvent(AppService appService, EventFormEvents update, LocalDate input);
+    void updateEvent(AppService appService, EventFormEvents update, LocalTime input);
     void removeEvent(BaseEvent baseEvent);
     BaseEvent getSelectedEvent();
     void setSelectedEvent(BaseEvent baseEvent);

@@ -2,6 +2,7 @@ package com.btp.event_manager.component;
 import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.service.AppService;
+import com.btp.budget_tracker.model.BudgetTracker;
 import com.btp.dashboard.component.*;
 import com.btp.dashboard.service.CreateEventListener;
 import com.btp.dashboard.service.DashNavigateListener;
@@ -18,6 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 import javax.mail.internet.AddressException;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -128,13 +131,13 @@ public class MainFrame extends Application {
         EventFormListener eventFormListener = new EventFormListener() {
             @Override
             public void startDateUpdated() {
-                appService.updateEvent(EventFormEvents.START_DATE, eventDetailsUI.getEventForm().getStartDatePicker().getValue());
+                appService.updateEvent(appService, EventFormEvents.START_DATE, eventDetailsUI.getEventForm().getStartDatePicker().getValue());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void endDateUpdated() {
-                appService.updateEvent(EventFormEvents.END_DATE, eventDetailsUI.getEventForm().getEndDatePicker().getValue());
+                appService.updateEvent(appService, EventFormEvents.END_DATE, eventDetailsUI.getEventForm().getEndDatePicker().getValue());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -142,7 +145,7 @@ public class MainFrame extends Application {
             public void startTimeUpdated() {
                 String hour = eventDetailsUI.getEventForm().getTimeStartField().getHourDropdown().getValue();
                 String min = eventDetailsUI.getEventForm().getTimeStartField().getMinuteDropdown().getValue();
-                appService.updateEvent(EventFormEvents.START_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
+                appService.updateEvent(appService, EventFormEvents.START_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -150,13 +153,13 @@ public class MainFrame extends Application {
             public void endTimeUpdated() {
                 String hour = eventDetailsUI.getEventForm().getTimeEndField().getHourDropdown().getValue();
                 String min = eventDetailsUI.getEventForm().getTimeEndField().getMinuteDropdown().getValue();
-                appService.updateEvent(EventFormEvents.END_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
+                appService.updateEvent(appService, EventFormEvents.END_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void descriptionUpdated() {
-                appService.updateEvent(EventFormEvents.DESC, eventDetailsUI.getEventForm().getEventDescArea().getText());
+                appService.updateEvent(appService, EventFormEvents.DESC, eventDetailsUI.getEventForm().getEventDescArea().getText());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -174,7 +177,7 @@ public class MainFrame extends Application {
 
             @Override
             public void onUpdate() {
-                appService.updateEvent(EventFormEvents.UPDATE_CHANGES, eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
+                appService.updateEvent(appService, EventFormEvents.UPDATE_CHANGES, eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
                 eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
             }
 
@@ -182,8 +185,7 @@ public class MainFrame extends Application {
             public void onReturn() {
                 if(appService.getSaveStatus().equals(SaveStatus.UNSAVED)) {
                     if(MainFrameAlerts.saveChanges()) {
-                        WriteEventsService.overwrite(appService);
-                        appService.setSaveStatus(SaveStatus.SAVED);
+                        onUpdate();
                     }
                 }
                 try {
@@ -196,12 +198,15 @@ public class MainFrame extends Application {
             @Override
             public void onBudgetTracker() {
                 appService.setPrevApplication(eventDetailsUI);
+                if (((Event) appService.getSelectedEvent()).getBudgetTracker() == null) {
+                    ((Event) appService.getSelectedEvent()).setBudgetTracker(new BudgetTracker());
+                }
                 budgetTrackerUI.start(primaryStage);
             }
 
             @Override
-            public void onExport() {
-
+            public void onExport() throws FileNotFoundException, MalformedURLException {
+                EventReportPDFService.generateReport(appService);
             }
 
             @Override

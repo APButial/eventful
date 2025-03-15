@@ -7,7 +7,6 @@ import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
-import com.btp.login.service.ValidateNewUserService;
 import com.btp.logs.service.LogService;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -25,9 +24,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.btp.appfx.enums.EventFormEvents.END_TIME;
+import static com.btp.appfx.enums.EventFormEvents.START_TIME;
+
 public class EventManAppService implements AppService, LogService {
     private EventManState eventManState;
     private LoginUI loginUI;
+    private LocalDate tempStartDate;
+    private LocalDate tempEndDate;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd HH:mm:ss");
     final String filepath = "Eventful/dat/";
 
@@ -84,15 +88,18 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void updateEvent(EventFormEvents update) {
+    public void updateEvent(AppService appService, EventFormEvents update) {
 
     }
 
     @Override
-    public void updateEvent(EventFormEvents update, String input) {
+    public void updateEvent(AppService appService, EventFormEvents update, String input) {
         switch (update) {
             case DESC:
-                setDescription(input.strip());
+                if (input != null)
+                    input = input.strip();
+
+                setDescription(input);
                 _descriptionUpdated();
                 setSaveStatus(SaveStatus.UNSAVED);
                 break;
@@ -102,23 +109,23 @@ public class EventManAppService implements AppService, LogService {
                 }
 
                 setGuests(List.of(input.split(";")));
-                WriteEventsService.overwrite(this);
-                _savedEvent();
-                LoadUserEvents.load(this);
+                WriteEventsService.overwrite(appService, tempStartDate, tempEndDate);
+                LoadUserEvents.load(appService);
                 setSaveStatus(SaveStatus.SAVED);
+                _savedEvent();
                 break;
         }
     }
 
     @Override
-    public void updateEvent(EventFormEvents update, LocalDate input) {
+    public void updateEvent(AppService appService, EventFormEvents update, LocalDate input) {
         switch (update) {
             case START_DATE:
-                setStartDate(input);
+                tempStartDate = input;
                 _startDateUpdated();
                 break;
             case END_DATE:
-                setEndDate(input);
+                tempEndDate = input;
                 _endDateUpdated();
                 break;
         }
@@ -126,7 +133,7 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void updateEvent(EventFormEvents update, LocalTime input) {
+    public void updateEvent(AppService appService, EventFormEvents update, LocalTime input) {
         switch (update) {
             case START_TIME:
                 setStartTime(input);
