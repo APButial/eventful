@@ -27,11 +27,6 @@ public class MainFrameAlerts {
         alert.setContentText("You are about to send an invitation to all email addresses listed. Would you like to proceed?");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if(result.isPresent()) {
-            if(result.get() == ButtonType.YES) {
-                return true;
-            }
-        }
-        return false;
+        return result.isPresent() && result.get() == ButtonType.YES;
     }
 }

@@ -43,16 +43,31 @@ public class MailService {
                 message.setFrom(new InternetAddress(email));
                 message.setRecipients(Message.RecipientType.TO, addresses);
                 message.setSubject("Eventful - You Have Been Invited to an Event!");
-                message.setText("You have been invited to attend " + email + "'s " + appService.getEventName().toUpperCase() + " on " +
-                                appService.getStartDate().getMonth() + " " + appService.getStartDate().getDayOfMonth() + ", " + appService.getStartDate().getYear() + " to " +
-                                appService.getEndDate().getMonth() + " " + appService.getEndDate().getDayOfMonth() + ", " + appService.getStartDate().getYear() + ". See you there!\n" +
-                                "This is an auto-generated mail sent from Eventful. Please contact the sender for more details.");
+
+                // Create the email body with HTML
+                String body = "<html><body>" +
+                        "<p>You have been invited to attend " + email + "'s " + appService.getEventName().toUpperCase() + " on " +
+                        appService.getStartDate().getMonth() + " " + appService.getStartDate().getDayOfMonth() + ", " + appService.getStartDate().getYear() + " to " +
+                        appService.getEndDate().getMonth() + " " + appService.getEndDate().getDayOfMonth() + ", " + appService.getEndDate().getYear() + ". See you there!</p>" +
+
+                        // RSVP buttons
+                        "<a href='http://www.eventful.com/rsvp/accept?eventId=123&email=" + email + "' style='display:inline-block; padding:10px 20px; font-size:12px; color:white; background-color:#8425a4; text-decoration:none; border-radius:5px; margin-right: 10px;'>Accept</a>" +
+                        "<a href='http://www.eventful.com/rsvp/decline?eventId=123&email=" + email + "' style='display:inline-block; padding:10px 20px; font-size:12px; color:white; background-color:#8425a4; text-decoration:none; border-radius:5px;'>Decline</a>" +
+
+                        "<br><br>" +
+                        "<hr>" +
+                        "<p>This is an auto-generated mail sent from Eventful. Please contact the sender for more details.</p>" +
+                        "</body></html>";
+
+                // Set the content type to HTML
+                message.setContent(body, "text/html");
 
                 Transport.send(message);
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Event Detail");
                 alert.setHeaderText("Invitation Sent Successfully");
                 alert.setContentText("Your event invitation is sent successfully to entered email addresses.");
+                alert.showAndWait();
             } catch (Exception e) {
                 e.printStackTrace();
             }

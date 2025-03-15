@@ -250,12 +250,9 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public void inviteGuests(String guests) throws AddressException {
         if(MailService.authenticate(this)) {
-            if (MainFrameAlerts.sendEmailConfirmation()) {
-                if(MailService.validMailArea(guests, this)) {
-                    MailService.sendMail(this);
-                    System.out.println("passed");
-                    _guestsInvited();
-                }
+            if(MailService.validMailArea(guests, this)) {
+                MailService.sendMail(this);
+                _guestsInvited();
             }
         }
     }
