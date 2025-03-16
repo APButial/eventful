@@ -88,6 +88,7 @@ public class EventManAppService implements AppService, LogService {
             baseEvent.setLastAccessed(getSysDateTime());
             eventManState.getCurrUser().getEvents().add(baseEvent);
             setSelectedEvent(baseEvent);
+            setBudgetTracker(null);
             _createdEvent();
             setSaveStatus(SaveStatus.SAVED);
     }
@@ -99,6 +100,7 @@ public class EventManAppService implements AppService, LogService {
             LoadUserEvents.load(this);
             setSaveStatus(SaveStatus.SAVED);
             _savedEvent();
+            _budgetTrackerUpdated();
             _eventsLoaded();
         }
     }
@@ -465,7 +467,7 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void _budgetTrackerUpdated() {
-
+        _updateLogs("Overwrote expenses details in " + getSelectedEvent().getEventName());
     }
 
     @Override

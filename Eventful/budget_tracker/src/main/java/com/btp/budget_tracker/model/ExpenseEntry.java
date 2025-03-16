@@ -6,7 +6,7 @@ public class ExpenseEntry {
     private double costPerItem;
 
     public ExpenseEntry() {
-        this.quantity = 1;
+        this.quantity = 0;
         this.itemName = "";
         this.costPerItem = 0.0;
     }

@@ -17,13 +17,14 @@ public class BudgetTracker {
 
     public void setExpenses(List<ExpenseEntry> expenses) {
         this.expenses = expenses;
+
+        totalExpenses = 0.00;
+        for (ExpenseEntry entry : this.expenses) {
+            totalExpenses += (entry.getQuantity()* entry.getCostPerItem());
+        }
     }
 
     public Double getTotalExpenses() {
         return totalExpenses;
-    }
-
-    public void setTotalExpenses(Double totalExpenses) {
-        this.totalExpenses = totalExpenses;
     }
 }

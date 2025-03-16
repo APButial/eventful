@@ -1,15 +1,16 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.service.AppService;
+import com.btp.budget_tracker.model.BudgetTracker;
+import com.btp.budget_tracker.model.ExpenseEntry;
+import com.btp.dashboard.component.BudgetTrackerUI;
 import com.btp.dashboard.component.EventDetailsUI;
 import com.btp.event_manager.model.Event;
-import javafx.scene.control.DatePicker;
 
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
-public class PopulateEventDetails {
-    public static void populate(AppService appService, EventDetailsUI eventDetailsUI) {
+public class PopulateDetails {
+    public static void populateEventDetails(AppService appService, EventDetailsUI eventDetailsUI) {
         Event event = (Event) appService.getSelectedEvent();
 
         eventDetailsUI.getEventForm().getStartDatePicker().setValue(event.getStartDate());
@@ -46,6 +47,29 @@ public class PopulateEventDetails {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void populateBudgetTracker(AppService appService, BudgetTrackerUI budgetTrackerUI) {
+        Event event = (Event) appService.getSelectedEvent();
+        BudgetTracker budgetTracker = event.getBudgetTracker();
+        budgetTrackerUI.clearTable();
+
+        if (budgetTracker == null) {
+            return;
+        }
+        ((EventManAppService) appService).setBudgetTracker(budgetTracker);
+
+        int quantity;
+        String itemName;
+        double costPerItem;
+
+        for (ExpenseEntry entry : budgetTracker.getExpenses()) {
+            quantity = entry.getQuantity();
+            itemName = entry.getItemName();
+            costPerItem = entry.getCostPerItem();
+
+            budgetTrackerUI.getBudgetTable().addRow(new ExpenseEntry(quantity, itemName, costPerItem));
         }
     }
 }

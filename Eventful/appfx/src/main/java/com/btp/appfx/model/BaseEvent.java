@@ -4,6 +4,7 @@ package com.btp.appfx.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +25,14 @@ public class BaseEvent {
     private String creator;
     private LocalDateTime lastAccessed;
 
+
     public BaseEvent(String eventName, LocalDate startDate, LocalDate endDate) {
         this.eventName = eventName;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.startTime = LocalTime.of(0,0);
+        this.endTime = LocalTime.of(0,0);
+        this.description = "";
         guests = new ArrayList<>();
     }
 

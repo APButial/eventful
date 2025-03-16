@@ -41,7 +41,7 @@ public class BudgetTable {
     private static final double COST_WIDTH = 150;
     private static final double TOTAL_WIDTH = 150;
 
-    public BudgetTable(AppService appService) {
+    public BudgetTable() {
         component = new VBox(10);
         component.setPadding(new Insets(15));
         component.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 15px;");
@@ -55,11 +55,9 @@ public class BudgetTable {
         HBox addButtonRow = createAddButtonRow();
 
         component.getChildren().addAll(header, rowsContainer, totalRow, addButtonRow);
-        addRow();
     }
 
-    private void addRow() {
-        ExpenseEntry expenseEntry = new ExpenseEntry();
+    public void addRow(ExpenseEntry expenseEntry) {
         expenses.add(expenseEntry);
 
         HBox row = createRow(expenseEntry);
@@ -97,13 +95,10 @@ public class BudgetTable {
         row.setStyle("-fx-background-color: #F8F8FA; -fx-border-radius: 10px; -fx-border-color: white;");
         row.setAlignment(Pos.CENTER);
 
-        TextField quantityField = createCenteredTextField("0", QUANTITY_WIDTH);
-        expenseEntry.setQuantity(0);
-        TextField itemField = createCenteredTextField("", ITEM_WIDTH);
-        expenseEntry.setItemName("");
-        TextField costField = createCenteredTextField("0.00", COST_WIDTH);
-        expenseEntry.setCostPerItem(0.00);
-        TextField totalField = createCenteredTextField("0.00", TOTAL_WIDTH);
+        TextField quantityField = createCenteredTextField(String.valueOf(expenseEntry.getQuantity()), QUANTITY_WIDTH);
+        TextField itemField = createCenteredTextField(expenseEntry.getItemName(), ITEM_WIDTH);
+        TextField costField = createCenteredTextField(String.format("%.2f", expenseEntry.getCostPerItem()), COST_WIDTH);
+        TextField totalField = createCenteredTextField(String.format("%.2f", expenseEntry.getQuantity()*expenseEntry.getCostPerItem()), TOTAL_WIDTH);
         totalField.setEditable(false);
 
         quantityField.setOnKeyReleased(e -> updateExpenseEntry(expenseEntry, quantityField, itemField, costField, totalField));
@@ -111,6 +106,7 @@ public class BudgetTable {
         itemField.setOnKeyReleased(e -> updateExpenseEntry(expenseEntry, quantityField, itemField, costField, totalField));
 
         row.getChildren().addAll(quantityField, itemField, costField, totalField);
+        updateTotalSum();
         return row;
     }
 
@@ -185,7 +181,7 @@ public class BudgetTable {
                         "-fx-text-fill: black;"
         );
 
-        addButton.setOnAction(e -> addRow());
+        addButton.setOnAction(e -> addRow(new ExpenseEntry()));
 
         addButtonRow.getChildren().add(addButton);
         return addButtonRow;

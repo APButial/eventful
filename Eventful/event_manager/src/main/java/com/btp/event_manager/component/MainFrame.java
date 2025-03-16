@@ -96,6 +96,9 @@ public class MainFrame extends Application {
             public void returnTriggered() {
                 try {
                     appService.getPrevApplication().start(primaryStage);
+                    if (((EventManAppService) appService).getBudgetTracker().getExpenses() == null) {
+                        ((EventManAppService) appService).setBudgetTracker(null);
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -125,7 +128,8 @@ public class MainFrame extends Application {
         EventDetailListener eventDetailListener = new EventDetailListener() {
             @Override
             public void onOpen() {
-                PopulateEventDetails.populate(appService, eventDetailsUI);
+                PopulateDetails.populateEventDetails(appService, eventDetailsUI);
+                PopulateDetails.populateBudgetTracker(appService, budgetTrackerUI);
             }
 
             @Override
@@ -195,7 +199,8 @@ public class MainFrame extends Application {
                     }
                 }
                 try {
-                    appService.getPrevApplication().start(primaryStage);
+                    appService.setPrevApplication(dashboardUI);
+                    dashboardUI.start(primaryStage);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -204,9 +209,6 @@ public class MainFrame extends Application {
             @Override
             public void onBudgetTracker() {
                 appService.setPrevApplication(eventDetailsUI);
-                if (((EventManAppService) appService).getBudgetTracker() == null) {
-                    ((EventManAppService) appService).setBudgetTracker(new BudgetTracker());
-                }
                 budgetTrackerUI.start(primaryStage);
             }
 

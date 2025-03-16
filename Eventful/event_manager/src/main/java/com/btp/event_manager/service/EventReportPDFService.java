@@ -1,8 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.service.AppService;
-import com.btp.event_manager.model.Event;
-import com.itextpdf.io.codec.Base64;
+import com.btp.budget_tracker.model.ExpenseEntry;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.color.Color;
@@ -22,9 +21,7 @@ import javafx.scene.control.Alert;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -32,25 +29,31 @@ import java.util.List;
 
 public class EventReportPDFService {
     private static final DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
-    private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm");
 
     public static void generateReport(AppService appService) throws IOException {
         String eventName = appService.getEventName();
         LocalDate startDate = appService.getStartDate();
         LocalDate endDate = appService.getEndDate();
         LocalTime startTime = appService.getStartTime();
-        if (startTime == null) {
-            startTime = LocalTime.parse(LocalTime.parse("00:00").format(timeFormat));
-        }
         LocalTime endTime = appService.getEndTime();
-        if (endTime == null) {
-            endTime = LocalTime.parse(LocalTime.parse("00:00").format(timeFormat));
-        }
         String description = appService.getDescription();
         List<String> guests = appService.getGuests();
 
         String path = "Eventful/dat/";
         path += appService.getCurrUser().getUsername() + "/" + eventName.toLowerCase().replaceAll(" ", "_") + "_report.pdf";
+
+        // checks if PDF is open
+        File pdfFile = new File(path);
+        if (pdfFile.exists()) {
+            if (!pdfFile.delete()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Event Detail");
+                alert.setHeaderText("The PDF file is currently open.");
+                alert.setContentText("Please close the PDF file and try again.");
+                alert.showAndWait();
+                return; // Exit the method if the file is open
+            }
+        }
 
         PdfWriter pdfWriter = new PdfWriter(path);
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
@@ -67,11 +70,12 @@ public class EventReportPDFService {
         image.setOpacity(1f);
         document.add(image);
 
-        float threecol = 190f;
+        float fourCol = 142.5f;
         float twocol = 285f;
         float twocol150 = twocol+150f;
         float twocolWidth[] = {twocol150, twocol};
-        float w[] = {threecol*3};
+        float fourColWidth[] = {fourCol, fourCol, fourCol, fourCol};
+        float w[] = {fourCol*4};
         Paragraph onespc = new Paragraph("\n");
 
         Table table = new Table(twocolWidth);
@@ -115,10 +119,11 @@ public class EventReportPDFService {
 
         twoColTable.addCell(new Cell().add(leftColTable).setBorder(Border.NO_BORDER));
         twoColTable.addCell(new Cell().add(rightColTable).setBorder(Border.NO_BORDER));
+        twoColTable.setMarginBottom(50f);
 
         Table divider2 = new Table(w);
         Border dgb = new DashedBorder(Color.GRAY, 0.5f);
-
+        divider2.setBorder(dgb);
 
         document.add(table);
         document.add(onespc);
@@ -126,10 +131,58 @@ public class EventReportPDFService {
         document.add(onespc);
         document.add(twoColTable);
 
-        if (((Event) appService.getSelectedEvent()).getBudgetTracker() != null) {
+        if (((EventManAppService) appService).getBudgetTracker() != null) {
             document.add(divider2);
+            document.add(onespc);
+
+            Paragraph expensePar = new Paragraph("Expenses Tracker");
+            document.add(expensePar.setBold());
+
+            Table fourColTableUp = new Table(fourColWidth);
+            fourColTableUp.setBorder(Border.NO_BORDER);
+
+            fourColTableUp.setBackgroundColor(Color.BLACK, 0.7f);
+            fourColTableUp.addCell(new Cell().add("Quantity").setBold().setFontColor(Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+            fourColTableUp.addCell(new Cell().add("Item").setBold().setFontColor(Color.WHITE).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+            fourColTableUp.addCell(new Cell().add("Cost Per Item (PHP)").setBold().setFontColor(Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
+            fourColTableUp.addCell(new Cell().add("Total (PHP)").setBold().setFontColor(Color.WHITE).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
+
+            Table fourColTableLow = new Table(fourColWidth);
+            fourColTableLow.setBackgroundColor(Color.WHITE).setBorder(new SolidBorder(Border.SOLID));
+
+            Table fourColTable1 = new Table(new float[]{fourColWidth[0]});
+            fourColTable1.setBackgroundColor(Color.WHITE);
+            Table fourColTable2 = new Table(new float[]{fourColWidth[1]});
+            fourColTable2.setBackgroundColor(Color.WHITE);
+            Table fourColTable3 = new Table(new float[]{fourColWidth[2]});
+            fourColTable3.setBackgroundColor(Color.WHITE);
+            Table fourColTable4 = new Table(new float[]{fourColWidth[3]});
+            fourColTable4.setBackgroundColor(Color.WHITE);
+
+            for (ExpenseEntry entry : ((EventManAppService) appService).getBudgetTracker().getExpenses()) {
+                fourColTable1.addCell(new Cell().add(String.valueOf(entry.getQuantity())).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER).setMarginLeft(5f));
+                fourColTable2.addCell(new Cell().add(entry.getItemName()).setTextAlignment(TextAlignment.CENTER).setBorder(Border.NO_BORDER));
+                fourColTable3.addCell(new Cell().add(String.format("%.2f", entry.getCostPerItem())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER));
+                fourColTable4.addCell(new Cell().add(String.format("%.2f", entry.getQuantity()*entry.getCostPerItem())).setTextAlignment(TextAlignment.RIGHT).setBorder(Border.NO_BORDER).setMarginRight(5f));
+            }
+
+            fourColTableLow.addCell(new Cell().add(fourColTable1).setBorder(Border.NO_BORDER));
+            fourColTableLow.addCell(new Cell().add(fourColTable2).setBorder(Border.NO_BORDER));
+            fourColTableLow.addCell(new Cell().add(fourColTable3).setBorder(Border.NO_BORDER));
+            fourColTableLow.addCell(new Cell().add(fourColTable4).setBorder(Border.NO_BORDER));
+
+            document.add(fourColTableUp);
+            document.add(fourColTableLow);
+
+            double sum = ((EventManAppService) appService).getBudgetTracker().getTotalExpenses();
+            Paragraph totSum = new Paragraph("Total Sum (PHP): " + String.format("%.2f", sum));
+            totSum.setBold().setTextAlignment(TextAlignment.RIGHT);
+            document.add(totSum);
+
+            document.add(onespc);
             document.add(divider2);
         }
+
         document.add(onespc);
         document.add(divider);
         document.close();

@@ -42,14 +42,8 @@ public class UpdateBudgetTracker {
             uniqueExpenses.add(entry);
         }
 
-        double total = 0;
-        for (ExpenseEntry entry : uniqueExpenses) {
-            total += (entry.getQuantity()* entry.getCostPerItem());
-        }
-
         BudgetTracker newBudgetTracker = new BudgetTracker();
         newBudgetTracker.setExpenses(uniqueExpenses);
-        newBudgetTracker.setTotalExpenses(total);
 
         ((EventManAppService) appService).setBudgetTracker(newBudgetTracker);
         return true;

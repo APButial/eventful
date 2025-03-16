@@ -19,6 +19,7 @@ public class BudgetTrackerUI extends Application {
     public BudgetTrackerUI(AppService appService, DashNavigateListener dashNavigateListener) {
         this.appService = appService;
         this.dashNavigateListener = dashNavigateListener;
+        budgetTable = new BudgetTable();
     }
 
     @Override
@@ -52,7 +53,6 @@ public class BudgetTrackerUI extends Application {
         HBox spacer = new HBox();
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
-        budgetTable = new BudgetTable(appService);
 
         ScrollPane scrollPane = new ScrollPane(budgetTable.getComponent());
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
@@ -73,5 +73,9 @@ public class BudgetTrackerUI extends Application {
 
     public BudgetTable getBudgetTable() {
         return budgetTable;
+    }
+
+    public void clearTable () {
+        budgetTable = new BudgetTable();
     }
 }

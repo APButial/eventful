@@ -17,6 +17,10 @@ public class Splash extends StackPane {
         splashImage.setFitWidth(900);  // Set width
         splashImage.setFitHeight(600); // Set height
 
+        Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
+        ImageView logoView = new ImageView(logoImg);
+        stage.getIcons().add(logoImg);
+
         // Add the image to the layout
         this.getChildren().add(splashImage);
 

@@ -1,6 +1,8 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.service.AppService;
+import com.btp.budget_tracker.model.BudgetTracker;
+import com.btp.budget_tracker.model.ExpenseEntry;
 import com.btp.event_manager.model.Event;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -59,7 +61,27 @@ public class LoadUserEvents {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                // Load budget tracker data
+                Element budgetTracker = (Element) event.getElementsByTagName("budgetTracker").item(0);
+                if (budgetTracker != null) {
+                    List<ExpenseEntry> expenseEntries = new ArrayList<>();
+                    NodeList expenseEntryNodes = budgetTracker.getElementsByTagName("expenseEntry");
 
+                    for (int j = 0; j < expenseEntryNodes.getLength(); j++) {
+                        Element expenseEntryElement = (Element) expenseEntryNodes.item(j);
+
+                        int quantity = Integer.parseInt(expenseEntryElement.getElementsByTagName("quantity").item(0).getTextContent());
+                        String itemName = expenseEntryElement.getElementsByTagName("itemName").item(0).getTextContent();
+                        double costPerItem = Double.parseDouble(expenseEntryElement.getElementsByTagName("costPerItem").item(0).getTextContent());
+
+                        ExpenseEntry expenseEntry = new ExpenseEntry(quantity, itemName, costPerItem);
+                        expenseEntries.add(expenseEntry);
+                    }
+
+                    BudgetTracker tempBudgetTracker = new BudgetTracker();
+                    tempBudgetTracker.setExpenses(expenseEntries);
+                    savedEvent.setBudgetTracker(tempBudgetTracker);
+                }
                 appService.getCurrUser().getEvents().add(savedEvent);
             }
         } catch (Exception e) {
