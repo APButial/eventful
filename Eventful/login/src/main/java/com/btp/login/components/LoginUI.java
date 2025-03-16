@@ -29,7 +29,7 @@ public class LoginUI extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        signupUI = new SignupUI(appService);
+        signupUI = new SignupUI(appService, listener);
 
         VBox leftPanel = new VBox(20);
         leftPanel.setStyle("-fx-background-color: white; -fx-padding: 40px; -fx-border-radius: 15px; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 5);");
@@ -85,7 +85,6 @@ public class LoginUI extends Application {
         loginButton.setMaxWidth(300);
         loginButton.setOnAction(event -> {
             if(VerifyLoginService.verify(usernameField.getText(),passwordField.getText())) {
-                appService.setPrevApplication(this);
                 appService.login(new User(usernameField.getText(), passwordField.getText()));
                 listener.onLoginSuccess();
             } else {
@@ -101,7 +100,6 @@ public class LoginUI extends Application {
         createUserButton.setMaxWidth(300);
         createUserButton.setOnAction(event -> {
             try {
-                appService.setPrevApplication(this);
                 signupUI.start(primaryStage);
             } catch (Exception e) {
                 e.printStackTrace();

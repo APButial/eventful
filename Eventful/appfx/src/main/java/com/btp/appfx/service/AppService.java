@@ -4,10 +4,7 @@ import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
-import javax.mail.internet.AddressException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -50,13 +47,11 @@ public interface AppService {
     void setGuests(List<String> guests);
     void addGuest(String guest);
     void removeGuest(String guest);
-    void inviteGuests(String guests) throws AddressException;
+    void inviteGuests(String guests);
     LocalDateTime getLastAccessed();
     void setLastAccessed(LocalDateTime dateTime);
 
     // others
-    Application getPrevApplication();
-    void setPrevApplication(Application application);
     boolean isLoggedIn();
     void setLogIn(boolean loggedIn);
     LocalDateTime getSysDateTime();
@@ -70,7 +65,4 @@ public interface AppService {
     void setEmailAdd(String emailAdd);
     String getEmailPass();
     void setEmailPass(String emailPass);
-
-    void setMainStage(Stage stage);
-    Stage getMainStage();
 }

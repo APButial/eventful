@@ -12,8 +12,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-
-    import javax.mail.internet.AddressException;
     import java.time.LocalDate;
     import java.time.LocalTime;
     import java.time.format.DateTimeFormatter;
@@ -163,8 +161,8 @@ public class EventForm {
         sendEmailButton.setOnAction(event -> {
             try {
                 eventFormListener.sendEmail();
-            } catch (AddressException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
         sendEmailButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");

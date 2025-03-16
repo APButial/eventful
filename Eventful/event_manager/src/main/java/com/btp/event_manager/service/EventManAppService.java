@@ -5,7 +5,7 @@ import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
-import com.btp.budget_tracker.model.BudgetTracker;
+import com.btp.budget.model.BudgetTracker;
 import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.RemoveUserService;
@@ -259,10 +259,14 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void inviteGuests(String guests) throws AddressException {
+    public void inviteGuests(String guests){
         if(MailService.authenticate(this)) {
             if(MailService.validMailArea(guests, this)) {
-                MailService.sendMail(this);
+                try {
+                    MailService.sendMail(this);
+                } catch (AddressException e) {
+                    throw new RuntimeException(e);
+                }
                 _guestsInvited();
             }
         }
@@ -286,12 +290,10 @@ public class EventManAppService implements AppService, LogService {
         eventManState.getCurrSelectedEvent().setLastAccessed(dateTime);
     }
 
-    @Override
     public Application getPrevApplication() {
         return eventManState.getPrevApplication();
     }
 
-    @Override
     public void setPrevApplication(Application application) {
         eventManState.setPrevApplication(application);
     }
@@ -356,12 +358,10 @@ public class EventManAppService implements AppService, LogService {
         eventManState.setEmailPass(emailPass);
     }
 
-    @Override
     public void setMainStage(Stage stage) {
         eventManState.setMainStage(stage);
     }
 
-    @Override
     public Stage getMainStage() {
         return eventManState.getMainStage();
     }

@@ -35,7 +35,7 @@ public class EventTimelineUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
+        UpperHeader upperHeader = new UpperHeader(appService, stage);
         LowerHeader lowerHeader = new LowerHeader("Event Timeline", "yes"); // Show date
         lowerHeader.setDateLabel(appService.getSysDateTime());
         lowerHeader.setDateTimeListener(new DateTimeListener() {

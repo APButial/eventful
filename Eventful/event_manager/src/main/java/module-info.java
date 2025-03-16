@@ -1,14 +1,15 @@
 module event_manager {
     requires login;
-    requires budget_tracker;
+    requires budget;
     requires appfx;
     requires dashboard;
     requires java.mail;
-    requires com.calendarfx.view;
     requires logs;
     requires kernel;
     requires layout;
     requires io;
+    requires javafx.graphics;
+    requires javafx.controls;
     requires java.desktop;
 
     exports com.btp.event_manager;

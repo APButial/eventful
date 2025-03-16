@@ -21,7 +21,13 @@
             <groupId>eventful</groupId>
             <artifactId>appfx</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17.0.6</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

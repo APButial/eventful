@@ -2,6 +2,7 @@ package com.btp.login.components;
 
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
+import com.btp.login.service.LoginSuccessListener;
 import com.btp.login.service.ValidateNewUserService;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -14,14 +15,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class SignupUI extends Application {
-    private  AppService appService;
+    private AppService appService;
     private TextField usernameField;
     private TextField passwordField;
     private PasswordField reenterField;
     private Alert alert;
+    private LoginSuccessListener listener;
 
-    public SignupUI(AppService appService) {
+    public SignupUI(AppService appService, LoginSuccessListener listener) {
         this.appService = appService;
+        this.listener = listener;
     }
 
     @Override
@@ -98,7 +101,7 @@ public class SignupUI extends Application {
                     alert.setHeaderText("Signup Successful");
                     alert.setContentText("New user account created successfully.");
                     try {
-                        appService.getPrevApplication().start(primaryStage);
+                        listener.returnLogin();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -116,7 +119,7 @@ public class SignupUI extends Application {
         cancelButton.setMaxWidth(300);
         cancelButton.setOnAction(event -> {
             try{
-                appService.getPrevApplication().start(primaryStage);
+                listener.returnLogin();
             } catch (Exception e) {
                 e.printStackTrace();
             }

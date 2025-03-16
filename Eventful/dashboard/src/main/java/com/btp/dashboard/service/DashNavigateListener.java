@@ -8,4 +8,5 @@ public interface DashNavigateListener {
     void logoTriggered();
     void returnTriggered();
     void budgetUpdateTriggered();
+    void accountTriggered();
 }

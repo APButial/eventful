@@ -2,14 +2,13 @@ package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
-import com.btp.budget_tracker.model.ExpenseEntry;
+import com.btp.budget.model.ExpenseEntry;
 import com.btp.event_manager.model.Event;
 import javafx.scene.control.Alert;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.swing.tree.ExpandVetoException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -18,8 +17,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class WriteEventsService {
     public static void write(BaseEvent newEvent, AppService appService) {

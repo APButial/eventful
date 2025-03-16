@@ -29,7 +29,7 @@ public class LogsUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
+        UpperHeader upperHeader = new UpperHeader(appService, primaryStage);
         LowerHeader lowerHeader = new LowerHeader("Logs", "no"); // Show date
 
         HBox spacer = new HBox();

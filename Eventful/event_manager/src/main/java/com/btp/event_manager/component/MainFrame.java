@@ -2,12 +2,8 @@ package com.btp.event_manager.component;
 import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.service.AppService;
-import com.btp.budget_tracker.model.BudgetTracker;
 import com.btp.dashboard.component.*;
-import com.btp.dashboard.service.CreateEventListener;
-import com.btp.dashboard.service.DashNavigateListener;
-import com.btp.dashboard.service.EventDetailListener;
-import com.btp.dashboard.service.EventFormListener;
+import com.btp.dashboard.service.*;
 import com.btp.event_manager.model.Event;
 import com.btp.event_manager.service.*;
 import com.btp.event_manager.model.EventManState;
@@ -18,7 +14,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import javax.mail.internet.AddressException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -44,7 +39,7 @@ public class MainFrame extends Application {
     public void start(Stage primaryStage) {
         eventManState = new EventManState();
         appService = new EventManAppService(eventManState);
-        appService.setMainStage(primaryStage);
+        ((EventManAppService) appService).setMainStage(primaryStage);
 
         Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
         ImageView logoView = new ImageView(logoImg);
@@ -55,9 +50,16 @@ public class MainFrame extends Application {
             @Override
             public void onLoginSuccess() {
                 dashboardUI.start(primaryStage);
+                ((EventManAppService) appService).setPrevApplication(dashboardUI);
+            }
+
+            @Override
+            public void returnLogin() throws Exception {
+                ((EventManAppService) appService).getPrevApplication().start(primaryStage);
             }
         });
         ((EventManAppService) appService).setLoginUI(loginUI);
+        ((EventManAppService) appService).setPrevApplication(loginUI);
 
         DashNavigateListener dashListener = new DashNavigateListener() {
             @Override
@@ -89,13 +91,13 @@ public class MainFrame extends Application {
             @Override
             public void logoTriggered() {
                 dashboardUI.start(primaryStage);
-                appService.setPrevApplication(dashboardUI);
+                ((EventManAppService) appService).setPrevApplication(dashboardUI);
             }
 
             @Override
             public void returnTriggered() {
                 try {
-                    appService.getPrevApplication().start(primaryStage);
+                    ((EventManAppService) appService).getPrevApplication().start(primaryStage);
                     if (((EventManAppService) appService).getBudgetTracker().getExpenses() == null) {
                         ((EventManAppService) appService).setBudgetTracker(null);
                     }
@@ -110,6 +112,11 @@ public class MainFrame extends Application {
                     appService.updateEvent(EventFormEvents.UPDATE_BUDGET);
                 }
             }
+
+            @Override
+            public void accountTriggered() {
+
+            }
         };
         CreateEventListener ceventListener = new CreateEventListener() {
             @Override
@@ -123,6 +130,11 @@ public class MainFrame extends Application {
                     ValidateNewEventService.addEvent(appService.getSelectedEvent(), appService);
                     eventDetailsUI.start(primaryStage);
                 }
+            }
+
+            @Override
+            public void onCancel() {
+                ((EventManAppService) appService).getPrevApplication();
             }
         };
         EventDetailListener eventDetailListener = new EventDetailListener() {
@@ -181,8 +193,12 @@ public class MainFrame extends Application {
             }
 
             @Override
-            public void sendEmail() throws AddressException {
-                appService.inviteGuests(eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
+            public void sendEmail(){
+                try {
+                    appService.inviteGuests(eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -199,7 +215,7 @@ public class MainFrame extends Application {
                     }
                 }
                 try {
-                    appService.setPrevApplication(dashboardUI);
+                    ((EventManAppService) appService).setPrevApplication(dashboardUI);
                     dashboardUI.start(primaryStage);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -208,7 +224,7 @@ public class MainFrame extends Application {
 
             @Override
             public void onBudgetTracker() {
-                appService.setPrevApplication(eventDetailsUI);
+                ((EventManAppService) appService).setPrevApplication(eventDetailsUI);
                 budgetTrackerUI.start(primaryStage);
             }
 
@@ -234,10 +250,14 @@ public class MainFrame extends Application {
 
 ///////////////////////////////////////////////////////////
         try {
-            appService.setPrevApplication(this);
+            ((EventManAppService) appService).setPrevApplication(loginUI);
             loginUI.start(primaryStage);
         } catch (Exception e){
             e.printStackTrace();
         }
+
+        primaryStage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
     }
 }

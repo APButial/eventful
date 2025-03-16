@@ -1,10 +1,9 @@
 package com.btp.event_manager.model;
 
 import com.btp.appfx.model.BaseEvent;
-import com.btp.budget_tracker.model.BudgetTracker;
+import com.btp.budget.model.BudgetTracker;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class Event extends BaseEvent {
     private BudgetTracker budgetTracker;

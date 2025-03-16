@@ -3,8 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/Eventful/appfx/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Eventful/appfx/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Eventful/budget_tracker/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Eventful/budget_tracker/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Eventful/budget/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Eventful/budget/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Eventful/dashboard/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Eventful/dashboard/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Eventful/event_manager/src/main/java" charset="UTF-8" />

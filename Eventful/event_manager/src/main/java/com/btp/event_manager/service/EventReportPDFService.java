@@ -1,7 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.service.AppService;
-import com.btp.budget_tracker.model.ExpenseEntry;
+import com.btp.budget.model.ExpenseEntry;
 import com.itextpdf.io.image.ImageData;
 import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.color.Color;
@@ -13,7 +13,6 @@ import com.itextpdf.layout.border.Border;
 import com.itextpdf.layout.border.DashedBorder;
 import com.itextpdf.layout.border.SolidBorder;
 import com.itextpdf.layout.element.Cell;
-import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
@@ -59,16 +58,6 @@ public class EventReportPDFService {
         PdfDocument pdfDocument = new PdfDocument(pdfWriter);
         pdfDocument.setDefaultPageSize(PageSize.A4);
         Document document = new Document(pdfDocument);
-
-        String imgPath = "Eventful/event_manager/src/main/resources/logo.png";
-        ImageData imageData = ImageDataFactory.create(imgPath);
-        Image image = new Image(imageData);
-
-        float x = pdfDocument.getDefaultPageSize().getWidth()/2;
-        float y = pdfDocument.getDefaultPageSize().getHeight()/2;
-        image.setFixedPosition(x,y);
-        image.setOpacity(1f);
-        document.add(image);
 
         float fourCol = 142.5f;
         float twocol = 285f;

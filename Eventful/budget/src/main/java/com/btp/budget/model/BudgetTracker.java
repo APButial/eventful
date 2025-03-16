@@ -1,4 +1,4 @@
-package com.btp.budget_tracker.model;
+package com.btp.budget.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -29,7 +29,6 @@ public class DashboardUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        appService.setPrevApplication(this);
         primaryStage.setTitle("Dashboard");
 
         Sidebar sidebar = new Sidebar("None", primaryStage, appService, listener);//type the name of which page being used for indicator
@@ -38,7 +37,7 @@ public class DashboardUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF; -fx-border-color: #CCCCCC; -fx-border-radius: 5;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader(appService, listener);
+        UpperHeader upperHeader = new UpperHeader(appService, primaryStage);
         LowerHeader lowerHeader = new LowerHeader("Recent Events","yes");//requires string for page name
         lowerHeader.setDateLabel(appService.getSysDateTime());
         lowerHeader.setDateTimeListener(new DateTimeListener() {

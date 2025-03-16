@@ -1,7 +1,6 @@
 package com.btp.dashboard.component;
 
-import com.btp.appfx.service.AppService;
-import com.btp.budget_tracker.model.ExpenseEntry;
+import com.btp.budget.model.ExpenseEntry;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.TextField;

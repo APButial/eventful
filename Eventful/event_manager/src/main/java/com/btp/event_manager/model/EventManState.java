@@ -1,8 +1,8 @@
 package com.btp.event_manager.model;
 
 import com.btp.appfx.model.AppState;
-import com.btp.budget_tracker.model.BudgetTracker;
-import com.btp.budget_tracker.model.ExpenseEntry;
+import com.btp.budget.model.BudgetTracker;
+import com.btp.budget.model.ExpenseEntry;
 import com.btp.dashboard.service.DateTimeListener;
 import com.btp.dashboard.service.DateTimeService;
 import javafx.application.Application;

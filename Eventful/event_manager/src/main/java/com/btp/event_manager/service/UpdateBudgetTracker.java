@@ -1,10 +1,9 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.service.AppService;
-import com.btp.budget_tracker.model.BudgetTracker;
-import com.btp.budget_tracker.model.ExpenseEntry;
+import com.btp.budget.model.BudgetTracker;
+import com.btp.budget.model.ExpenseEntry;
 import com.btp.dashboard.component.BudgetTrackerUI;
-import com.btp.event_manager.model.Event;
 import javafx.scene.control.Alert;
 
 import java.util.ArrayList;

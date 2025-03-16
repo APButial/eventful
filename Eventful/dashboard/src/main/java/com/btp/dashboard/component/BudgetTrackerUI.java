@@ -32,7 +32,7 @@ public class BudgetTrackerUI extends Application {
         mainContent.setStyle("-fx-background-color: #FFFFFF;");
         mainContent.setPrefWidth(900);
 
-        UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
+        UpperHeader upperHeader = new UpperHeader(appService, primaryStage);
         LowerHeader lowerHeader = new LowerHeader("Expenses Tracker - " + appService.getSelectedEvent().getEventName().toUpperCase(), "no");
 
         Button returnButton = new Button("Return");

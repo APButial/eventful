@@ -7,15 +7,14 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 
 public class UpperHeader {
     private HBox upperHeader;
-    private DashNavigateListener dashNavigateListener;
     private ProfilePopup profilePopup;
 
-    public UpperHeader(AppService appService, DashNavigateListener dashNavigateListener) {
-        this.dashNavigateListener = dashNavigateListener;
+    public UpperHeader(AppService appService, Stage stage) {
 
         upperHeader = new HBox(10);
         upperHeader.setPadding(new Insets(5, 20, 5, 20));
@@ -38,7 +37,7 @@ public class UpperHeader {
         menuButton.setOnMousePressed(event -> {
             profilePopup.setX(event.getScreenX()-120);
             profilePopup.setY(event.getScreenY()+20);
-            profilePopup.show(appService.getMainStage());
+            profilePopup.show(stage);
         });
 
         String textButtonStyle = "-fx-background-color: transparent; -fx-border: none; -fx-font-size: 14px; -fx-text-fill: #AAB2C8;";
@@ -51,6 +50,10 @@ public class UpperHeader {
         profileMenu.setSpacing(0);
 
         upperHeader.getChildren().addAll(searchBar, spacer, calendarButton, notificationsButton, profileMenu);
+    }
+
+    public ProfilePopup getProfilePopup() {
+        return profilePopup;
     }
 
     public HBox getComponent() {

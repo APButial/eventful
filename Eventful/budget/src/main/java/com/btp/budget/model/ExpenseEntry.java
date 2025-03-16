@@ -1,4 +1,4 @@
-package com.btp.budget_tracker.model;
+package com.btp.budget.model;
 
 public class ExpenseEntry {
     private int quantity;

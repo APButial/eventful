@@ -1,4 +1,4 @@
-package com.btp.event_manager.service;
+package com.btp.dashboard.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
