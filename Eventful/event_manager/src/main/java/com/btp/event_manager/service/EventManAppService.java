@@ -5,6 +5,7 @@ import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
+import com.btp.budget_tracker.model.BudgetTracker;
 import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.RemoveUserService;
@@ -55,6 +56,7 @@ public class EventManAppService implements AppService, LogService {
         eventManState.setCurrUser(user);
         LoadUserEvents.load(this);
         _loggedIn();
+        _eventsLoaded();
     }
 
     @Override
@@ -92,7 +94,13 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void updateEvent(EventFormEvents update) {
-
+        if (update.equals(EventFormEvents.UPDATE_BUDGET)) {
+            WriteEventsService.overwrite(this, tempStartDate, tempEndDate);
+            LoadUserEvents.load(this);
+            setSaveStatus(SaveStatus.SAVED);
+            _savedEvent();
+            _eventsLoaded();
+        }
     }
 
     @Override
@@ -117,6 +125,7 @@ public class EventManAppService implements AppService, LogService {
                 LoadUserEvents.load(this);
                 setSaveStatus(SaveStatus.SAVED);
                 _savedEvent();
+                _eventsLoaded();
                 break;
         }
     }
@@ -257,6 +266,14 @@ public class EventManAppService implements AppService, LogService {
         }
     }
 
+    public BudgetTracker getBudgetTracker() {
+        return eventManState.getCurrBudgetTracker();
+    }
+
+    public void setBudgetTracker(BudgetTracker budgetTracker) {
+        eventManState.setCurrBudgetTracker(budgetTracker);
+    }
+
     @Override
     public LocalDateTime getLastAccessed() {
         return eventManState.getCurrSelectedEvent().getLastAccessed();
@@ -349,10 +366,6 @@ public class EventManAppService implements AppService, LogService {
 
     public void setLoginUI(LoginUI loginUI) {
         this.loginUI = loginUI;
-    }
-
-    public LoginUI getLoginUI() {
-        return loginUI;
     }
 
     // methods prefixed with '_' are for logging purposes

@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 public class BudgetTrackerUI extends Application {
     private AppService appService;
     private DashNavigateListener dashNavigateListener;
+    private BudgetTable budgetTable;
 
     public BudgetTrackerUI(AppService appService, DashNavigateListener dashNavigateListener) {
         this.appService = appService;
@@ -21,7 +23,7 @@ public class BudgetTrackerUI extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Budget Tracker");
+        primaryStage.setTitle("Expenses Tracker");
 
         Sidebar sidebar = new Sidebar("My Events", primaryStage, appService, dashNavigateListener);
         VBox mainContent = new VBox(0);
@@ -30,7 +32,7 @@ public class BudgetTrackerUI extends Application {
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader(appService, dashNavigateListener);
-        LowerHeader lowerHeader = new LowerHeader("Budget Tracker - " + appService.getSelectedEvent().getEventName(), "no");
+        LowerHeader lowerHeader = new LowerHeader("Expenses Tracker - " + appService.getSelectedEvent().getEventName().toUpperCase(), "no");
 
         Button returnButton = new Button("Return");
         returnButton.setStyle("-fx-background-color: #8425a4; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
@@ -39,12 +41,23 @@ public class BudgetTrackerUI extends Application {
         });
         lowerHeader.getLowerHeader().getChildren().add(returnButton);
 
+        Button updateButton = new Button("Update");
+        updateButton.setStyle("-fx-background-color: #8425a4; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
+        updateButton.setOnAction(event -> {
+            dashNavigateListener.budgetUpdateTriggered();
+        });
+        lowerHeader.getLowerHeader().getChildren().add(updateButton);
+
+
         HBox spacer = new HBox();
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
-        BudgetTable budgetTable = new BudgetTable();
+        budgetTable = new BudgetTable(appService);
 
-        mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(), spacer, budgetTable.getComponent());
+        ScrollPane scrollPane = new ScrollPane(budgetTable.getComponent());
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+
+        mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(), spacer, scrollPane);
 
         HBox layout = new HBox(sidebar.getComponent(), mainContent);
         layout.setSpacing(0);
@@ -56,5 +69,9 @@ public class BudgetTrackerUI extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public BudgetTable getBudgetTable() {
+        return budgetTable;
     }
 }

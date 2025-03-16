@@ -6,5 +6,6 @@ public enum EventFormEvents {
     START_TIME,
     END_TIME,
     DESC,
-    UPDATE_CHANGES
+    UPDATE_CHANGES,
+    UPDATE_BUDGET
 }

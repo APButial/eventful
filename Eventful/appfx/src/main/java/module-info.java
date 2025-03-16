@@ -1,5 +1,4 @@
 module appfx {
-    requires static lombok;
     requires javafx.graphics;
     requires javafx.controls;
     requires java.mail;

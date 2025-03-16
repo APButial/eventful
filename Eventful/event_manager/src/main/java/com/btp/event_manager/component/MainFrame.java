@@ -100,6 +100,13 @@ public class MainFrame extends Application {
                     throw new RuntimeException(e);
                 }
             }
+
+            @Override
+            public void budgetUpdateTriggered() {
+                if (UpdateBudgetTracker.validate(appService, budgetTrackerUI)) {
+                    appService.updateEvent(EventFormEvents.UPDATE_BUDGET);
+                }
+            }
         };
         CreateEventListener ceventListener = new CreateEventListener() {
             @Override
@@ -123,7 +130,7 @@ public class MainFrame extends Application {
 
             @Override
             public void onSelectEvent() {
-                appService.setSaveStatus(SaveStatus.SAVED);
+                appService.setSaveStatus(SaveStatus.SAVED);;
                 eventDetailsUI.start(primaryStage);
             }
         };
@@ -197,8 +204,8 @@ public class MainFrame extends Application {
             @Override
             public void onBudgetTracker() {
                 appService.setPrevApplication(eventDetailsUI);
-                if (((Event) appService.getSelectedEvent()).getBudgetTracker() == null) {
-                    ((Event) appService.getSelectedEvent()).setBudgetTracker(new BudgetTracker());
+                if (((EventManAppService) appService).getBudgetTracker() == null) {
+                    ((EventManAppService) appService).setBudgetTracker(new BudgetTracker());
                 }
                 budgetTrackerUI.start(primaryStage);
             }

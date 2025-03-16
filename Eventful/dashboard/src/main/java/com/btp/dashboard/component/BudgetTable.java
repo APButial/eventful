@@ -1,5 +1,6 @@
 package com.btp.dashboard.component;
 
+import com.btp.appfx.service.AppService;
 import com.btp.budget_tracker.model.ExpenseEntry;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.HBox;
@@ -15,20 +16,37 @@ public class BudgetTable {
     private VBox component;
     private VBox rowsContainer;
     private List<HBox> rows;
-    private List<ExpenseEntry> expenseEntries;
+    private List<ExpenseEntry> expenses;
     private TextField totalSumField;
+
+
+    public List<ExpenseEntry> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<ExpenseEntry> expenses) {
+        this.expenses = expenses;
+    }
+
+    public TextField getTotalSumField() {
+        return totalSumField;
+    }
+
+    public void setTotalSumField(TextField totalSumField) {
+        this.totalSumField = totalSumField;
+    }
 
     private static final double QUANTITY_WIDTH = 100;
     private static final double ITEM_WIDTH = 200;
     private static final double COST_WIDTH = 150;
     private static final double TOTAL_WIDTH = 150;
 
-    public BudgetTable() {
+    public BudgetTable(AppService appService) {
         component = new VBox(10);
         component.setPadding(new Insets(15));
         component.setStyle("-fx-background-color: #FFFFFF; -fx-padding: 15px;");
 
-        expenseEntries = new ArrayList<>();
+        expenses = new ArrayList<>();
         rowsContainer = new VBox(5);
         rows = new ArrayList<>();
 
@@ -42,7 +60,7 @@ public class BudgetTable {
 
     private void addRow() {
         ExpenseEntry expenseEntry = new ExpenseEntry();
-        expenseEntries.add(expenseEntry);
+        expenses.add(expenseEntry);
 
         HBox row = createRow(expenseEntry);
         rows.add(row);
@@ -57,8 +75,8 @@ public class BudgetTable {
 
         Label quantityLabel = createCenteredLabel("Quantity", QUANTITY_WIDTH);
         Label itemLabel = createCenteredLabel("Item", ITEM_WIDTH);
-        Label costLabel = createCenteredLabel("Cost per item", COST_WIDTH);
-        Label totalLabel = createCenteredLabel("Total", TOTAL_WIDTH);
+        Label costLabel = createCenteredLabel("Cost per item (₱)", COST_WIDTH);
+        Label totalLabel = createCenteredLabel("Total (₱)", TOTAL_WIDTH);
 
         header.getChildren().addAll(quantityLabel, itemLabel, costLabel, totalLabel);
         return header;
@@ -79,14 +97,18 @@ public class BudgetTable {
         row.setStyle("-fx-background-color: #F8F8FA; -fx-border-radius: 10px; -fx-border-color: white;");
         row.setAlignment(Pos.CENTER);
 
-        TextField quantityField = createCenteredTextField("1", QUANTITY_WIDTH);
+        TextField quantityField = createCenteredTextField("0", QUANTITY_WIDTH);
+        expenseEntry.setQuantity(0);
         TextField itemField = createCenteredTextField("", ITEM_WIDTH);
+        expenseEntry.setItemName("");
         TextField costField = createCenteredTextField("0.00", COST_WIDTH);
+        expenseEntry.setCostPerItem(0.00);
         TextField totalField = createCenteredTextField("0.00", TOTAL_WIDTH);
         totalField.setEditable(false);
 
-        quantityField.setOnKeyReleased(e -> updateExpenseEntry(expenseEntry, quantityField, costField, totalField));
-        costField.setOnKeyReleased(e -> updateExpenseEntry(expenseEntry, quantityField, costField, totalField));
+        quantityField.setOnKeyReleased(e -> updateExpenseEntry(expenseEntry, quantityField, itemField, costField, totalField));
+        costField.setOnKeyReleased(e -> updateExpenseEntry(expenseEntry, quantityField, itemField, costField, totalField));
+        itemField.setOnKeyReleased(e -> updateExpenseEntry(expenseEntry, quantityField, itemField, costField, totalField));
 
         row.getChildren().addAll(quantityField, itemField, costField, totalField);
         return row;
@@ -101,13 +123,18 @@ public class BudgetTable {
         return textField;
     }
 
-    private void updateExpenseEntry(ExpenseEntry expenseEntry, TextField quantityField, TextField costField, TextField totalField) {
+    private void updateExpenseEntry(ExpenseEntry expenseEntry, TextField quantityField, TextField itemField, TextField costField, TextField totalField) {
         try {
             int quantity = Integer.parseInt(quantityField.getText());
             double cost = Double.parseDouble(costField.getText());
+            String itemName = itemField.getText();
 
-            expenseEntry.setQuantity(Math.max(1, quantity));
-            expenseEntry.setCostPerItem(Math.max(0.0, cost));
+            if(!itemName.isBlank())
+                itemName = itemName.strip();
+
+            expenseEntry.setQuantity(quantity);
+            expenseEntry.setCostPerItem(cost);
+            expenseEntry.setItemName(itemName);
 
             double total = expenseEntry.getTotalCost();
             totalField.setText(String.format("%.2f", total));
@@ -117,7 +144,7 @@ public class BudgetTable {
     }
 
     private void updateTotalSum() {
-        double total = expenseEntries.stream()
+        double total = expenses.stream()
                 .mapToDouble(ExpenseEntry::getTotalCost)
                 .sum();
         totalSumField.setText(String.format("%.2f", total));

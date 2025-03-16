@@ -13,9 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import lombok.Data;
 
-@Data
 public class LoginUI extends Application {
     private AppService appService;
     private TextField usernameField;

@@ -2,6 +2,7 @@ package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
+import com.btp.budget_tracker.model.ExpenseEntry;
 import com.btp.event_manager.model.Event;
 import javafx.scene.control.Alert;
 import org.w3c.dom.Document;
@@ -105,49 +106,99 @@ public class WriteEventsService {
                         Element description = (Element) event.getElementsByTagName("description").item(0);
                         if (description != null) {
                             description.setTextContent(selectedEvent.getDescription());
-                            appService.setDescription(selectedEvent.getDescription());
                         } else {
                             description = document.createElement("description");
                             description.appendChild(document.createTextNode(selectedEvent.getDescription()));
                             event.appendChild(description);
-                            appService.setDescription(selectedEvent.getDescription());
                         }
+                        appService.setDescription(selectedEvent.getDescription());
                     }
                     if (selectedEvent.getStartTime() != null) {
                         Element timeStart = (Element) event.getElementsByTagName("startTime").item(0);
                         if (timeStart != null) {
                             timeStart.setTextContent(selectedEvent.getStartTime().toString());
-                            appService.setStartTime(selectedEvent.getStartTime());
                         } else {
                             timeStart = document.createElement("startTime");
                             timeStart.appendChild(document.createTextNode(selectedEvent.getStartTime().toString()));
                             event.appendChild(timeStart);
-                            appService.setStartTime(selectedEvent.getStartTime());
                         }
+                        appService.setStartTime(selectedEvent.getStartTime());
                     }
-                    if (appService.getEndTime() != null) {
+                    if (selectedEvent.getEndTime() != null) {
                         Element timeEnd = (Element) event.getElementsByTagName("endTime").item(0);
                         if (timeEnd != null) {
                             timeEnd.setTextContent(selectedEvent.getEndTime().toString());
-                            appService.setEndTime(selectedEvent.getEndTime());
                         } else {
                             timeEnd = document.createElement("endTime");
                             timeEnd.appendChild(document.createTextNode(selectedEvent.getEndTime().toString()));
                             event.appendChild(timeEnd);
-                            appService.setEndTime(selectedEvent.getEndTime());
                         }
+                        appService.setEndTime(selectedEvent.getEndTime());
                     }
                     if (selectedEvent.getGuests() != null) {
-                        Element guests = (Element)  event.getElementsByTagName("guests").item(0);
+                        Element guests = (Element) event.getElementsByTagName("guests").item(0);
                         if (guests != null) {
                             guests.setTextContent(String.join(";", selectedEvent.getGuests()));
-                            appService.setGuests(selectedEvent.getGuests());
                         } else {
                             guests = document.createElement("guests");
                             guests.appendChild(document.createTextNode(String.join(";", selectedEvent.getGuests())));
                             event.appendChild(guests);
-
                         }
+                        appService.setGuests(selectedEvent.getGuests());
+                    }
+
+                    if (((Event) selectedEvent).getBudgetTracker() == null)
+                        System.out.println("null budget");
+                    if (((Event) selectedEvent).getBudgetTracker() != null) {
+                        Element budgetTracker = (Element) event.getElementsByTagName("budgetTracker").item(0);
+                        if (budgetTracker != null) {
+                            // Clear existing expense entries
+                            NodeList expenseEntries = budgetTracker.getElementsByTagName("expenseEntry");
+                            while (expenseEntries.getLength() > 0) {
+                                budgetTracker.removeChild(expenseEntries.item(0));
+                            }
+
+                            // Add new expense entries
+                            for (ExpenseEntry entry : ((Event) selectedEvent).getBudgetTracker().getExpenses()) {
+                                Element expenseEntry = document.createElement("expenseEntry");
+
+                                Element quantity = document.createElement("quantity");
+                                quantity.appendChild(document.createTextNode(String.valueOf(entry.getQuantity())));
+                                expenseEntry.appendChild(quantity);
+
+                                Element itemName = document.createElement("itemName");
+                                itemName.appendChild(document.createTextNode(entry.getItemName()));
+                                expenseEntry.appendChild(itemName);
+
+                                Element costPerItem = document.createElement("costPerItem");
+                                costPerItem.appendChild(document.createTextNode(String.valueOf(entry.getCostPerItem())));
+                                expenseEntry.appendChild(costPerItem);
+
+                                budgetTracker.appendChild(expenseEntry);
+                            }
+                        } else {
+                            // Create a new budgetTracker element if it doesn't exist
+                            budgetTracker = document.createElement("budgetTracker");
+                            for (ExpenseEntry entry : ((Event) selectedEvent).getBudgetTracker().getExpenses()) {
+                                Element expenseEntry = document.createElement("expenseEntry");
+
+                                Element quantity = document.createElement("quantity");
+                                quantity.appendChild(document.createTextNode(String.valueOf(entry.getQuantity())));
+                                expenseEntry.appendChild(quantity);
+
+                                Element itemName = document.createElement("itemName");
+                                itemName.appendChild(document.createTextNode(entry.getItemName()));
+                                expenseEntry.appendChild(itemName);
+
+                                Element costPerItem = document.createElement("costPerItem");
+                                costPerItem.appendChild(document.createTextNode(String.valueOf(entry.getCostPerItem())));
+                                expenseEntry.appendChild(costPerItem);
+
+                                budgetTracker.appendChild(expenseEntry);
+                            }
+                            event.appendChild(budgetTracker);
+                        }
+                        ((EventManAppService) appService).setBudgetTracker(((Event) selectedEvent).getBudgetTracker());
                     }
 
                     // Update metadata if needed

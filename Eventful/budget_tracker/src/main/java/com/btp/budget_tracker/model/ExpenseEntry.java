@@ -1,8 +1,5 @@
 package com.btp.budget_tracker.model;
 
-import lombok.Data;
-
-@Data
 public class ExpenseEntry {
     private int quantity;
     private String itemName;

@@ -7,4 +7,5 @@ public interface DashNavigateListener {
     void logsTriggered();
     void logoTriggered();
     void returnTriggered();
+    void budgetUpdateTriggered();
 }

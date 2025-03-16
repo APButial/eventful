@@ -5,16 +5,13 @@ import com.btp.budget_tracker.model.BudgetTracker;
 import com.btp.budget_tracker.model.ExpenseEntry;
 import com.btp.dashboard.service.DateTimeListener;
 import com.btp.dashboard.service.DateTimeService;
-import com.btp.login.components.LoginUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 public class EventManState extends AppState {
     protected BudgetTracker currBudgetTracker;
     protected ExpenseEntry currSelectedExpenseEntry;
@@ -47,5 +44,14 @@ public class EventManState extends AppState {
 
     public void setMainStage(Stage mainStage) {
         this.mainStage = mainStage;
+    }
+
+    public BudgetTracker getCurrBudgetTracker() {
+        return currBudgetTracker;
+    }
+
+    public void setCurrBudgetTracker(BudgetTracker currBudgetTracker) {
+        this.currBudgetTracker = currBudgetTracker;
+        ((Event) currSelectedEvent).setBudgetTracker(currBudgetTracker);
     }
 }

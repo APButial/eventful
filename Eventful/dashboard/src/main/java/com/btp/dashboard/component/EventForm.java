@@ -105,7 +105,7 @@ public class EventForm {
 
         // Event Description
         Label eventDescLabel = new Label("Event Description");
-        eventDescArea = new TextArea("");
+        eventDescArea = new TextArea();
         eventDescArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -121,7 +121,6 @@ public class EventForm {
                         "-fx-padding: 5px; " +
                         "-fx-border-radius: 5px; " +
                         "-fx-control-inner-background: #F5F5F5;");
-        appService.setDescription(eventDescArea.getText());
 
         // Left Section
         VBox leftSection = new VBox(10, startDateLabel, startDateBox, endDateLabel, endDateBox, timeStartLabel, timeStartBox, timeEndLabel, timeEndBox, eventDescLabel, eventDescArea);
