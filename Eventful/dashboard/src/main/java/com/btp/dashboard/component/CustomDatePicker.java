@@ -35,7 +35,7 @@ public class CustomDatePicker extends DatePicker {
 
 
         this.setEditable(false); // Prevent manual input
-        this.getStyleClass().add("custom-datepicker"); // Apply CSS styles
+        this.getStyleClass().add("date-picker"); // Apply CSS styles
 
         // Set date format
         DateTimeFormatter fieldFormatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy");

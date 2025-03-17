@@ -60,7 +60,7 @@ public class EventTimeline {
         updateTimeThread.setDaemon(true);
         updateTimeThread.start();
 
-        events.setStyle(Calendar.Style.STYLE1);
+        events.setStyle(Calendar.Style.STYLE4);
 
         component.getChildren().add(calendarView);
     }
