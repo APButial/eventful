@@ -2,8 +2,6 @@ package com.btp.event_manager.component;
 import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.service.AppService;
-import com.btp.dashboard.component.*;
-import com.btp.dashboard.service.*;
 import com.btp.event_manager.model.Event;
 import com.btp.event_manager.service.*;
 import com.btp.event_manager.model.EventManState;

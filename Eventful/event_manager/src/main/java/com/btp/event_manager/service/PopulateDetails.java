@@ -3,8 +3,8 @@ package com.btp.event_manager.service;
 import com.btp.appfx.service.AppService;
 import com.btp.budget.model.BudgetTracker;
 import com.btp.budget.model.ExpenseEntry;
-import com.btp.dashboard.component.BudgetTrackerUI;
-import com.btp.dashboard.component.EventDetailsUI;
+import com.btp.event_manager.component.BudgetTrackerUI;
+import com.btp.event_manager.component.EventDetailsUI;
 import com.btp.event_manager.model.Event;
 
 import java.time.format.DateTimeFormatter;

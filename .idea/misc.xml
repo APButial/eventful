@@ -9,6 +9,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/Eventful/dashboard/pom.xml" />
         <option value="$PROJECT_DIR$/Eventful/timeline/pom.xml" />
       </set>
     </option>

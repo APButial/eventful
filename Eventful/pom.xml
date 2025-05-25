@@ -14,7 +14,6 @@
         <module>event_manager</module>
         <module>logs</module>
         <module>appfx</module>
-        <module>dashboard</module>
         <module>login</module>
     </modules>
 

@@ -10,12 +10,12 @@
         <module name="appfx" />
         <module name="login" />
         <module name="logs" />
-        <module name="dashboard" />
-        <module name="event_manager" />
         <module name="budget" />
+        <module name="event_manager" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="dashboard" target="17" />
       <module name="timeline" target="17" />
     </bytecodeTargetLevel>
   </component>

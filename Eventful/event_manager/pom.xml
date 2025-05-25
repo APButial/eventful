@@ -42,18 +42,6 @@
         </dependency>
         <dependency>
             <groupId>eventful</groupId>
-            <artifactId>dashboard</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>javafx-controls</artifactId>
-                    <groupId>org.openjfx</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>eventful</groupId>
             <artifactId>logs</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
@@ -78,6 +66,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.32</version>
+        </dependency>
+        <dependency>
+            <groupId>com.calendarfx</groupId>
+            <artifactId>view</artifactId>
+            <version>11.12.7</version>
         </dependency>
     </dependencies>
 
