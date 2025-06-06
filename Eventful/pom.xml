@@ -15,6 +15,7 @@
         <module>logs</module>
         <module>appfx</module>
         <module>login</module>
+        <module>layout</module>
     </modules>
 
     <properties>
