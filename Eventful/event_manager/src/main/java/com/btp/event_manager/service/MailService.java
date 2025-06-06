@@ -88,39 +88,5 @@ public class MailService {
             System.out.println("Processed emails");
             return true;
         }
-        public static boolean authenticate(AppService appService) {
-            TextInputDialog emailDialog = new TextInputDialog();
-            emailDialog.setTitle("Email Authentication");
-            emailDialog.setHeaderText("Email Address");
-            emailDialog.setContentText("Please enter your email address:");
 
-            Optional<String> result = emailDialog.showAndWait();
-            if (result.isEmpty()) {return false;}
-            result.ifPresent(appService::setEmailAdd);
-
-            Dialog<String> passDialog = new Dialog<>();
-            passDialog.setTitle("Email Authentication");
-            passDialog.setHeaderText("Email Password");
-            passDialog.setGraphic(emailDialog.getGraphic()); // Custom graphic
-            passDialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-            PasswordField pwd = new PasswordField();
-            HBox content = new HBox();
-            content.setAlignment(Pos.CENTER_LEFT);
-            content.setSpacing(10);
-            content.getChildren().addAll(new Label("Please enter your password:"), pwd);
-            passDialog.getDialogPane().setContent(content);
-            passDialog.setResultConverter(dialogButton -> {
-                if (dialogButton == ButtonType.OK) {
-                    return pwd.getText();
-                }
-                return null;
-            });
-
-            result = passDialog.showAndWait();
-            if (result.isEmpty()) {return false;}
-            result.ifPresent(appService::setEmailPass);
-
-            return true;
-        }
 }

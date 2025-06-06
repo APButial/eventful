@@ -195,7 +195,7 @@ public class MainFrame extends Application {
                 try {
                     appService.inviteGuests(eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -216,7 +216,7 @@ public class MainFrame extends Application {
                     ((EventManAppService) appService).setPrevApplication(dashboardUI);
                     dashboardUI.start(primaryStage);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -251,7 +251,7 @@ public class MainFrame extends Application {
             ((EventManAppService) appService).setPrevApplication(loginUI);
             loginUI.start(primaryStage);
         } catch (Exception e){
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         primaryStage.setOnCloseRequest(event -> {

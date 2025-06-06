@@ -13,11 +13,10 @@ import com.btp.logs.service.LogService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
+import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -260,16 +259,14 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void inviteGuests(String guests){
-        if(MailService.authenticate(this)) {
-            if(MailService.validMailArea(guests, this)) {
-                try {
-                    MailService.sendMail(this);
-                } catch (AddressException e) {
-                    throw new RuntimeException(e);
-                }
-                _guestsInvited();
-            }
+        try {
+            new GMailer().sendMail("You have been invited to an event!", """
+                    This is a test invitation
+                    """);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+        //_guestsInvited();
     }
 
     public BudgetTracker getBudgetTracker() {
