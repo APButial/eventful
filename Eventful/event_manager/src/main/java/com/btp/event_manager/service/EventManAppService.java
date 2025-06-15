@@ -259,13 +259,6 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void inviteGuests(String guests){
-        try {
-            new GMailer().sendMail("You have been invited to an event!", """
-                    This is a test invitation
-                    """);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
         //_guestsInvited();
     }
 

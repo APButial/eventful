@@ -16,11 +16,12 @@ module event_manager {
     requires google.api.client;
     requires com.google.api.client.extensions.jetty.auth;
     requires com.google.api.client.json.gson;
-    requires com.google.api.services.gmail;
     requires com.google.gson;
     requires mail;
     requires activation;
     requires org.apache.commons.codec;
+    requires com.google.api.services.calendar;
+    requires jdk.httpserver;
 
     exports com.btp.event_manager;
     exports com.btp.event_manager.component;
