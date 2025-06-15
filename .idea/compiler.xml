@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="appfx" />
+        <module name="layout" />
         <module name="login" />
         <module name="logs" />
         <module name="budget" />
