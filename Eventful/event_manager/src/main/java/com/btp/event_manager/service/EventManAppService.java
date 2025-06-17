@@ -11,6 +11,7 @@ import com.btp.login.components.LoginUI;
 import com.btp.login.service.RemoveUserService;
 import com.btp.logs.service.LogService;
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.stage.Stage;
 
 import javax.mail.MessagingException;
@@ -259,7 +260,32 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void inviteGuests(String guests){
-        //_guestsInvited();
+        if(GoogleCalendar.validMailArea(guests, this)) {
+            Task<Void> invitationTask = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        GoogleCalendar.sendEventInvitation(EventManAppService.this);
+                    } catch (GeneralSecurityException | IOException e) {
+                        e.printStackTrace();
+                        _updateLogs("Failed to send invitations: " + e.getMessage());
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void succeeded() {
+                    _guestsInvited();
+                }
+
+                @Override
+                protected void failed() {
+                    System.out.println("failed");
+                }
+            };
+
+            new Thread(invitationTask).start();
+        }
     }
 
     public BudgetTracker getBudgetTracker() {

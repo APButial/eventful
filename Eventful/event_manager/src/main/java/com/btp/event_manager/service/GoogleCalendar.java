@@ -15,7 +15,10 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.EventReminder;
+import javafx.scene.control.Alert;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.time.*;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -40,14 +44,14 @@ public class GoogleCalendar {
     /**
      * Directory to store authorization tokens for this application.
      */
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
+    private static final String TOKENS_DIRECTORY_PATH = "Eventful/tokens";
 
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved tokens/ folder.
      */
     private static final List<String> SCOPES =
-            Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
+            Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String CREDENTIALS_FILE_PATH = "/client_secret.json";
 
     /**
@@ -79,6 +83,21 @@ public class GoogleCalendar {
         return credential;
     }
 
+    public static boolean validMailArea(String mail, AppService appService) {
+        String processedMail = mail.strip().toLowerCase();
+        if(!processedMail.contains(";")) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Event Detail");
+            alert.setHeaderText("Invalid Email Address Syntax");
+            alert.setContentText("Each email address must be appended by a semicolon (;).");
+            alert.showAndWait();
+            return false;
+        }
+
+        appService.setGuests(List.of(processedMail.split(";")));
+        return true;
+    }
+
     public static void sendEventInvitation(AppService appService) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -86,32 +105,71 @@ public class GoogleCalendar {
                 new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                         .setApplicationName(APPLICATION_NAME)
                         .build();
-
         com.btp.event_manager.model.Event e = (com.btp.event_manager.model.Event) appService.getSelectedEvent();
+        String description = getString(e);
+
         Event event = new Event()
                 .setSummary("An Eventful Invitation: " + e.getEventName())
-                .setDescription(String.format("You received an invitation to attend %s from %s to %s. Have an eventful day!",
-                        e.getEventName(),
-                        e.getStartDate().toString(),
-                        e.getEndDate().toString()
-                ));
+                .setDescription(description);
 
-        LocalDateTime localDateTime = e.getStartDate().atTime(e.getStartTime());
-        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
-        Date date = Date.from(zonedDateTime.toInstant());
+        LocalDateTime localStartDateTime = e.getStartDate().atTime(e.getStartTime());
+        ZonedDateTime zonedStartDateTime = localStartDateTime.atZone(ZoneId.systemDefault());
+        Date date = Date.from(zonedStartDateTime.toInstant());
         DateTime startDateTime = new DateTime(date);
         EventDateTime start = new EventDateTime()
                 .setDateTime(startDateTime)
                 .setTimeZone("Asia/Manila");
         event.setStart(start);
 
-        localDateTime = e.getEndDate().atTime(e.getEndTime());
-        zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
-        date = Date.from((zonedDateTime.toInstant()));
+        LocalDateTime localEndDateTime = e.getEndDate().atTime(e.getEndTime());
+        ZonedDateTime zonedEndDateTime = localEndDateTime.atZone(ZoneId.systemDefault());
+        date = Date.from((zonedEndDateTime.toInstant()));
         DateTime endDateTime = new DateTime(date);
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime)
                 .setTimeZone("Asia/Manila");
         event.setEnd(end);
+
+        ZonedDateTime utc = localEndDateTime.atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneId.of("UTC"));
+        String until = utc.format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
+        String[] recurrence = new String[] {"RRULE:FREQ=DAILY;UNTIL=" + until};
+        event.setRecurrence(Arrays.asList(recurrence));
+
+        List<String> guests = e.getGuests();
+        EventAttendee[] attendees = new EventAttendee[guests.size()];
+        for (int i=0; i<guests.size(); i++) {
+            attendees[i] = new EventAttendee().setEmail(guests.get(i));
+        }
+        event.setAttendees(Arrays.asList(attendees));
+
+        EventReminder[] reminderOverrides = new EventReminder[] {
+                new EventReminder().setMethod("email").setMinutes(24 * 60),
+                new EventReminder().setMethod("popup").setMinutes(10),
+        };
+        Event.Reminders reminders = new Event.Reminders()
+                .setUseDefault(false)
+                .setOverrides(Arrays.asList(reminderOverrides));
+        event.setReminders(reminders);
+
+        String calendarId = "primary";
+        event = service.events().insert(calendarId, event).execute();
+        System.out.printf("Event created: %s\n", event.getHtmlLink());
+    }
+
+    private static String getString(com.btp.event_manager.model.Event e) {
+        String description;
+        if (e.getDescription() != null || !e.getDescription().isEmpty()) {
+            description = String.format("You received an invitation to attend \"%s\" from %s to %s. The organizer described this event as: \"%s\". Have an eventful day!",
+                e.getEventName(),
+                e.getStartDate().toString(),
+                e.getEndDate().toString(),
+                e.getDescription());
+        } else {
+            description = String.format("You received an invitation to attend \"%s\" from %s to %s. Have an eventful day!",
+                    e.getEventName(),
+                    e.getStartDate().toString(),
+                    e.getEndDate().toString());
+        }
+        return description;
     }
 }
