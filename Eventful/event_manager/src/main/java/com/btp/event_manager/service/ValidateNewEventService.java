@@ -3,17 +3,11 @@ package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
-import com.btp.event_manager.model.Event;
-import com.btp.login.service.InitUsersXml;
-import com.btp.login.service.PassHashService;
-import com.btp.login.service.ReadUsersService;
-import com.btp.login.service.WriteUsersService;
 import javafx.scene.control.Alert;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class ValidateNewEventService {
     public static boolean validate(String eventName, LocalDate startDate, LocalDate endDate, AppService appService) {

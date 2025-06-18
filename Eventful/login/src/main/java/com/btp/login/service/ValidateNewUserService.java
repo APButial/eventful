@@ -4,8 +4,6 @@ import com.btp.appfx.model.User;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import java.util.ArrayList;
-
 public class ValidateNewUserService {
     public static boolean validate(User user) {
         NodeList users = ReadUsersService.read();
@@ -15,12 +13,12 @@ public class ValidateNewUserService {
         } else{
             for (int i = 0; i < users.getLength(); i++) {
                 Element tempUser = (Element) users.item(i);
-                if(tempUser.getElementsByTagName("username").item(0).getTextContent().equals(user.getUsername())) {
+                if(user.getUsername().equals(tempUser.getElementsByTagName("username").item(0).getTextContent())) {
                     return false;
                 }
             }
 
-            user.setPassword(PassHashService.hash(user.getPassword()));
+            user.setPassword(user.getPassword());
             WriteUsersService.write(user);
         }
         return true;

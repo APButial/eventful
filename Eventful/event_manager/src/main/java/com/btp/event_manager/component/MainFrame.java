@@ -40,67 +40,62 @@ public class MainFrame extends Application {
         ((EventManAppService) appService).setMainStage(primaryStage);
 
         Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
-        ImageView logoView = new ImageView(logoImg);
         primaryStage.getIcons().add(logoImg);
-
 
         loginUI = new LoginUI(appService, new LoginSuccessListener() {
             @Override
             public void onLoginSuccess() {
-                dashboardUI.start(primaryStage);
-                ((EventManAppService) appService).setPrevApplication(dashboardUI);
+                ((EventManAppService) appService).getDashboardUI().start(primaryStage);
             }
 
             @Override
             public void returnLogin() throws Exception {
-                ((EventManAppService) appService).getPrevApplication().start(primaryStage);
+                ((EventManAppService) appService).getLoginUI().start(primaryStage);
             }
         });
         ((EventManAppService) appService).setLoginUI(loginUI);
-        ((EventManAppService) appService).setPrevApplication(loginUI);
 
         DashNavigateListener dashListener = new DashNavigateListener() {
             @Override
             public void createEventTriggered() {
-                    createEventUI.start(primaryStage);
+                ((EventManAppService) appService).getCreateEventUI().start(primaryStage);
             }
 
             @Override
             public void myEventsTriggered() {
-                myEventUI.start(primaryStage);
+                ((EventManAppService) appService).getMyEventUI().start(primaryStage);
             }
 
             @Override
             public void eventTimelineTriggered() {
                 try {
-                    eventTimelineUI.start(primaryStage);
-                    LoadEventTimeline.load(appService, eventTimelineUI.getEventTimeline().getEvents());
+                    ((EventManAppService) appService).getEventTimelineUI().start(primaryStage);
+                    LoadEventTimeline.load(appService, ((EventManAppService) appService).getEventTimelineUI().getEventTimeline().getEvents());
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void logsTriggered() {
-                logsUI.start(primaryStage);
-                logsUI.getLogsArea().getLogArea().setText(((EventManAppService) appService)._loadLogs());
+                ((EventManAppService) appService).getLogsUI().start(primaryStage);
+                ((EventManAppService) appService).getLogsUI().getLogsArea().getLogArea().setText(((EventManAppService) appService)._loadLogs());
             }
 
             @Override
             public void logoTriggered() {
-                dashboardUI.start(primaryStage);
-                ((EventManAppService) appService).setPrevApplication(dashboardUI);
+                ((EventManAppService) appService).getDashboardUI().start(primaryStage);
             }
 
             @Override
             public void returnTriggered() {
                 try {
-                    ((EventManAppService) appService).getPrevApplication().start(primaryStage);
+                    ((EventManAppService) appService).getEventDetailsUI().start(primaryStage);
                     if (((EventManAppService) appService).getBudgetTracker().getExpenses() == null) {
                         ((EventManAppService) appService).setBudgetTracker(null);
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
 
@@ -119,20 +114,20 @@ public class MainFrame extends Application {
         CreateEventListener ceventListener = new CreateEventListener() {
             @Override
             public void onConfirm() {
-                String eventName = createEventUI.getEventDetails().getEventNameField().getText();
-                LocalDate startDate = createEventUI.getEventDetails().getStartDatePicker().getValue();
-                LocalDate endDate = createEventUI.getEventDetails().getEndDatePicker().getValue();
+                String eventName = ((EventManAppService) appService).getCreateEventUI().getEventDetails().getEventNameField().getText();
+                LocalDate startDate = ((EventManAppService) appService).getCreateEventUI().getEventDetails().getStartDatePicker().getValue();
+                LocalDate endDate = ((EventManAppService) appService).getCreateEventUI().getEventDetails().getEndDatePicker().getValue();
 
                 if(ValidateNewEventService.validate(eventName, startDate, endDate, appService)) {
                     appService.createEvent(new Event(eventName,startDate,endDate));
                     ValidateNewEventService.addEvent(appService.getSelectedEvent(), appService);
-                    eventDetailsUI.start(primaryStage);
+                    ((EventManAppService) appService).getEventDetailsUI().start(primaryStage);
                 }
             }
 
             @Override
             public void onCancel() {
-                ((EventManAppService) appService).getPrevApplication();
+                ((EventManAppService) appService).getDashboardUI().start(primaryStage);
             }
         };
         EventDetailListener eventDetailListener = new EventDetailListener() {
@@ -144,50 +139,50 @@ public class MainFrame extends Application {
 
             @Override
             public void onSelectEvent() {
-                appService.setSaveStatus(SaveStatus.SAVED);;
-                eventDetailsUI.start(primaryStage);
+                appService.setSaveStatus(SaveStatus.SAVED);
+                ((EventManAppService) appService).getEventDetailsUI().start(primaryStage);
             }
         };
         EventFormListener eventFormListener = new EventFormListener() {
             @Override
             public void startDateUpdated() {
                 appService.updateEvent(EventFormEvents.START_DATE, eventDetailsUI.getEventForm().getStartDatePicker().getValue());
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void endDateUpdated() {
                 appService.updateEvent(EventFormEvents.END_DATE, eventDetailsUI.getEventForm().getEndDatePicker().getValue());
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void startTimeUpdated() {
-                String hour = eventDetailsUI.getEventForm().getTimeStartField().getHourDropdown().getValue();
-                String min = eventDetailsUI.getEventForm().getTimeStartField().getMinuteDropdown().getValue();
+                String hour = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeStartField().getHourDropdown().getValue();
+                String min = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeStartField().getMinuteDropdown().getValue();
                 appService.updateEvent(EventFormEvents.START_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void endTimeUpdated() {
-                String hour = eventDetailsUI.getEventForm().getTimeEndField().getHourDropdown().getValue();
-                String min = eventDetailsUI.getEventForm().getTimeEndField().getMinuteDropdown().getValue();
+                String hour = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeEndField().getHourDropdown().getValue();
+                String min = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeEndField().getMinuteDropdown().getValue();
                 appService.updateEvent(EventFormEvents.END_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void descriptionUpdated() {
                 appService.updateEvent(EventFormEvents.DESC, eventDetailsUI.getEventForm().getEventDescArea().getText());
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void guestsUpdated() {
                 appService.setSaveStatus(SaveStatus.UNSAVED);
-                eventDetailsUI.getEventForm().getGuestsField().setText(RegexService.parse(eventDetailsUI.getEventForm().getGuestEmailsArea().getText())); // if email add is valid, increment guests counter
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(false);
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getGuestsField().setText(RegexService.parse(eventDetailsUI.getEventForm().getGuestEmailsArea().getText())); // if email add is valid, increment guests counter
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
@@ -195,14 +190,14 @@ public class MainFrame extends Application {
                 try {
                     appService.inviteGuests(eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onUpdate() {
                 appService.updateEvent(EventFormEvents.UPDATE_CHANGES, eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
-                eventDetailsUI.getEventForm().getUpdateButton().setDisable(true);
+                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(true);
             }
 
             @Override
@@ -213,17 +208,15 @@ public class MainFrame extends Application {
                     }
                 }
                 try {
-                    ((EventManAppService) appService).setPrevApplication(dashboardUI);
-                    dashboardUI.start(primaryStage);
+                    ((EventManAppService) appService).getDashboardUI().start(primaryStage);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
 
             @Override
             public void onBudgetTracker() {
-                ((EventManAppService) appService).setPrevApplication(eventDetailsUI);
-                budgetTrackerUI.start(primaryStage);
+                ((EventManAppService) appService).getBudgetTrackerUI().start(primaryStage);
             }
 
             @Override
@@ -246,12 +239,19 @@ public class MainFrame extends Application {
         budgetTrackerUI = new BudgetTrackerUI(appService, dashListener);
         logsUI = new LogsUI(appService, dashListener);
 
+        ((EventManAppService) appService).setDashboardUI(dashboardUI);
+        ((EventManAppService) appService).setMyEventUI(myEventUI);
+        ((EventManAppService) appService).setCreateEventUI(createEventUI);
+        ((EventManAppService) appService).setEventDetailsUI(eventDetailsUI);
+        ((EventManAppService) appService).setEventTimelineUI(eventTimelineUI);
+        ((EventManAppService) appService).setBudgetTrackerUI(budgetTrackerUI);
+        ((EventManAppService) appService).setLogsUI(logsUI);
+
 ///////////////////////////////////////////////////////////
         try {
-            ((EventManAppService) appService).setPrevApplication(loginUI);
             loginUI.start(primaryStage);
         } catch (Exception e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         primaryStage.setOnCloseRequest(event -> {

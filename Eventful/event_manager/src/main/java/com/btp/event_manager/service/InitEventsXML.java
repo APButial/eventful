@@ -3,6 +3,7 @@ package com.btp.event_manager.service;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
+import com.btp.appfx.service.XMLCipherService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -17,14 +18,14 @@ import java.io.File;
 public class InitEventsXML {
     public static void init(BaseEvent newEvent, AppService appService) {
         try {
-            String userDirPath = "Eventful/dat/" + appService.getCurrUser().getUsername();
-            File userDir = new File(userDirPath);
+            String path = "Eventful/dat/" + appService.getCurrUser().getUsername();
+            File userDir = new File(path);
 
             if (!userDir.exists()) {
                 userDir.mkdirs();
             }
 
-            File file = new File(userDirPath + "/events.xml");
+            File file = new File(path + "/events.xml");
 
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -63,12 +64,21 @@ public class InitEventsXML {
 
             document.getDocumentElement().appendChild(event);
 
+            File tempFile = new File(path + "events_temp.xml");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(document);
-            StreamResult streamResult = new StreamResult(file);
-            transformer.transform(domSource,streamResult);
-            System.out.println("New event added");
+            DOMSource domSource = new DOMSource(XMLCipherService.encryptXMLValues(document));
+            StreamResult streamResult = new StreamResult(tempFile);
+            transformer.transform(domSource, streamResult);
+
+            if (file.exists()) {
+                file.delete();
+            }
+            tempFile.renameTo(file);
+
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

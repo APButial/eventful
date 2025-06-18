@@ -69,7 +69,7 @@ public class RemoveUserService {
                 String password = tempUser.getElementsByTagName("password").item(0).getTextContent().trim();
 
                 if (username.equals(appService.getCurrUser().getUsername())) {
-                    if (!PassHashService.hash(input.get()).equals(password)) {
+                    if (!password.equals(input.get())) {
                         return false; // Password does not match
                     } else {
                         tempUser.getParentNode().removeChild(tempUser);
@@ -90,7 +90,6 @@ public class RemoveUserService {
                 System.out.println("User not found.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
 

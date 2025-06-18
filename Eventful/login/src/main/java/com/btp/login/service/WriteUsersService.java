@@ -1,6 +1,7 @@
 package com.btp.login.service;
 
 import com.btp.appfx.model.User;
+import com.btp.appfx.service.XMLCipherService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,11 +34,23 @@ public class WriteUsersService {
 
             document.getDocumentElement().appendChild(user);
 
+            File tempFile = new File("Eventful/dat/users_temp.xml");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(document);
-            StreamResult streamResult = new StreamResult(file);
-            transformer.transform(domSource,streamResult);
+            DOMSource domSource = new DOMSource(XMLCipherService.encryptXMLValues(document));
+            StreamResult streamResult = new StreamResult(tempFile);
+            transformer.transform(domSource, streamResult);
+
+            // Replace the original file with the encrypted temporary file
+            if (file.exists()) {
+                file.delete();
+            }
+            tempFile.renameTo(file);
+
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
+
             System.out.println("New user added");
 
         } catch (Exception e) {

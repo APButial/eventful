@@ -1,6 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.service.AppService;
+import com.btp.appfx.service.XMLCipherService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -19,9 +20,7 @@ public class ReadEventsService {
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
 
-            Element root = document.getDocumentElement();
-            System.out.printf("Events read");
-            return document.getElementsByTagName("event");
+            return XMLCipherService.decryptXMLValues(document).getElementsByTagName("event");
 
         } catch (Exception e) {
             e.printStackTrace();

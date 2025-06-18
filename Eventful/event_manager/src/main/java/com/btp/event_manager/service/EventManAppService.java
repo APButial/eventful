@@ -6,6 +6,7 @@ import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
 import com.btp.budget.model.BudgetTracker;
+import com.btp.event_manager.component.*;
 import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.RemoveUserService;
@@ -27,8 +28,77 @@ import java.util.Collections;
 import java.util.List;
 
 public class EventManAppService implements AppService, LogService {
-    private EventManState eventManState;
     private LoginUI loginUI;
+    private CreateEventUI createEventUI;
+    private BudgetTrackerUI budgetTrackerUI;
+
+    public LoginUI getLoginUI() {
+        return loginUI;
+    }
+
+    public CreateEventUI getCreateEventUI() {
+        return createEventUI;
+    }
+
+    public void setCreateEventUI(CreateEventUI createEventUI) {
+        this.createEventUI = createEventUI;
+    }
+
+    public BudgetTrackerUI getBudgetTrackerUI() {
+        return budgetTrackerUI;
+    }
+
+    public void setBudgetTrackerUI(BudgetTrackerUI budgetTrackerUI) {
+        this.budgetTrackerUI = budgetTrackerUI;
+    }
+
+    public DashboardUI getDashboardUI() {
+        return dashboardUI;
+    }
+
+    public void setDashboardUI(DashboardUI dashboardUI) {
+        this.dashboardUI = dashboardUI;
+    }
+
+    public EventDetailsUI getEventDetailsUI() {
+        return eventDetailsUI;
+    }
+
+    public void setEventDetailsUI(EventDetailsUI eventDetailsUI) {
+        this.eventDetailsUI = eventDetailsUI;
+    }
+
+    public EventTimelineUI getEventTimelineUI() {
+        return eventTimelineUI;
+    }
+
+    public void setEventTimelineUI(EventTimelineUI eventTimelineUI) {
+        this.eventTimelineUI = eventTimelineUI;
+    }
+
+    public LogsUI getLogsUI() {
+        return logsUI;
+    }
+
+    public void setLogsUI(LogsUI logsUI) {
+        this.logsUI = logsUI;
+    }
+
+    public MyEventUI getMyEventUI() {
+        return myEventUI;
+    }
+
+    public void setMyEventUI(MyEventUI myEventUI) {
+        this.myEventUI = myEventUI;
+    }
+
+    private DashboardUI dashboardUI;
+    private EventDetailsUI eventDetailsUI;
+    private EventTimelineUI eventTimelineUI;
+    private LogsUI logsUI;
+    private MyEventUI myEventUI;
+
+    private EventManState eventManState;
     private LocalDate tempStartDate;
     private LocalDate tempEndDate;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd HH:mm:ss");
@@ -267,7 +337,6 @@ public class EventManAppService implements AppService, LogService {
                     try {
                         GoogleCalendar.sendEventInvitation(EventManAppService.this);
                     } catch (GeneralSecurityException | IOException e) {
-                        e.printStackTrace();
                         _updateLogs("Failed to send invitations: " + e.getMessage());
                     }
                     return null;
@@ -304,14 +373,6 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public void setLastAccessed(LocalDateTime dateTime) {
         eventManState.getCurrSelectedEvent().setLastAccessed(dateTime);
-    }
-
-    public Application getPrevApplication() {
-        return eventManState.getPrevApplication();
-    }
-
-    public void setPrevApplication(Application application) {
-        eventManState.setPrevApplication(application);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
+import com.btp.appfx.service.XMLCipherService;
 import com.btp.budget.model.ExpenseEntry;
 import com.btp.event_manager.model.Event;
 import javafx.scene.control.Alert;
@@ -19,9 +20,11 @@ import java.io.File;
 import java.time.LocalDate;
 
 public class WriteEventsService {
+
     public static void write(BaseEvent newEvent, AppService appService) {
         try {
-            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + "/events.xml");
+            String path = "Eventful/dat/" + appService.getCurrUser().getUsername() + "/";
+            File file = new File(path + "events.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -57,11 +60,23 @@ public class WriteEventsService {
 
             document.getDocumentElement().appendChild(event);
 
+
+            File tempFile = new File(path + "events_temp.xml");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(document);
-            StreamResult streamResult = new StreamResult(file);
-            transformer.transform(domSource,streamResult);
+            DOMSource domSource = new DOMSource(XMLCipherService.encryptXMLValues(document));
+            StreamResult streamResult = new StreamResult(tempFile);
+            transformer.transform(domSource, streamResult);
+
+            if (file.exists()) {
+                file.delete();
+            }
+            tempFile.renameTo(file);
+
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
+
             System.out.println("New event added");
 
         } catch (Exception e) {
@@ -72,14 +87,15 @@ public class WriteEventsService {
     public static void overwrite(AppService appService, LocalDate tempStartDate, LocalDate tempEndDate) {
         try {
             BaseEvent selectedEvent = appService.getSelectedEvent();
-            File file = new File("Eventful/dat/" + appService.getCurrUser().getUsername() + "/events.xml");
+            String path = "Eventful/dat/" + appService.getCurrUser().getUsername();
+            File file = new File(path + "/events.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
             Document document = documentBuilder.parse(file);
             document.getDocumentElement().normalize();
 
-            NodeList events = document.getElementsByTagName("event");
+            NodeList events = XMLCipherService.decryptXMLValues(document).getElementsByTagName("event");
             boolean eventFound = false;
 
             for (int i = 0; i < events.getLength(); i++) {
@@ -144,8 +160,6 @@ public class WriteEventsService {
                         appService.setGuests(selectedEvent.getGuests());
                     }
 
-                    if (((Event) selectedEvent).getBudgetTracker() == null)
-                        System.out.println("null budget");
                     if (((Event) selectedEvent).getBudgetTracker() != null) {
                         Element budgetTracker = (Element) event.getElementsByTagName("budgetTracker").item(0);
                         if (budgetTracker != null) {
@@ -199,7 +213,8 @@ public class WriteEventsService {
                     }
 
                     // Update metadata if needed
-                    event.getElementsByTagName("lastAccessed").item(0).setTextContent(appService.getSysDateTime().toString());
+                    Element lastAccessed = (Element) event.getElementsByTagName("lastAccessed").item(0);
+                    lastAccessed.setTextContent(appService.getSysDateTime().toString());
 
                     eventFound = true;
                     break;
@@ -208,11 +223,21 @@ public class WriteEventsService {
 
             // If the event was found and updated, write the changes back to the file
             if (eventFound) {
+                File tempFile = new File(path + "events_temp.xml");
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
-                DOMSource domSource = new DOMSource(document);
-                StreamResult streamResult = new StreamResult(file);
+                DOMSource domSource = new DOMSource(XMLCipherService.encryptXMLValues(document));
+                StreamResult streamResult = new StreamResult(tempFile);
                 transformer.transform(domSource, streamResult);
+
+                if (file.exists()) {
+                    file.delete();
+                }
+                tempFile.renameTo(file);
+
+                if (tempFile.exists()) {
+                    tempFile.delete();
+                }
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Event Detail");

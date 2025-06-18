@@ -10,14 +10,13 @@ public class VerifyLoginService {
             NodeList users = ReadUsersService.read();
             for (int i = 0; i < users.getLength(); i++) {
                 Element tempUser = (Element) users.item(i);
-                if(tempUser.getElementsByTagName("username").item(0).getTextContent().equals(username)) {
-                    if (PassHashService.hash(password).equals(tempUser.getElementsByTagName("password").item(0).getTextContent()))
+                if(username.equals(tempUser.getElementsByTagName("username").item(0).getTextContent())) {
+                    if (password.equals(tempUser.getElementsByTagName("password").item(0).getTextContent()))
                         return true;
                 }
             }
             return  false;
         } catch (Exception e) {
-            e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Login");
             alert.setHeaderText("No local users found.");

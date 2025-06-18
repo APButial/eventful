@@ -18,6 +18,15 @@ public class LoginUI extends Application {
     private AppService appService;
     private TextField usernameField;
     private TextField passwordField;
+
+    public SignupUI getSignupUI() {
+        return signupUI;
+    }
+
+    public void setSignupUI(SignupUI signupUI) {
+        this.signupUI = signupUI;
+    }
+
     private SignupUI signupUI;
     private LoginSuccessListener listener;
 

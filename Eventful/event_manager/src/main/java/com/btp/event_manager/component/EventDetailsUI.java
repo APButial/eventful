@@ -76,7 +76,7 @@ public class EventDetailsUI extends Application {
             try {
                 eventFormListener.onExport();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         });
 
