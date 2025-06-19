@@ -1,6 +1,7 @@
 package com.btp.login.service;
 
 import com.btp.appfx.service.AppService;
+import com.btp.appfx.service.XMLCipherService;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -60,7 +61,7 @@ public class RemoveUserService {
             Document document = documentBuilder.parse(file);
             document.getDocumentElement().normalize();
 
-            NodeList users = document.getElementsByTagName("user");
+            NodeList users = XMLCipherService.decryptXMLValues(document).getElementsByTagName("user");
             boolean userRemoved = false;
 
             for (int i = 0; i < users.getLength(); i++) {

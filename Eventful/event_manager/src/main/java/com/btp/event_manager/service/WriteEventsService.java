@@ -5,7 +5,9 @@ import com.btp.appfx.service.AppService;
 import com.btp.appfx.service.XMLCipherService;
 import com.btp.budget.model.ExpenseEntry;
 import com.btp.event_manager.model.Event;
-import javafx.scene.control.Alert;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -18,6 +20,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.time.LocalDate;
+import java.util.Optional;
 
 public class WriteEventsService {
 
@@ -254,4 +257,59 @@ public class WriteEventsService {
         }
     }
 
+    public static boolean delete(AppService appService) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Event");
+        alert.setHeaderText("Are you sure you want to delete this event?");
+        alert.setContentText("Confirming this action permanently deletes the event from your device.");
+
+        // Show the dialog and wait for a response
+        Optional<ButtonType> action = alert.showAndWait();
+        if (action.isPresent() && action.get() != ButtonType.OK) {
+            return false;
+        }
+
+        try {
+            BaseEvent selectedEvent = appService.getSelectedEvent();
+            String path = "Eventful/dat/" + appService.getCurrUser().getUsername();
+            File file = new File(path + "/events.xml");
+            if (!file.exists()) {
+                System.err.println("Events XML file does not exist.");
+                return false;
+            }
+
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.parse(file);
+            document.getDocumentElement().normalize();
+            NodeList events = XMLCipherService.decryptXMLValues(document).getElementsByTagName("event");
+            boolean eventRemoved = false;
+
+            for (int i = 0; i < events.getLength(); i++) {
+                Element event = (Element) events.item(i);
+                if (selectedEvent.getEventName().equals(event.getElementsByTagName("title").item(0).getTextContent()) &&
+                        selectedEvent.getStartDate().equals(LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent())) &&
+                        selectedEvent.getEndDate().equals(LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent()))) {
+                    event.getParentNode().removeChild(event);
+                    eventRemoved = true;
+                    break;
+                }
+            }
+
+            if (eventRemoved) {
+                TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                Transformer transformer = transformerFactory.newTransformer();
+                DOMSource source = new DOMSource(XMLCipherService.encryptXMLValues(document));
+                StreamResult result = new StreamResult(file);
+                transformer.transform(source, result);
+                System.out.println("Event removed successfully.");
+            } else {
+                System.out.println("Event not found.");
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
 }

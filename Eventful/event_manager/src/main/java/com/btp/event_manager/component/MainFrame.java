@@ -228,6 +228,11 @@ public class MainFrame extends Application {
             public void onInbox() {
 
             }
+
+            @Override
+            public void onDelete() {
+                appService.removeEvent();
+            }
         };
 
         /// modified

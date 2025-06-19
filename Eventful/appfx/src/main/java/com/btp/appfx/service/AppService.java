@@ -28,7 +28,7 @@ public interface AppService {
     void updateEvent(EventFormEvents update, String input);
     void updateEvent(EventFormEvents update, LocalDate input);
     void updateEvent(EventFormEvents update, LocalTime input);
-    void removeEvent(BaseEvent baseEvent);
+    void removeEvent();
     BaseEvent getSelectedEvent();
     void setSelectedEvent(BaseEvent baseEvent);
     String getEventName();

@@ -80,6 +80,16 @@ public class EventDetailsUI extends Application {
             }
         });
 
+        Button delButton = new Button();
+        ImageView delImg = new ImageView("/trash.png");
+        delButton.setGraphic(delImg);
+        delButton.setBackground(null);
+        delButton.setPrefWidth(15);
+        delButton.setPrefHeight(15);
+        delButton.setOnAction(event -> {
+            eventFormListener.onDelete();
+        });
+
         exportButton.setOnMousePressed(e -> {
             colorAdjust.setBrightness(-0.2);
             exportImg.setEffect(colorAdjust);
@@ -89,6 +99,7 @@ public class EventDetailsUI extends Application {
             exportImg.setEffect(null);
         });
 
+        lowerHeader.getComponent().getChildren().add(delButton);
         lowerHeader.getComponent().getChildren().add(inboxButton);
         lowerHeader.getComponent().getChildren().add(exportButton);
 

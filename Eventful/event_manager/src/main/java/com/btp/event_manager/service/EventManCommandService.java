@@ -79,7 +79,7 @@ public class EventManCommandService implements AppService {
     }
 
     @Override
-    public void removeEvent(BaseEvent baseEvent) {
+    public void removeEvent() {
 
     }
 

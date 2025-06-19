@@ -11,12 +11,10 @@ import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.RemoveUserService;
 import com.btp.logs.service.LogService;
-import javafx.application.Application;
 import javafx.concurrent.Task;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
@@ -233,8 +231,16 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void removeEvent(BaseEvent baseEvent) {
-
+    public void removeEvent() {
+        if (WriteEventsService.delete(this)) {
+            for (BaseEvent event : eventManState.getCurrUser().getEvents()) {
+                if (event == getSelectedEvent()) {
+                    eventManState.getCurrUser().getEvents().remove(event);
+                    break;
+                }
+            }
+            dashboardUI.start(getMainStage());
+        }
     }
 
     @Override
@@ -344,12 +350,21 @@ public class EventManAppService implements AppService, LogService {
 
                 @Override
                 protected void succeeded() {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Send Invitation");
+                    alert.setHeaderText("Invitation Sent Successfully!");
+                    alert.setContentText("The invitation was sent to the guest(s). Any confirmation or declination from guests will be sent to the sender's email account.");
+                    alert.showAndWait();
                     _guestsInvited();
                 }
 
                 @Override
                 protected void failed() {
-                    System.out.println("failed");
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Send Invitation");
+                    alert.setHeaderText("Invitation Sent Unsuccessfully!");
+                    alert.setContentText("Something went wrong and the invitation was not sent to the guest(s). Please try again later.");
+                    alert.showAndWait();
                 }
             };
 
