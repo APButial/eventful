@@ -6,7 +6,7 @@
     <parent>
         <groupId>eventful</groupId>
         <artifactId>Eventful</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>2.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>login</artifactId>
@@ -20,7 +20,7 @@
         <dependency>
             <groupId>eventful</groupId>
             <artifactId>appfx</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
