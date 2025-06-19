@@ -50,10 +50,11 @@ public class EventList {
 
             Label eventTitle = new Label(event.getEventName());
             eventTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-            Label eventLastAccessed = new Label("Last Accessed: " +
-                                                event.getLastAccessed().getMonth().getDisplayName(TextStyle.SHORT,Locale.ENGLISH) + " " +
-                                                event.getLastAccessed().getDayOfMonth() + " " +
-                                                event.getLastAccessed().format(DateTimeFormatter.ofPattern("HH:mm")));
+            String eventLastAccessedPattern = "Last Accessed: " +
+                    event.getLastAccessed().getMonth().getDisplayName(TextStyle.SHORT,Locale.ENGLISH) + " " +
+                    event.getLastAccessed().getDayOfMonth() + " " +
+                    event.getLastAccessed().format(DateTimeFormatter.ofPattern("HH:mm"));
+            Label eventLastAccessed = new Label(eventLastAccessedPattern);
             eventLastAccessed.setStyle("-fx-font-size: 14px; -fx-text-fill: #AAB2C8");
             eventText.getChildren().addAll(eventTitle, eventLastAccessed);
 

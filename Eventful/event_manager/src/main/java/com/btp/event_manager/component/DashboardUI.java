@@ -20,11 +20,16 @@ public class DashboardUI extends Application {
     private AppService appService;
     private DashNavigateListener listener;
     private EventDetailListener eventDetailListener;
+    private EventList eventList;
 
     public DashboardUI(AppService appService, DashNavigateListener listener, EventDetailListener eventDetailListener) {
         this.appService = appService;
         this.listener = listener;
         this.eventDetailListener = eventDetailListener;
+    }
+
+    public void setEventList(EventList eventList) {
+        this.eventList = eventList;
     }
 
     @Override
@@ -58,8 +63,7 @@ public class DashboardUI extends Application {
         spacer.setPrefHeight(3);
         spacer.setStyle("-fx-background-color: #800080;");
 
-        EventList eventList = new EventList(appService, eventDetailListener);
-
+        eventList = new EventList(appService, eventDetailListener);
         mainContent.getChildren().addAll(upperHeader.getComponent(), lowerHeader.getComponent(),spacer, eventList.getComponent());
 
         HBox layout = new HBox(sidebar.getComponent(), mainContent);

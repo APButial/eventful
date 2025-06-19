@@ -17,6 +17,7 @@ public class PopulateDetails {
         appService.setStartDate(event.getStartDate());
         eventDetailsUI.getEventForm().getEndDatePicker().setValue(event.getEndDate());
         appService.setEndDate(event.getEndDate());
+        event.setLastAccessed(appService.getSysDateTime());
 
         try {
             eventDetailsUI.getEventForm().getTimeStartField().getHourDropdown().setValue(event.getStartTime().format(DateTimeFormatter.ofPattern("HH")));
