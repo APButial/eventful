@@ -146,13 +146,14 @@ public class MainFrame extends Application {
         EventFormListener eventFormListener = new EventFormListener() {
             @Override
             public void startDateUpdated() {
-                appService.updateEvent(EventFormEvents.START_DATE, eventDetailsUI.getEventForm().getStartDatePicker().getValue());
-                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
+                LocalDate date = eventDetailsUI.getEventForm().getStartDatePicker().getValue();
+                appService.updateEvent(EventFormEvents.START_DATE, date);
             }
 
             @Override
             public void endDateUpdated() {
-                appService.updateEvent(EventFormEvents.END_DATE, eventDetailsUI.getEventForm().getEndDatePicker().getValue());
+                LocalDate date = eventDetailsUI.getEventForm().getEndDatePicker().getValue();
+                appService.updateEvent(EventFormEvents.END_DATE, date);
                 ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
@@ -174,7 +175,8 @@ public class MainFrame extends Application {
 
             @Override
             public void descriptionUpdated() {
-                appService.updateEvent(EventFormEvents.DESC, eventDetailsUI.getEventForm().getEventDescArea().getText());
+                String description = eventDetailsUI.getEventForm().getEventDescArea().getText();
+                appService.updateEvent(EventFormEvents.DESC, description);
                 ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 

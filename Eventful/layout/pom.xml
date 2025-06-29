@@ -71,7 +71,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.layoutdiagram/org.example.layoutdiagram.LayoutDiagramApp</mainClass>
+                            <mainClass>org.example.layoutdiagram/com.btp.layout.LayoutDiagramApp</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

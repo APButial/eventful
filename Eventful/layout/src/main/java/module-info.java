@@ -1,6 +1,7 @@
-module org.example.layoutdiagram {
+module layout {
     requires javafx.controls;
     requires com.almasb.fxgl.all;
+    requires java.desktop;
 
-    exports org.example.layoutdiagram;
+    exports com.btp.layout;
 }

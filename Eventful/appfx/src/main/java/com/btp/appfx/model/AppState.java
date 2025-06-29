@@ -1,7 +1,10 @@
 package com.btp.appfx.model;
 
 import com.btp.appfx.enums.SaveStatus;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class AppState {
@@ -13,6 +16,53 @@ public class AppState {
     protected SaveStatus saveStatus;
     protected String emailAdd;
     protected String emailPass;
+
+    // buffers
+    protected LocalDate startDateBuffer;
+    protected LocalDate endDateBuffer;
+    protected LocalTime startTimeBuffer;
+    protected LocalTime endTimeBuffer;
+    protected String descriptionBuffer;
+
+    public LocalDate getStartDateBuffer() {
+        return startDateBuffer;
+    }
+
+    public void setStartDateBuffer(LocalDate startDateBuffer) {
+        this.startDateBuffer = startDateBuffer;
+    }
+
+    public LocalDate getEndDateBuffer() {
+        return endDateBuffer;
+    }
+
+    public void setEndDateBuffer(LocalDate endDateBuffer) {
+        this.endDateBuffer = endDateBuffer;
+    }
+
+    public LocalTime getStartTimeBuffer() {
+        return startTimeBuffer;
+    }
+
+    public void setStartTimeBuffer(LocalTime startTimeBuffer) {
+        this.startTimeBuffer = startTimeBuffer;
+    }
+
+    public LocalTime getEndTimeBuffer() {
+        return endTimeBuffer;
+    }
+
+    public void setEndTimeBuffer(LocalTime endTimeBuffer) {
+        this.endTimeBuffer = endTimeBuffer;
+    }
+
+    public String getDescriptionBuffer() {
+        return descriptionBuffer;
+    }
+
+    public void setDescriptionBuffer(String descriptionBuffer) {
+        this.descriptionBuffer = descriptionBuffer;
+    }
 
     public SaveStatus getSaveStatus() {
         return saveStatus;

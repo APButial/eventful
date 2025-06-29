@@ -15,8 +15,10 @@ public class PopulateDetails {
 
         eventDetailsUI.getEventForm().getStartDatePicker().setValue(event.getStartDate());
         appService.setStartDate(event.getStartDate());
+        ((EventManAppService) appService).getEventManState().setStartDateBuffer(event.getStartDate());
         eventDetailsUI.getEventForm().getEndDatePicker().setValue(event.getEndDate());
         appService.setEndDate(event.getEndDate());
+        ((EventManAppService) appService).getEventManState().setEndDateBuffer(event.getEndDate());
         event.setLastAccessed(appService.getSysDateTime());
 
         try {

@@ -16,6 +16,9 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -97,10 +100,12 @@ public class EventManAppService implements AppService, LogService {
     private MyEventUI myEventUI;
 
     private EventManState eventManState;
-    private LocalDate tempStartDate;
-    private LocalDate tempEndDate;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd HH:mm:ss");
     final String filepath = "Eventful/dat/";
+
+    public EventManState getEventManState() {
+        return eventManState;
+    }
 
     public EventManAppService(EventManState eventManState) { this.eventManState = eventManState;}
 
@@ -164,7 +169,7 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public void updateEvent(EventFormEvents update) {
         if (update.equals(EventFormEvents.UPDATE_BUDGET)) {
-            WriteEventsService.overwrite(this, tempStartDate, tempEndDate);
+            WriteEventsService.overwrite(this, eventManState.getStartDateBuffer(), eventManState.getEndDateBuffer());
             LoadUserEvents.load(this);
             setSaveStatus(SaveStatus.SAVED);
             _savedEvent();
@@ -180,9 +185,13 @@ public class EventManAppService implements AppService, LogService {
                 if (input != null)
                     input = input.strip();
 
-                setDescription(input);
-                _descriptionUpdated();
+                if (input == getDescription()) {
+                    return;
+                }
+
+                eventManState.setDescriptionBuffer(input);
                 setSaveStatus(SaveStatus.UNSAVED);
+                getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
                 break;
             case UPDATE_CHANGES:
                 if (!RegexService.validate(input)){
@@ -191,11 +200,41 @@ public class EventManAppService implements AppService, LogService {
                     setGuests(List.of(input.split(";")));
                 }
 
-                WriteEventsService.overwrite(this, tempStartDate, tempEndDate);
+                if (getStartDate() != eventManState.getStartDateBuffer()) {
+                    _startDateUpdated();
+                }
+
+                if (getEndDate() != eventManState.getEndDateBuffer()) {
+                    _endDateUpdated();
+                }
+
+                if (getDescription() != eventManState.getDescriptionBuffer() && eventManState.getDescriptionBuffer() != null) {
+                    setDescription(eventManState.getDescriptionBuffer());
+                    _descriptionUpdated();
+                }
+
+                if (getStartTime() != eventManState.getStartTimeBuffer() && eventManState.getStartTimeBuffer() != null) {
+                    setStartTime(eventManState.getStartTimeBuffer());
+                    _startTimeUpdated();
+                }
+
+                if (getEndTime() != eventManState.getEndTimeBuffer() && eventManState.getEndTimeBuffer() != null) {
+                    setEndTime(eventManState.getEndTimeBuffer());
+                    _endTimeUpdated();
+                }
+
+                WriteEventsService.overwrite(this, eventManState.getStartDateBuffer(), eventManState.getEndDateBuffer());
                 LoadUserEvents.load(this);
                 setSaveStatus(SaveStatus.SAVED);
                 _savedEvent();
                 _eventsLoaded();
+
+                eventManState.setStartDateBuffer(null);
+                eventManState.setEndDateBuffer(null);
+                eventManState.setDescriptionBuffer(null);
+                eventManState.setStartTimeBuffer(null);
+                eventManState.setEndTimeBuffer(null);
+
                 break;
         }
     }
@@ -204,12 +243,16 @@ public class EventManAppService implements AppService, LogService {
     public void updateEvent(EventFormEvents update, LocalDate input) {
         switch (update) {
             case START_DATE:
-                tempStartDate = input;
-                _startDateUpdated();
+                if (getStartDate() == input) {
+                    return;
+                }
+                eventManState.setStartDateBuffer(input);
                 break;
             case END_DATE:
-                tempEndDate = input;
-                _endDateUpdated();
+                if (getEndDate() == input) {
+                    return;
+                }
+                eventManState.setEndDateBuffer(input);
                 break;
         }
         setSaveStatus(SaveStatus.UNSAVED);
@@ -219,12 +262,16 @@ public class EventManAppService implements AppService, LogService {
     public void updateEvent(EventFormEvents update, LocalTime input) {
         switch (update) {
             case START_TIME:
-                setStartTime(input);
-                _startTimeUpdated();
+                if (getStartTime() == input) {
+                    return;
+                }
+                eventManState.setStartTimeBuffer(input);
                 break;
             case END_TIME:
-                setEndTime(input);
-                _endTimeUpdated();
+                if (getEndTime() == input) {
+                    return;
+                }
+                eventManState.setEndTimeBuffer(input);
                 break;
         }
         setSaveStatus(SaveStatus.UNSAVED);
@@ -236,6 +283,7 @@ public class EventManAppService implements AppService, LogService {
             for (BaseEvent event : eventManState.getCurrUser().getEvents()) {
                 if (event == getSelectedEvent()) {
                     eventManState.getCurrUser().getEvents().remove(event);
+                    _deletedEvent();
                     break;
                 }
             }
@@ -466,6 +514,15 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void _updateLogs(String text) {
+        Path directoryPath = Paths.get(filepath + getCurrUser().getUsername());
+        if (!Files.exists(directoryPath)) {
+            try {
+                Files.createDirectories(directoryPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath + getCurrUser().getUsername() + "/logs.txt", true))) {
             writer.write("(" + getCurrUser().getUsername() + ") [" + getSysDateTime().format(formatter) + "]: " + text);
             writer.newLine();
@@ -528,6 +585,11 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
+    public void _deletedEvent() {
+        _updateLogs("Deleted an event name, " + getEventName());
+    }
+
+    @Override
     public void _startDateUpdated() {
         _updateLogs("Changed start date of " + getSelectedEvent().getEventName() + " to " + getSelectedEvent().getStartDate() + ".");
     }
@@ -549,7 +611,7 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void _descriptionUpdated() {
-        _updateLogs("Changed description of " + getSelectedEvent().getEventName() + " to " + getSelectedEvent().getDescription() + ".");
+        _updateLogs("Changed description of " + getSelectedEvent().getEventName() + " to \"" + getSelectedEvent().getDescription() + "\".");
     }
 
     @Override

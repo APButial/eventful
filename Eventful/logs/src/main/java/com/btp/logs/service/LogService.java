@@ -11,7 +11,7 @@ public interface LogService {
     public void _accessedEvent();
     public void _createdEvent();
     public void _savedEvent();
-
+    public void _deletedEvent();
 
     public void _startDateUpdated();
     public void _endDateUpdated();
