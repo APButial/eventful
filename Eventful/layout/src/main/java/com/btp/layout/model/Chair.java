@@ -1,11 +1,9 @@
 package com.btp.layout.model;
 
-import javafx.scene.paint.Color;
-
 public class Chair extends Furniture {
-    private static final Color DEFAULT_COLOR = Color.GREEN;
+    private static final String IMAGE_PATH = "/com/btp/layout/images/chair.png";
 
     public Chair(int gridX, int gridY) {
-        super(gridX, gridY, DEFAULT_COLOR, false);
+        super(gridX, gridY, IMAGE_PATH, false);
     }
 } 

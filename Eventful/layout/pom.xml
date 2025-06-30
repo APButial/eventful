@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>LayoutDiagram</artifactId>
+    <groupId>com.btp</groupId>
+    <artifactId>layout</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>LayoutDiagram</name>
+    <n>LayoutDiagram</n>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,7 +71,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.layoutdiagram/com.btp.layout.LayoutDiagramApp</mainClass>
+                            <mainClass>com.btp.layout/com.btp.layout.LayoutDiagramApp</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
