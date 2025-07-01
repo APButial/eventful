@@ -1,11 +1,9 @@
 package com.btp.layout.model;
 
-import javafx.scene.paint.Color;
-
 public class Floor extends Furniture {
-    private static final Color DEFAULT_COLOR = Color.BLUE;
+    private static final String IMAGE_PATH = "/com/btp/layout/images/floor.png";
 
     public Floor(int gridX, int gridY) {
-        super(gridX, gridY, DEFAULT_COLOR, false);
+        super(gridX, gridY, IMAGE_PATH, false);
     }
 } 

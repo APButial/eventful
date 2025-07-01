@@ -1,5 +1,6 @@
 package com.btp.layout.ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -8,7 +9,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import com.btp.layout.model.*;
+import com.btp.layout.model.Chair;
+import com.btp.layout.model.Furniture;
+import com.btp.layout.model.GuestList;
+import com.btp.layout.model.Table;
 
 import java.util.List;
 

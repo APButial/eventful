@@ -1,36 +1,44 @@
 package com.btp.layout.model;
 
 import com.almasb.fxgl.entity.Entity;
+import com.almasb.fxgl.entity.components.BoundingBoxComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
+import javafx.geometry.Point2D;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class Furniture extends Entity {
-    protected static final int CELL_SIZE = 40;
+    protected static final int CELL_SIZE = 120;
     protected final int gridX;
     protected final int gridY;
-    protected Rectangle shape;
+    protected ImageView imageView;
     private String assignedGuest;
     private List<String> assignedGuests;
     private final boolean supportsMultipleGuests;
 
-    public Furniture(int gridX, int gridY, Color color, boolean supportsMultipleGuests) {
+    public Furniture(int gridX, int gridY, String imagePath, boolean supportsMultipleGuests) {
         this.gridX = gridX;
         this.gridY = gridY;
         this.supportsMultipleGuests = supportsMultipleGuests;
         this.assignedGuest = null;
         this.assignedGuests = supportsMultipleGuests ? new ArrayList<>() : null;
         
-        shape = new Rectangle(CELL_SIZE - 1, CELL_SIZE - 1);
-        shape.setFill(color);
+        // Load and set up the image
+        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
+        imageView = new ImageView(image);
+        imageView.setFitWidth(CELL_SIZE - 1);
+        imageView.setFitHeight(CELL_SIZE - 1);
+        imageView.setPreserveRatio(true);
         
         // Set position
         setPosition(gridX * CELL_SIZE, gridY * CELL_SIZE);
-        getViewComponent().addChild(shape);
+        getViewComponent().addChild(imageView);
 
         // Add collision box
         getBoundingBoxComponent().addHitBox(new HitBox("MAIN", BoundingShape.box(CELL_SIZE - 1, CELL_SIZE - 1)));
@@ -42,14 +50,6 @@ public abstract class Furniture extends Entity {
 
     public int getGridY() {
         return gridY;
-    }
-
-    public void setColor(Color color) {
-        shape.setFill(color);
-    }
-
-    public Color getColor() {
-        return (Color) shape.getFill();
     }
 
     public boolean supportsMultipleGuests() {

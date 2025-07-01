@@ -1,11 +1,9 @@
 package com.btp.layout.model;
 
-import javafx.scene.paint.Color;
-
 public class Table extends Furniture {
-    private static final Color DEFAULT_COLOR = Color.RED;
+    private static final String IMAGE_PATH = "/com/btp/layout/images/table.png";
 
     public Table(int gridX, int gridY) {
-        super(gridX, gridY, DEFAULT_COLOR, true);
+        super(gridX, gridY, IMAGE_PATH, true);
     }
 } 
