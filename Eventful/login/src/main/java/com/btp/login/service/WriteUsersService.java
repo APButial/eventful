@@ -1,7 +1,7 @@
 package com.btp.login.service;
 
 import com.btp.appfx.model.User;
-import com.btp.appfx.service.XMLCipherService;
+import com.btp.appfx.service.CipherService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,7 +37,7 @@ public class WriteUsersService {
             File tempFile = new File("Eventful/dat/users_temp.xml");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(XMLCipherService.encryptXMLValues(document));
+            DOMSource domSource = new DOMSource(CipherService.encryptXMLValues(document));
             StreamResult streamResult = new StreamResult(tempFile);
             transformer.transform(domSource, streamResult);
 

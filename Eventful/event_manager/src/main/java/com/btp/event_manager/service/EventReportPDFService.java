@@ -17,6 +17,7 @@ import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import javafx.scene.control.Alert;
+import javafx.scene.control.TextInputDialog;
 
 import java.awt.*;
 import java.io.File;
@@ -25,11 +26,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 public class EventReportPDFService {
     private static final DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("MMMM dd, yyyy");
 
     public static void generateReport(AppService appService) throws IOException {
+        String preparer = getInput();
+        if (preparer.isEmpty()) {
+            return;
+        }
+
         String eventName = appService.getEventName();
         LocalDate startDate = appService.getStartDate();
         LocalDate endDate = appService.getEndDate();
@@ -75,6 +82,8 @@ public class EventReportPDFService {
         nestTable.addCell(getHeaderTextCellValue(dtFormat.format(startDate)));
         nestTable.addCell(getHeaderTextCell("End Date:"));
         nestTable.addCell(getHeaderTextCellValue(dtFormat.format(endDate)));
+        nestTable.addCell(getHeaderTextCell("Prepared by:"));
+        nestTable.addCell(getHeaderTextCellValue(preparer));
 
         table.addCell(new Cell().add(nestTable).setBorder(Border.NO_BORDER));
 
@@ -85,6 +94,7 @@ public class EventReportPDFService {
         Table twoColTable = new Table(twocolWidth);
         Table leftColTable = new Table(new float[]{twocolWidth[0]});
         Table rightColTable = new Table(new float[]{twocolWidth[1]});
+
 
         leftColTable.addCell(getCell12fLeft("Event Name", true));
         leftColTable.addCell(getCell12fLeft(eventName, false));
@@ -181,8 +191,6 @@ public class EventReportPDFService {
         alert.setHeaderText("PDF file has been successfully exported.");
         alert.setContentText("The PDF file is saved in " + path + ".");
         alert.showAndWait();
-
-        openPDF(path);
     }
 
     static Cell getHeaderTextCell (String text) {
@@ -203,5 +211,16 @@ public class EventReportPDFService {
         if (pdfFile.exists()) {
             Desktop.getDesktop().open(pdfFile);
         }
+    }
+
+    private static String getInput() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Report Preparer");
+        dialog.setHeaderText("Enter report preparer name");
+        dialog.setContentText("Please enter a name:");
+
+        // Get the response
+        Optional<String> result = dialog.showAndWait();
+        return result.orElse("");
     }
 }

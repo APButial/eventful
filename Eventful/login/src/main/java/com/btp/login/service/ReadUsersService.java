@@ -1,8 +1,7 @@
 package com.btp.login.service;
 
-import com.btp.appfx.service.XMLCipherService;
+import com.btp.appfx.service.CipherService;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,7 +18,7 @@ public class ReadUsersService {
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
 
-            return XMLCipherService.decryptXMLValues(document).getElementsByTagName("user");
+            return CipherService.decryptXMLValues(document).getElementsByTagName("user");
 
         } catch (Exception e) {
             return null;

@@ -2,12 +2,10 @@ package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
-import com.btp.appfx.service.XMLCipherService;
+import com.btp.appfx.service.CipherService;
 import com.btp.budget.model.ExpenseEntry;
 import com.btp.event_manager.model.Event;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -67,7 +65,7 @@ public class WriteEventsService {
             File tempFile = new File(path + "events_temp.xml");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(XMLCipherService.encryptXMLValues(document));
+            DOMSource domSource = new DOMSource(CipherService.encryptXMLValues(document));
             StreamResult streamResult = new StreamResult(tempFile);
             transformer.transform(domSource, streamResult);
 
@@ -98,7 +96,7 @@ public class WriteEventsService {
             Document document = documentBuilder.parse(file);
             document.getDocumentElement().normalize();
 
-            NodeList events = XMLCipherService.decryptXMLValues(document).getElementsByTagName("event");
+            NodeList events = CipherService.decryptXMLValues(document).getElementsByTagName("event");
             boolean eventFound = false;
 
             for (int i = 0; i < events.getLength(); i++) {
@@ -229,7 +227,7 @@ public class WriteEventsService {
                 File tempFile = new File(path + "events_temp.xml");
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
-                DOMSource domSource = new DOMSource(XMLCipherService.encryptXMLValues(document));
+                DOMSource domSource = new DOMSource(CipherService.encryptXMLValues(document));
                 StreamResult streamResult = new StreamResult(tempFile);
                 transformer.transform(domSource, streamResult);
 
@@ -282,7 +280,7 @@ public class WriteEventsService {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.parse(file);
             document.getDocumentElement().normalize();
-            NodeList events = XMLCipherService.decryptXMLValues(document).getElementsByTagName("event");
+            NodeList events = CipherService.decryptXMLValues(document).getElementsByTagName("event");
             boolean eventRemoved = false;
 
             for (int i = 0; i < events.getLength(); i++) {
@@ -299,7 +297,7 @@ public class WriteEventsService {
             if (eventRemoved) {
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
-                DOMSource source = new DOMSource(XMLCipherService.encryptXMLValues(document));
+                DOMSource source = new DOMSource(CipherService.encryptXMLValues(document));
                 StreamResult result = new StreamResult(file);
                 transformer.transform(source, result);
                 System.out.println("Event removed successfully.");

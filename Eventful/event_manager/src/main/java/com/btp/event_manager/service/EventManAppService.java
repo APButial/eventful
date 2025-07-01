@@ -5,6 +5,7 @@ import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppService;
+import com.btp.appfx.service.CipherService;
 import com.btp.budget.model.BudgetTracker;
 import com.btp.event_manager.component.*;
 import com.btp.event_manager.model.EventManState;
@@ -524,7 +525,8 @@ public class EventManAppService implements AppService, LogService {
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath + getCurrUser().getUsername() + "/logs.txt", true))) {
-            writer.write("(" + getCurrUser().getUsername() + ") [" + getSysDateTime().format(formatter) + "]: " + text);
+            String entry = "(" + getCurrUser().getUsername() + ") [" + getSysDateTime().format(formatter) + "]: " + text;
+            writer.write(CipherService.encrypt(entry));
             writer.newLine();
         } catch (Exception e) {
             e.printStackTrace();
@@ -543,7 +545,7 @@ public class EventManAppService implements AppService, LogService {
 
             Collections.reverse(entries);
             for (String entry: entries) {
-                content.append(entry).append("\n");
+                content.append(CipherService.decrypt(entry)).append("\n");
             }
 
         } catch (Exception e) {
