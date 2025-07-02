@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // This class loads all events created by a user that were saved from
-// Eventful - Event Management System/dat/[username].xml
+// AppDataPath.loadPath() + "/dat/[username].xml
 public class LoadUserEvents {
     public static void load(AppService appService) {
         try {

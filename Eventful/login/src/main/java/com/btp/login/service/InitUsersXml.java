@@ -1,6 +1,7 @@
 package com.btp.login.service;
 
 import com.btp.appfx.model.User;
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.CipherService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +17,7 @@ import java.io.File;
 public class InitUsersXml {
     public static void init(User newUser) {
         try{
-            String datDirPath = "Eventful - Event Management System/dat";
+            String datDirPath = AppDataPath.loadPath() + "/dat";
             File datDir = new File(datDirPath);
 
             if (!datDir.exists()) {
@@ -45,7 +46,7 @@ public class InitUsersXml {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource domSource = new DOMSource(CipherService.encryptXMLValues(document));
-            StreamResult streamResult = new StreamResult(new File("Eventful - Event Management System/dat/users.xml"));
+            StreamResult streamResult = new StreamResult(new File(AppDataPath.loadPath() + "/dat/users.xml"));
             transformer.transform(domSource, streamResult);
 
         } catch (Exception e) {

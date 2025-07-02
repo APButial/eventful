@@ -1,5 +1,6 @@
 package com.btp.event_manager.service;
 
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.btp.budget.model.ExpenseEntry;
 import com.itextpdf.io.image.ImageData;
@@ -45,7 +46,7 @@ public class EventReportPDFService {
         String description = appService.getDescription();
         List<String> guests = appService.getGuests();
 
-        String path = "Eventful - Event Management System/dat/";
+        String path = AppDataPath.loadPath() + "/dat/";
         path += appService.getCurrUser().getUsername() + "/" + eventName.toLowerCase().replaceAll(" ", "_") + "_report.pdf";
 
         // checks if PDF is open

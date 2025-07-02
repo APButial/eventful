@@ -1,6 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.btp.appfx.service.CipherService;
 import com.btp.budget.model.ExpenseEntry;
@@ -24,7 +25,7 @@ public class WriteEventsService {
 
     public static void write(BaseEvent newEvent, AppService appService) {
         try {
-            String path = "Eventful - Event Management System/dat/" + appService.getCurrUser().getUsername() + "/";
+            String path = AppDataPath.loadPath() + "/dat/" + appService.getCurrUser().getUsername() + "/";
             File file = new File(path + "events.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -88,7 +89,7 @@ public class WriteEventsService {
     public static void overwrite(AppService appService, LocalDate tempStartDate, LocalDate tempEndDate) {
         try {
             BaseEvent selectedEvent = appService.getSelectedEvent();
-            String path = "Eventful - Event Management System/dat/" + appService.getCurrUser().getUsername();
+            String path = AppDataPath.loadPath() + "/dat/" + appService.getCurrUser().getUsername();
             File file = new File(path + "/events.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -269,7 +270,7 @@ public class WriteEventsService {
 
         try {
             BaseEvent selectedEvent = appService.getSelectedEvent();
-            String path = "Eventful - Event Management System/dat/" + appService.getCurrUser().getUsername();
+            String path = AppDataPath.loadPath() + "/dat/" + appService.getCurrUser().getUsername();
             File file = new File(path + "/events.xml");
             if (!file.exists()) {
                 System.err.println("Events XML file does not exist.");

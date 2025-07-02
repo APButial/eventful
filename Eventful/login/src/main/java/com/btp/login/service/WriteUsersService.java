@@ -1,6 +1,7 @@
 package com.btp.login.service;
 
 import com.btp.appfx.model.User;
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.CipherService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,7 +17,7 @@ import java.io.File;
 public class WriteUsersService {
     public static void write(User newUser) {
         try {
-            File file = new File("Eventful - Event Management System/dat/users.xml");
+            File file = new File(AppDataPath.loadPath() + "/dat/users.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -34,7 +35,7 @@ public class WriteUsersService {
 
             document.getDocumentElement().appendChild(user);
 
-            File tempFile = new File("Eventful - Event Management System/dat/users_temp.xml");
+            File tempFile = new File(AppDataPath.loadPath() + "/dat/users_temp.xml");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource domSource = new DOMSource(CipherService.encryptXMLValues(document));

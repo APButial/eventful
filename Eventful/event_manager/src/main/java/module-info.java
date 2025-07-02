@@ -23,6 +23,7 @@ module event_manager {
     requires com.google.api.services.calendar;
     requires jdk.httpserver;
     requires com.fasterxml.jackson.databind;
+    requires java.prefs;
 
     exports com.btp.event_manager;
     exports com.btp.event_manager.component;

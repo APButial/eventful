@@ -1,6 +1,7 @@
 package com.btp.event_manager.component;
 import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.btp.event_manager.model.Event;
 import com.btp.event_manager.service.*;
@@ -40,7 +41,6 @@ public class MainFrame extends Application {
         ((EventManAppService) appService).setMainStage(primaryStage);
 
         appService.verifyMetaData();
-
         Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
         primaryStage.getIcons().add(logoImg);
 

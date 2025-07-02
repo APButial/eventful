@@ -68,6 +68,8 @@ public interface AppService {
     void initMetaData(File metadata) throws IOException;
     void setMetaData(File metaData);
 
+    void generateBackup(boolean auto);
+
     String getDirectory();
     void setDirectory(String directory);
 

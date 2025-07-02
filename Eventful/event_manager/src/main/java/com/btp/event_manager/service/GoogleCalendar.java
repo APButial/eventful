@@ -1,5 +1,6 @@
 package com.btp.event_manager.service;
 
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -44,7 +45,7 @@ public class GoogleCalendar {
     /**
      * Directory to store authorization tokens for this application.
      */
-    private static final String TOKENS_DIRECTORY_PATH = "Eventful - Event Management System/tokens";
+    private static final String TOKENS_DIRECTORY_PATH = AppDataPath.loadPath() + "/tokens";
 
     /**
      * Global instance of the scopes required by this quickstart.

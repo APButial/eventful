@@ -1,6 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.model.BaseEvent;
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.btp.appfx.service.CipherService;
 import org.w3c.dom.Document;
@@ -17,7 +18,7 @@ import java.io.File;
 public class InitEventsXML {
     public static void init(BaseEvent newEvent, AppService appService) {
         try {
-            String path = "Eventful - Event Management System/dat/" + appService.getCurrUser().getUsername();
+            String path = AppDataPath.loadPath() + "/dat/" + appService.getCurrUser().getUsername();
             File userDir = new File(path);
 
             if (!userDir.exists()) {

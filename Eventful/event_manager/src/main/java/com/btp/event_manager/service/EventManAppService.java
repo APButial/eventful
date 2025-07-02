@@ -4,6 +4,7 @@ import com.btp.appfx.enums.EventFormEvents;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.btp.appfx.service.CipherService;
 import com.btp.budget.model.BudgetTracker;
@@ -12,16 +13,18 @@ import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.RemoveUserService;
 import com.btp.logs.service.LogService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.api.client.json.Json;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +32,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class EventManAppService implements AppService, LogService {
@@ -425,47 +429,173 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void verifyMetaData() throws Exception {
-        String path  = "Eventful - Event Management System/";
-        File metadata = new File(path + "metadata.json");
-        if (metadata.exists() && !metadata.isDirectory()) {
-            setMetaData(metadata);
-        } else {
-            File eventfulDir = new File(path);
-            if (!eventfulDir.exists()) {
-                eventfulDir.mkdirs(); // Create the directory if it does not exist
-            }
+        final String SUBFOLDER_NAME = "Eventful - Event Management System";
 
-            // Now create the metadata file
-            try {
-                if (metadata.createNewFile()) {
-                    // If the file was created successfully, initialize it
-                    initMetaData(metadata);
-                    setMetaData(metadata);
-                    System.out.println("Metadata file created.");
-                } else {
-                    System.out.println("Metadata file already exists.");
-                }
-            } catch (IOException e) {
-                System.out.println("Error creating metadata file: " + e.getMessage());
+        String savedPath = AppDataPath.loadPath();
+        System.out.println(savedPath);
+        File metadata = null;
+
+        if (savedPath != null) {
+            File eventfulDir = new File(savedPath);
+            metadata = new File(eventfulDir, "metadata.json");
+
+            // Only use the saved path if metadata actually exists
+            if (metadata.exists() && !metadata.isDirectory()) {
+                setMetaData(metadata);
+                setDirectory(savedPath);
+                return;
+            } else {
+                // Invalidate saved path if metadata is missing
+                AppDataPath.clear();  // Add this method to clear saved path
             }
+        }
+
+        // Ask user to select base folder
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Select Working Directory");
+        File selectedDir = chooser.showDialog(getMainStage());
+        if (selectedDir == null) {
+            System.exit(-1);
+        }
+
+        File eventfulDir = new File(selectedDir, SUBFOLDER_NAME);
+        if (!eventfulDir.exists()) {
+            eventfulDir.mkdirs();
+        }
+        AppDataPath.savePath(eventfulDir.getAbsolutePath());
+
+        metadata = new File(eventfulDir, "metadata.json");
+        try {
+            if (metadata.createNewFile()) {
+                initMetaData(metadata);
+                setMetaData(metadata);
+                System.out.println("Metadata file created.");
+            } else {
+                System.out.println("Metadata file already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("Error creating metadata file: " + e.getMessage());
         }
     }
 
     @Override
     public void initMetaData(File metadata) throws IOException {
+        String directory = AppDataPath.loadPath();
+
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectNode jsonNode = objectMapper.createObjectNode();
         jsonNode.put("app_name", "eventful");
         jsonNode.put("version", 2.0);
-        jsonNode.put("directory", metadata.getAbsolutePath());
+        jsonNode.put("directory", directory);
         jsonNode.put("last_backup", getSysDateTime().toString());
         jsonNode.put("next_backup", getSysDateTime().plusHours(12).toString());
         objectMapper.writeValue(metadata, jsonNode);
+
+        setDirectory(directory);
     }
 
     @Override
     public void setMetaData(File metaData) {
         eventManState.setMetadata(metaData);
+    }
+
+    @Override
+    public void generateBackup(boolean auto) {
+        ObjectMapper objectMapper;
+        JsonNode jsonNode;
+
+        // disregard backup generation if not yet time
+        if (auto) {
+            try {
+                objectMapper = new ObjectMapper();
+                jsonNode = objectMapper.readTree(getMetaData());
+
+                String specificKey = "next_backup";
+                String value = jsonNode.get(specificKey).asText();
+
+                LocalDateTime nextBackup = LocalDateTime.parse(value);
+                if (nextBackup.isAfter(getSysDateTime())) { // not time yet for backup
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        String path = getDirectory() + "/backup/";
+        Path backupPath = Paths.get(path);
+
+        try {
+            // Count the number of directories in the specified path
+            long folderCount = Files.list(backupPath)
+                    .filter(Files::isDirectory)
+                    .count();
+
+            // Remove oldest folder if count is greater than 5
+            if (folderCount > 5) {
+                Path oldestDir = Files.list(backupPath)
+                        .filter(Files::isDirectory)
+                        .min(Comparator.comparingLong(dir -> {
+                            try {
+                                BasicFileAttributes attrs = Files.readAttributes(dir, BasicFileAttributes.class);
+                                return attrs.creationTime().toMillis();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                return Long.MAX_VALUE; // In case of an error, treat it as the oldest
+                            }
+                        }))
+                        .orElse(null); // Handle case where no directories are found
+
+                // If oldest directory is found, delete it
+                if (oldestDir != null) {
+                    Files.delete(oldestDir);
+                    System.out.println("Deleted oldest directory: " + oldestDir.getFileName());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        String target = getDirectory() + "/backup/" + getSysDateTime().toString();
+        String source = getDirectory() + "/dat/";
+
+        Path sourcePath = Paths.get(source);
+        Path targetPath = Paths.get(target);
+
+        try {
+            Files.createDirectories(targetPath);
+
+            // Copy the source directory and its contents to the target directory
+            Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    // Copy each file to the target directory
+                    Path targetFile = targetPath.resolve(sourcePath.relativize(file));
+                    Files.copy(file, targetFile, StandardCopyOption.REPLACE_EXISTING);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                    // Create the target directory
+                    Path targetDir = targetPath.resolve(sourcePath.relativize(dir));
+                    Files.createDirectories(targetDir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+
+            objectMapper = new ObjectMapper();
+            jsonNode = objectMapper.readTree(getMetaData());
+            ((ObjectNode) jsonNode).put("last_backup", getSysDateTime().toString());
+            ((ObjectNode) jsonNode).put("next_backup", getSysDateTime().plusHours(12).toString());
+            objectMapper.writerWithDefaultPrettyPrinter().writeValue(getMetaData(), jsonNode);
+
+            System.out.println("Backup completed successfully from " + source + " to " + target);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -514,7 +644,7 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void _updateLogs(String text) {
-        Path directoryPath = Paths.get("Eventful - Event Management System/dat/" + getCurrUser().getUsername());
+        Path directoryPath = Paths.get(AppDataPath.loadPath() + "/dat/" + getCurrUser().getUsername());
         if (!Files.exists(directoryPath)) {
             try {
                 Files.createDirectories(directoryPath);
@@ -523,7 +653,7 @@ public class EventManAppService implements AppService, LogService {
             }
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Eventful - Event Management System/dat/" + getCurrUser().getUsername() + "/logs.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(AppDataPath.loadPath() + "/dat/" + getCurrUser().getUsername() + "/logs.txt", true))) {
             String entry = "(" + getCurrUser().getUsername() + ") [" + getSysDateTime().format(formatter) + "]: " + text;
             writer.write(CipherService.encrypt(entry));
             writer.newLine();
@@ -535,7 +665,7 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public String _loadLogs() {
         StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader("Eventful - Event Management System/dat/" + getCurrUser().getUsername() + "/logs.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(AppDataPath.loadPath() + "/dat/" + getCurrUser().getUsername() + "/logs.txt"))) {
             String line;
             List<String> entries = new ArrayList<>();
             while((line = reader.readLine() ) != null) {

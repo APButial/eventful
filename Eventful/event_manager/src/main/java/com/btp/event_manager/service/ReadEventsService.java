@@ -1,5 +1,6 @@
 package com.btp.event_manager.service;
 
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.btp.appfx.service.CipherService;
 import org.w3c.dom.Document;
@@ -15,7 +16,7 @@ public class ReadEventsService {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
 
-            File file = new File("Eventful - Event Management System/dat/" + appService.getCurrUser().getUsername() + "/events.xml") ;
+            File file = new File(AppDataPath.loadPath() + "/dat/" + appService.getCurrUser().getUsername() + "/events.xml") ;
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
 

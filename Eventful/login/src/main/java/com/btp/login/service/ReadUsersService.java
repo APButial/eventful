@@ -1,5 +1,6 @@
 package com.btp.login.service;
 
+import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.CipherService;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -14,7 +15,7 @@ public class ReadUsersService {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
 
-            File file = new File("Eventful - Event Management System/dat/users.xml") ;
+            File file = new File(AppDataPath.loadPath() + "/dat/users.xml") ;
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
 
