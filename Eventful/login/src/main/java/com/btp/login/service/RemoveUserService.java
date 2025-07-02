@@ -50,7 +50,7 @@ public class RemoveUserService {
         }
 
         try {
-            File file = new File("Eventful/dat/users.xml");
+            File file = new File("Eventful - Event Management System/dat/users.xml");
             if (!file.exists()) {
                 System.err.println("User XML file does not exist.");
                 return false;
@@ -95,7 +95,7 @@ public class RemoveUserService {
         }
 
         // Delete user directory
-        Path userDir = Paths.get("Eventful/dat/" + appService.getCurrUser().getUsername());
+        Path userDir = Paths.get("Eventful - Event Management System/dat/" + appService.getCurrUser().getUsername());
         try {
             Files.walk(userDir).sorted((p1, p2) -> -p1.compareTo(p2)).forEach(path -> {
                 try {

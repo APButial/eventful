@@ -5,6 +5,8 @@ import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,6 +62,14 @@ public interface AppService {
     void setCurrUser(User user);
     SaveStatus getSaveStatus();
     void setSaveStatus(SaveStatus saveStatus);
+
+    File getMetaData();
+    void verifyMetaData() throws  Exception;
+    void initMetaData(File metadata) throws IOException;
+    void setMetaData(File metaData);
+
+    String getDirectory();
+    void setDirectory(String directory);
 
     String getEmailAdd();
     void setEmailAdd(String emailAdd);

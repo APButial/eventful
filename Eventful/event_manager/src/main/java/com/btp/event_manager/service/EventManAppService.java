@@ -12,6 +12,8 @@ import com.btp.event_manager.model.EventManState;
 import com.btp.login.components.LoginUI;
 import com.btp.login.service.RemoveUserService;
 import com.btp.logs.service.LogService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
@@ -33,76 +35,13 @@ public class EventManAppService implements AppService, LogService {
     private LoginUI loginUI;
     private CreateEventUI createEventUI;
     private BudgetTrackerUI budgetTrackerUI;
-
-    public LoginUI getLoginUI() {
-        return loginUI;
-    }
-
-    public CreateEventUI getCreateEventUI() {
-        return createEventUI;
-    }
-
-    public void setCreateEventUI(CreateEventUI createEventUI) {
-        this.createEventUI = createEventUI;
-    }
-
-    public BudgetTrackerUI getBudgetTrackerUI() {
-        return budgetTrackerUI;
-    }
-
-    public void setBudgetTrackerUI(BudgetTrackerUI budgetTrackerUI) {
-        this.budgetTrackerUI = budgetTrackerUI;
-    }
-
-    public DashboardUI getDashboardUI() {
-        return dashboardUI;
-    }
-
-    public void setDashboardUI(DashboardUI dashboardUI) {
-        this.dashboardUI = dashboardUI;
-    }
-
-    public EventDetailsUI getEventDetailsUI() {
-        return eventDetailsUI;
-    }
-
-    public void setEventDetailsUI(EventDetailsUI eventDetailsUI) {
-        this.eventDetailsUI = eventDetailsUI;
-    }
-
-    public EventTimelineUI getEventTimelineUI() {
-        return eventTimelineUI;
-    }
-
-    public void setEventTimelineUI(EventTimelineUI eventTimelineUI) {
-        this.eventTimelineUI = eventTimelineUI;
-    }
-
-    public LogsUI getLogsUI() {
-        return logsUI;
-    }
-
-    public void setLogsUI(LogsUI logsUI) {
-        this.logsUI = logsUI;
-    }
-
-    public MyEventUI getMyEventUI() {
-        return myEventUI;
-    }
-
-    public void setMyEventUI(MyEventUI myEventUI) {
-        this.myEventUI = myEventUI;
-    }
-
     private DashboardUI dashboardUI;
     private EventDetailsUI eventDetailsUI;
     private EventTimelineUI eventTimelineUI;
     private LogsUI logsUI;
     private MyEventUI myEventUI;
-
     private EventManState eventManState;
     final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd HH:mm:ss");
-    final String filepath = "Eventful/dat/";
 
     public EventManState getEventManState() {
         return eventManState;
@@ -480,6 +419,66 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
+    public File getMetaData() {
+       return eventManState.getMetadata();
+    }
+
+    @Override
+    public void verifyMetaData() throws Exception {
+        String path  = "Eventful - Event Management System/";
+        File metadata = new File(path + "metadata.json");
+        if (metadata.exists() && !metadata.isDirectory()) {
+            setMetaData(metadata);
+        } else {
+            File eventfulDir = new File(path);
+            if (!eventfulDir.exists()) {
+                eventfulDir.mkdirs(); // Create the directory if it does not exist
+            }
+
+            // Now create the metadata file
+            try {
+                if (metadata.createNewFile()) {
+                    // If the file was created successfully, initialize it
+                    initMetaData(metadata);
+                    setMetaData(metadata);
+                    System.out.println("Metadata file created.");
+                } else {
+                    System.out.println("Metadata file already exists.");
+                }
+            } catch (IOException e) {
+                System.out.println("Error creating metadata file: " + e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void initMetaData(File metadata) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode jsonNode = objectMapper.createObjectNode();
+        jsonNode.put("app_name", "eventful");
+        jsonNode.put("version", 2.0);
+        jsonNode.put("directory", metadata.getAbsolutePath());
+        jsonNode.put("last_backup", getSysDateTime().toString());
+        jsonNode.put("next_backup", getSysDateTime().plusHours(12).toString());
+        objectMapper.writeValue(metadata, jsonNode);
+    }
+
+    @Override
+    public void setMetaData(File metaData) {
+        eventManState.setMetadata(metaData);
+    }
+
+    @Override
+    public String getDirectory() {
+        return eventManState.getDirectory();
+    }
+
+    @Override
+    public void setDirectory(String directory) {
+        eventManState.setDirectory(directory);
+    }
+
+    @Override
     public String getEmailAdd() {
         return eventManState.getEmailAdd();
     }
@@ -515,7 +514,7 @@ public class EventManAppService implements AppService, LogService {
 
     @Override
     public void _updateLogs(String text) {
-        Path directoryPath = Paths.get(filepath + getCurrUser().getUsername());
+        Path directoryPath = Paths.get("Eventful - Event Management System/dat/" + getCurrUser().getUsername());
         if (!Files.exists(directoryPath)) {
             try {
                 Files.createDirectories(directoryPath);
@@ -524,7 +523,7 @@ public class EventManAppService implements AppService, LogService {
             }
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filepath + getCurrUser().getUsername() + "/logs.txt", true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("Eventful - Event Management System/dat/" + getCurrUser().getUsername() + "/logs.txt", true))) {
             String entry = "(" + getCurrUser().getUsername() + ") [" + getSysDateTime().format(formatter) + "]: " + text;
             writer.write(CipherService.encrypt(entry));
             writer.newLine();
@@ -536,7 +535,7 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public String _loadLogs() {
         StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filepath + getCurrUser().getUsername() + "/logs.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("Eventful - Event Management System/dat/" + getCurrUser().getUsername() + "/logs.txt"))) {
             String line;
             List<String> entries = new ArrayList<>();
             while((line = reader.readLine() ) != null) {
@@ -629,5 +628,65 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public void _printedTimeline() {
 
+    }
+
+    public LoginUI getLoginUI() {
+        return loginUI;
+    }
+
+    public CreateEventUI getCreateEventUI() {
+        return createEventUI;
+    }
+
+    public void setCreateEventUI(CreateEventUI createEventUI) {
+        this.createEventUI = createEventUI;
+    }
+
+    public BudgetTrackerUI getBudgetTrackerUI() {
+        return budgetTrackerUI;
+    }
+
+    public void setBudgetTrackerUI(BudgetTrackerUI budgetTrackerUI) {
+        this.budgetTrackerUI = budgetTrackerUI;
+    }
+
+    public DashboardUI getDashboardUI() {
+        return dashboardUI;
+    }
+
+    public void setDashboardUI(DashboardUI dashboardUI) {
+        this.dashboardUI = dashboardUI;
+    }
+
+    public EventDetailsUI getEventDetailsUI() {
+        return eventDetailsUI;
+    }
+
+    public void setEventDetailsUI(EventDetailsUI eventDetailsUI) {
+        this.eventDetailsUI = eventDetailsUI;
+    }
+
+    public EventTimelineUI getEventTimelineUI() {
+        return eventTimelineUI;
+    }
+
+    public void setEventTimelineUI(EventTimelineUI eventTimelineUI) {
+        this.eventTimelineUI = eventTimelineUI;
+    }
+
+    public LogsUI getLogsUI() {
+        return logsUI;
+    }
+
+    public void setLogsUI(LogsUI logsUI) {
+        this.logsUI = logsUI;
+    }
+
+    public MyEventUI getMyEventUI() {
+        return myEventUI;
+    }
+
+    public void setMyEventUI(MyEventUI myEventUI) {
+        this.myEventUI = myEventUI;
     }
 }

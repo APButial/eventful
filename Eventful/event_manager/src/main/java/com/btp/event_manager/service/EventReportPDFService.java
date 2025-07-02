@@ -45,7 +45,7 @@ public class EventReportPDFService {
         String description = appService.getDescription();
         List<String> guests = appService.getGuests();
 
-        String path = "Eventful/dat/";
+        String path = "Eventful - Event Management System/dat/";
         path += appService.getCurrUser().getUsername() + "/" + eventName.toLowerCase().replaceAll(" ", "_") + "_report.pdf";
 
         // checks if PDF is open

@@ -8,6 +8,7 @@ import com.btp.event_manager.service.DateTimeService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,8 @@ public class EventManState extends AppState {
     protected ExpenseEntry currSelectedExpenseEntry;
     protected List<ExpenseEntry> currExpenses;
     protected DateTimeService dateTimeService;
-    protected Application prevApplication;
+    protected File metadata;
+    protected String directory;
     protected Stage mainStage;
 
     public EventManState() {
@@ -31,11 +33,20 @@ public class EventManState extends AppState {
         setLoggedIn(false);
     }
 
-    public void setPrevApplication(Application prevApplication) {
-        this.prevApplication = prevApplication;
+    public String getDirectory() {
+        return directory;
     }
-    public Application getPrevApplication() {
-        return this.prevApplication;
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+
+    public File getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(File metadata) {
+        this.metadata = metadata;
     }
 
     public Stage getMainStage() {

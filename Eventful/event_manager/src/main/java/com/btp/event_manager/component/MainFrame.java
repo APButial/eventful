@@ -34,10 +34,12 @@ public class MainFrame extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws Exception {
         eventManState = new EventManState();
         appService = new EventManAppService(eventManState);
         ((EventManAppService) appService).setMainStage(primaryStage);
+
+        appService.verifyMetaData();
 
         Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
         primaryStage.getIcons().add(logoImg);

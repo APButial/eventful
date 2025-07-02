@@ -14,7 +14,7 @@ public class ReadUsersService {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
 
-            File file = new File("Eventful/dat/users.xml") ;
+            File file = new File("Eventful - Event Management System/dat/users.xml") ;
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
 

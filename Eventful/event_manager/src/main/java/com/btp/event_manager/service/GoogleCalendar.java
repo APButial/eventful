@@ -44,7 +44,7 @@ public class GoogleCalendar {
     /**
      * Directory to store authorization tokens for this application.
      */
-    private static final String TOKENS_DIRECTORY_PATH = "Eventful/tokens";
+    private static final String TOKENS_DIRECTORY_PATH = "Eventful - Event Management System/tokens";
 
     /**
      * Global instance of the scopes required by this quickstart.

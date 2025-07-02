@@ -17,7 +17,7 @@ import java.io.File;
 public class InitEventsXML {
     public static void init(BaseEvent newEvent, AppService appService) {
         try {
-            String path = "Eventful/dat/" + appService.getCurrUser().getUsername();
+            String path = "Eventful - Event Management System/dat/" + appService.getCurrUser().getUsername();
             File userDir = new File(path);
 
             if (!userDir.exists()) {

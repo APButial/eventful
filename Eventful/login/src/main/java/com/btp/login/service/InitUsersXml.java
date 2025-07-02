@@ -16,7 +16,7 @@ import java.io.File;
 public class InitUsersXml {
     public static void init(User newUser) {
         try{
-            String datDirPath = "Eventful/dat";
+            String datDirPath = "Eventful - Event Management System/dat";
             File datDir = new File(datDirPath);
 
             if (!datDir.exists()) {
@@ -45,7 +45,7 @@ public class InitUsersXml {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource domSource = new DOMSource(CipherService.encryptXMLValues(document));
-            StreamResult streamResult = new StreamResult(new File("Eventful/dat/users.xml"));
+            StreamResult streamResult = new StreamResult(new File("Eventful - Event Management System/dat/users.xml"));
             transformer.transform(domSource, streamResult);
 
         } catch (Exception e) {
