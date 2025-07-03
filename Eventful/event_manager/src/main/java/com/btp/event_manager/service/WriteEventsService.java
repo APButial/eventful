@@ -25,8 +25,8 @@ public class WriteEventsService {
 
     public static void write(BaseEvent newEvent, AppService appService) {
         try {
-            String path = AppDataPath.loadPath() + "/dat/" + appService.getCurrUser().getUsername() + "/";
-            File file = new File(path + "events.xml");
+            String path = AppDataPath.loadPath() + "/dat/" + appService.getCurrUser().getUsername();
+            File file = new File(path + "/events.xml");
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -37,25 +37,29 @@ public class WriteEventsService {
 
             // mandatory
             Element title = document.createElement("title");
-            title.appendChild(document.createTextNode(newEvent.getEventName()));
+            title.appendChild(document.createTextNode(CipherService.encrypt(newEvent.getEventName())));
             event.appendChild(title);
 
             Element startDate = document.createElement("startDate");
-            startDate.appendChild(document.createTextNode(newEvent.getStartDate().toString()));
+            startDate.appendChild(document.createTextNode(CipherService.encrypt(newEvent.getStartDate().toString())));
             event.appendChild(startDate);
 
             Element endDate = document.createElement("endDate");
-            endDate.appendChild(document.createTextNode(newEvent.getEndDate().toString()));
+            endDate.appendChild(document.createTextNode(CipherService.encrypt(newEvent.getEndDate().toString())));
             event.appendChild(endDate);
 
             //////////////////////////////////////////////////////////////////////////////////
             // metadata
             Element creator = document.createElement("creator");
-            creator.appendChild(document.createTextNode(appService.getCurrUser().getUsername()));
+            creator.appendChild(document.createTextNode(CipherService.encrypt(appService.getCurrUser().getUsername())));
             event.appendChild(creator);
 
+            Element userkey = document.createElement("key");
+            userkey.appendChild(document.createTextNode(CipherService.encrypt(appService.getCurrUser().getUserKey())));
+            event.appendChild(userkey);
+
             Element lastAccessed = document.createElement("lastAccessed");
-            lastAccessed.appendChild(document.createTextNode(appService.getSysDateTime().toString()));
+            lastAccessed.appendChild(document.createTextNode(CipherService.encrypt(appService.getSysDateTime().toString())));
             event.appendChild(lastAccessed);
             //////////////////////////////////////////////////////////////////////////////////
 
@@ -66,7 +70,7 @@ public class WriteEventsService {
             File tempFile = new File(path + "events_temp.xml");
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            DOMSource domSource = new DOMSource(CipherService.encryptXMLValues(document));
+            DOMSource domSource = new DOMSource(document);
             StreamResult streamResult = new StreamResult(tempFile);
             transformer.transform(domSource, streamResult);
 

@@ -4,6 +4,7 @@ import com.btp.appfx.service.AppService;
 import com.btp.budget.model.BudgetTracker;
 import com.btp.budget.model.ExpenseEntry;
 import com.btp.event_manager.model.Event;
+import javafx.scene.control.Alert;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -19,10 +20,26 @@ import java.util.List;
 public class LoadUserEvents {
     public static void load(AppService appService) {
         try {
-            appService.getCurrUser().getEvents().clear();
+            if (appService.getCurrUser().getEvents() != null) {
+                appService.getCurrUser().getEvents().clear();
+            }
+
             NodeList events = ReadEventsService.read(appService);
             for (int i = 0; i < events.getLength(); i++) {
                 Element event = (Element) events.item(i);
+
+                String key = event.getElementsByTagName("key").item(0).getTextContent();
+                System.out.println("key" + key);
+                System.out.println("user" + appService.getCurrUser().getUserKey());
+                if (!key.equals(appService.getCurrUser().getUserKey())) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Key Mismatch");
+                    alert.setHeaderText("Key Mismatch Detected");
+                    alert.setContentText("There is a mismatch between an event's key and the user's key. Logging out...");
+                    alert.showAndWait();
+
+                    appService.logout();
+                }
 
                 String eventName = event.getElementsByTagName("title").item(0).getTextContent();
                 LocalDate startDate = LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent());

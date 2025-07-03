@@ -56,6 +56,10 @@ public class InitEventsXML {
             creator.appendChild(document.createTextNode(appService.getCurrUser().getUsername()));
             event.appendChild(creator);
 
+            Element userkey = document.createElement("key");
+            userkey.appendChild(document.createTextNode(appService.getCurrUser().getUserKey()));
+            event.appendChild(userkey);
+
             Element lastAccessed = document.createElement("lastAccessed");
             lastAccessed.appendChild(document.createTextNode(appService.getSysDateTime().toString()));
             event.appendChild(lastAccessed);

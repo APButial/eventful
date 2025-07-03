@@ -21,7 +21,6 @@ public class ReadEventsService {
             document.getDocumentElement().normalize();
 
             return CipherService.decryptXMLValues(document).getElementsByTagName("event");
-
         } catch (Exception e) {
             e.printStackTrace();
             return null;

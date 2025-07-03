@@ -93,8 +93,9 @@ public class LoginUI extends Application {
         loginButton.setStyle("-fx-background-color: purple; -fx-text-fill: white; -fx-font-size: 14px; -fx-background-radius: 5px;");
         loginButton.setMaxWidth(300);
         loginButton.setOnAction(event -> {
-            if(VerifyLoginService.verify(usernameField.getText(),passwordField.getText())) {
-                appService.login(new User(usernameField.getText(), passwordField.getText()));
+            String sessionKey = VerifyLoginService.verify(usernameField.getText(), passwordField.getText());
+            if (sessionKey!=null) {
+                appService.login(new User(usernameField.getText(), passwordField.getText()), sessionKey);
                 listener.onLoginSuccess();
             } else {
                 alert.setHeaderText("Login Unsuccessful");

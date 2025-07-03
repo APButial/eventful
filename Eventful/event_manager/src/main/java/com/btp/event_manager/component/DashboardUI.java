@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class DashboardUI extends Application {
     private AppService appService;
@@ -52,7 +53,13 @@ public class DashboardUI extends Application {
             }
         });
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            lowerHeader.setDateLabel(appService.getSysDateTime());
+            LocalDateTime currentTime = appService.getSysDateTime();
+            lowerHeader.setDateLabel(currentTime);
+
+            if (currentTime.getMinute() == 0 && currentTime.getSecond() == 0) {
+                appService.generateBackup(true);
+            }
+
             lowerHeader.getDayButtons().getChildren().get(appService.getSysDateTime().getDayOfWeek().getValue() % 7).setStyle("-fx-background-color: #8425A4; -fx-text-fill: #FFFFFF");
         }));
         timeline.setCycleCount(Timeline.INDEFINITE);

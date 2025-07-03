@@ -41,6 +41,8 @@ public class MainFrame extends Application {
         ((EventManAppService) appService).setMainStage(primaryStage);
 
         appService.verifyMetaData();
+        appService.generateBackup(true);
+
         Image logoImg = new Image(getClass().getResourceAsStream("/logo.png"));
         primaryStage.getIcons().add(logoImg);
 

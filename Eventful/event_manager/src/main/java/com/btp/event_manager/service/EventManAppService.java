@@ -7,6 +7,7 @@ import com.btp.appfx.model.User;
 import com.btp.appfx.service.AppDataPath;
 import com.btp.appfx.service.AppService;
 import com.btp.appfx.service.CipherService;
+import com.btp.appfx.service.DirectoryUtils;
 import com.btp.budget.model.BudgetTracker;
 import com.btp.event_manager.component.*;
 import com.btp.event_manager.model.EventManState;
@@ -16,7 +17,6 @@ import com.btp.logs.service.LogService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.api.client.json.Json;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.stage.DirectoryChooser;
@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EventManAppService implements AppService, LogService {
     private LoginUI loginUI;
@@ -69,8 +70,10 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void login(User user) {
+    public void login(User user, String key) {
         eventManState.setCurrUser(user);
+        eventManState.getCurrUser().setUserKey(key);
+        System.out.println(eventManState.getCurrUser().getUsername());
         LoadUserEvents.load(this);
         _loggedIn();
         _eventsLoaded();
@@ -527,29 +530,29 @@ public class EventManAppService implements AppService, LogService {
 
         try {
             // Count the number of directories in the specified path
-            long folderCount = Files.list(backupPath)
+            List<Path> directories = Files.list(backupPath)
                     .filter(Files::isDirectory)
-                    .count();
+                    .collect(Collectors.toList());
+            long folderCount = directories.size();
+            System.out.println(folderCount);
 
-            // Remove oldest folder if count is greater than 5
-            if (folderCount > 5) {
-                Path oldestDir = Files.list(backupPath)
-                        .filter(Files::isDirectory)
+            // Remove oldest folder based on condition below
+            if (folderCount >= 5) {
+                Path oldestDir = directories.stream()
                         .min(Comparator.comparingLong(dir -> {
                             try {
                                 BasicFileAttributes attrs = Files.readAttributes(dir, BasicFileAttributes.class);
                                 return attrs.creationTime().toMillis();
                             } catch (IOException e) {
                                 e.printStackTrace();
-                                return Long.MAX_VALUE; // In case of an error, treat it as the oldest
+                                return Long.MAX_VALUE;
                             }
                         }))
-                        .orElse(null); // Handle case where no directories are found
+                        .orElse(null);
 
                 // If oldest directory is found, delete it
                 if (oldestDir != null) {
-                    Files.delete(oldestDir);
-                    System.out.println("Deleted oldest directory: " + oldestDir.getFileName());
+                    DirectoryUtils.deleteDirectory(oldestDir);
                 }
             }
         } catch (IOException e) {
@@ -591,8 +594,7 @@ public class EventManAppService implements AppService, LogService {
             ((ObjectNode) jsonNode).put("next_backup", getSysDateTime().plusHours(12).toString());
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(getMetaData(), jsonNode);
 
-            System.out.println("Backup completed successfully from " + source + " to " + target);
-
+            new BackupPopup().start(getMainStage());
         } catch (IOException e) {
             e.printStackTrace();
         }

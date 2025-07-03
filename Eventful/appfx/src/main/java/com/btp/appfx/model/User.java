@@ -6,6 +6,7 @@ import java.util.List;
 public class User {
     private String username;
     private String password;
+    private String userKey;
     private List<BaseEvent> events;
 
     public User(String username, String password) {
@@ -20,6 +21,14 @@ public class User {
 
     public String getUsername() {
         return username;
+    }
+
+    public String getUserKey() {
+        return userKey;
+    }
+
+    public void setUserKey(String userKey) {
+        this.userKey = userKey;
     }
 
     public void setUsername(String username) {

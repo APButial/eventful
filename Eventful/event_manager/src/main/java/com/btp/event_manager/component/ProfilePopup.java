@@ -23,12 +23,23 @@ public class ProfilePopup extends Popup {
         userBox.getChildren().addAll(profileIcon, username);
 
         VBox buttonBox = new VBox(5);
+        Button generateBackupButton = new Button("Backup Files");
+        generateBackupButton.setBackground(null);
+        generateBackupButton.setStyle("-fx-font-size: 12");
+        generateBackupButton.setOnAction(actionEvent -> {
+            appService.generateBackup(false);
+            hide();
+        });
+        generateBackupButton.setOnMouseEntered(mouseEvent -> {
+            generateBackupButton.setStyle("-fx-text-fill: #8425A4; -fx-font-size: 12"); // Change text color on mouse enter
+        });
+        generateBackupButton.setOnMouseExited(mouseEvent -> {
+            generateBackupButton.setStyle("-fx-text-fill: black; -fx-font-size: 12"); // Reset text color on mouse exit
+        });
+
         Button delAccountButton = new Button("Delete Account");
         delAccountButton.setBackground(null);
         delAccountButton.setStyle("-fx-font-size: 12");
-        delAccountButton.setOnAction(event -> {
-            appService.deleteAccount();
-        });
         delAccountButton.setOnMouseEntered(mouseEvent -> {
             delAccountButton.setStyle("-fx-text-fill: #8425A4; -fx-font-size: 12"); // Change text color on mouse enter
         });
@@ -58,7 +69,7 @@ public class ProfilePopup extends Popup {
 
 
         buttonBox.setAlignment(Pos.BOTTOM_RIGHT);
-        buttonBox.getChildren().addAll(delAccountButton, logoutButton);
+        buttonBox.getChildren().addAll(generateBackupButton, delAccountButton, logoutButton);
 
         VBox content = new VBox(5);
         content.getChildren().addAll(userBox, buttonBox);

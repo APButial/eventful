@@ -19,7 +19,7 @@ public interface AppService {
     void close();
 
     // Login
-    void login(User user);
+    void login(User user, String key);
     void logout();
     void createAccount(String user, String pass, String passConfirm);
     void deleteAccount();
