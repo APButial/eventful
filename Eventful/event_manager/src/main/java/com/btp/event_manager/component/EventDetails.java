@@ -89,7 +89,7 @@ public class EventDetails {
         });
 
         tempEvent = new BaseEvent(eventNameField.getText(), startDatePicker.getValue(), endDatePicker.getValue());
-        appService.setSelectedEvent(tempEvent);
+        appService.setSelectedEvent(tempEvent, false);
         appService.setStartDate(startDatePicker.getValue());
         appService.setEndDate(endDatePicker.getValue());
         appService.setEventName(eventNameField.getText());

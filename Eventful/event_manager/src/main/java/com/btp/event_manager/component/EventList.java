@@ -61,7 +61,7 @@ public class EventList {
             Button guestsButton = new Button("👥 " + event.getGuests().size());
             Button settingsButton = new Button("⚙ Configure");
             settingsButton.setOnAction(event1 -> {
-                appService.setSelectedEvent(event);
+                appService.setSelectedEvent(event, true);
                 eventDetailListener.onSelectEvent();
             });
             Button statusButton = new Button("📊 Status");

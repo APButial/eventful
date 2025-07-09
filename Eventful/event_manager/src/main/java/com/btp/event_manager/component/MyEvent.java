@@ -114,7 +114,7 @@ public class MyEvent {
             // Configure Icon
             Button configureButton = new Button("⬇⬆⬇");//i dont remember what this button is  settings?
             configureButton.setOnAction(e -> {
-                appService.setSelectedEvent(event);
+                appService.setSelectedEvent(event, true);
                 eventDetailListener.onSelectEvent();
             });
             configureButton.setTextFill(Color.PURPLE);

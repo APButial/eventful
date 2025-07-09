@@ -32,7 +32,7 @@ public interface AppService {
     void updateEvent(EventFormEvents update, LocalTime input);
     void removeEvent();
     BaseEvent getSelectedEvent();
-    void setSelectedEvent(BaseEvent baseEvent);
+    void setSelectedEvent(BaseEvent baseEvent, boolean trigger);
     String getEventName();
     void setEventName(String eventName);
     LocalDate getStartDate();

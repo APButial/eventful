@@ -107,7 +107,7 @@ public class EventManAppService implements AppService, LogService {
     public void createEvent(BaseEvent baseEvent) {
             baseEvent.setLastAccessed(getSysDateTime());
             eventManState.getCurrUser().getEvents().add(baseEvent);
-            setSelectedEvent(baseEvent);
+            setSelectedEvent(baseEvent, true);
             setBudgetTracker(null);
             _createdEvent();
             setSaveStatus(SaveStatus.SAVED);
@@ -244,9 +244,11 @@ public class EventManAppService implements AppService, LogService {
     }
 
     @Override
-    public void setSelectedEvent(BaseEvent baseEvent) {
+    public void setSelectedEvent(BaseEvent baseEvent, boolean trigger) {
         eventManState.setCurrSelectedEvent(baseEvent);
-        _accessedEvent();
+        if (trigger) {
+            _accessedEvent();
+        }
     }
 
     @Override

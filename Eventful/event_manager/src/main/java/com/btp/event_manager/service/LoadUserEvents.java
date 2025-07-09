@@ -29,8 +29,6 @@ public class LoadUserEvents {
                 Element event = (Element) events.item(i);
 
                 String key = event.getElementsByTagName("key").item(0).getTextContent();
-                System.out.println("key" + key);
-                System.out.println("user" + appService.getCurrUser().getUserKey());
                 if (!key.equals(appService.getCurrUser().getUserKey())) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Key Mismatch");
