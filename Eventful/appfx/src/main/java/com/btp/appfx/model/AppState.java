@@ -1,5 +1,6 @@
 package com.btp.appfx.model;
 
+import com.btp.appfx.enums.EventStatus;
 import com.btp.appfx.enums.SaveStatus;
 
 import java.time.LocalDate;
@@ -23,6 +24,7 @@ public class AppState {
     protected LocalTime startTimeBuffer;
     protected LocalTime endTimeBuffer;
     protected String descriptionBuffer;
+    protected EventStatus eventStatusBuffer;
 
     public LocalDate getStartDateBuffer() {
         return startDateBuffer;
@@ -62,6 +64,14 @@ public class AppState {
 
     public void setDescriptionBuffer(String descriptionBuffer) {
         this.descriptionBuffer = descriptionBuffer;
+    }
+
+    public EventStatus getEventStatusBuffer() {
+        return eventStatusBuffer;
+    }
+
+    public void setEventStatusBuffer(EventStatus eventStatusBuffer) {
+        this.eventStatusBuffer = eventStatusBuffer;
     }
 
     public SaveStatus getSaveStatus() {

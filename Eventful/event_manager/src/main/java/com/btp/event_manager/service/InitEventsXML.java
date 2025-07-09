@@ -49,6 +49,9 @@ public class InitEventsXML {
             Element endDate = document.createElement("endDate");
             endDate.appendChild(document.createTextNode(newEvent.getEndDate().toString()));
             event.appendChild(endDate);
+
+            Element status = document.createElement("status");
+            status.appendChild(document.createTextNode(appService.getEventStatusString(newEvent.getStatus())));
             //////////////////////////////////////////////////////////////////////////////////
 
             // metadata

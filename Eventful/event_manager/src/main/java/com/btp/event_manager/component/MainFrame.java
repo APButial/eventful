@@ -158,7 +158,6 @@ public class MainFrame extends Application {
             public void endDateUpdated() {
                 LocalDate date = eventDetailsUI.getEventForm().getEndDatePicker().getValue();
                 appService.updateEvent(EventFormEvents.END_DATE, date);
-                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
@@ -166,7 +165,6 @@ public class MainFrame extends Application {
                 String hour = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeStartField().getHourDropdown().getValue();
                 String min = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeStartField().getMinuteDropdown().getValue();
                 appService.updateEvent(EventFormEvents.START_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
-                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
@@ -174,14 +172,12 @@ public class MainFrame extends Application {
                 String hour = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeEndField().getHourDropdown().getValue();
                 String min = ((EventManAppService) appService).getEventDetailsUI().getEventForm().getTimeEndField().getMinuteDropdown().getValue();
                 appService.updateEvent(EventFormEvents.END_TIME, LocalTime.parse(hour + ":" + min, DateTimeFormatter.ofPattern("HH:mm")));
-                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
             public void descriptionUpdated() {
                 String description = eventDetailsUI.getEventForm().getEventDescArea().getText();
                 appService.updateEvent(EventFormEvents.DESC, description);
-                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
             }
 
             @Override
@@ -203,7 +199,6 @@ public class MainFrame extends Application {
             @Override
             public void onUpdate() {
                 appService.updateEvent(EventFormEvents.UPDATE_CHANGES, eventDetailsUI.getEventForm().getGuestEmailsArea().getText());
-                ((EventManAppService) appService).getEventDetailsUI().getEventForm().getUpdateButton().setDisable(true);
             }
 
             @Override
@@ -238,6 +233,12 @@ public class MainFrame extends Application {
             @Override
             public void onDelete() {
                 appService.removeEvent();
+            }
+
+            @Override
+            public void statusUpdated() {
+                String status = eventDetailsUI.getStatusBox().getSelectionModel().getSelectedItem();
+                appService.updateEvent(EventFormEvents.STATUS, status);
             }
         };
 

@@ -48,6 +48,10 @@ public class WriteEventsService {
             endDate.appendChild(document.createTextNode(CipherService.encrypt(newEvent.getEndDate().toString())));
             event.appendChild(endDate);
 
+            Element status = document.createElement("status");
+            status.appendChild(document.createTextNode(CipherService.encrypt(appService.getEventStatusString(newEvent.getStatus()))));
+            event.appendChild(status);
+
             //////////////////////////////////////////////////////////////////////////////////
             // metadata
             Element creator = document.createElement("creator");
@@ -153,6 +157,16 @@ public class WriteEventsService {
                             event.appendChild(timeEnd);
                         }
                         appService.setEndTime(selectedEvent.getEndTime());
+                    }
+                    if (selectedEvent.getStatus() != null) {
+                        Element status = (Element) event.getElementsByTagName("status").item(0);
+                        if (status != null) {
+                            status.setTextContent(appService.getEventStatusString(selectedEvent.getStatus()));
+                        } else {
+                            status = document.createElement("status");
+                            status.appendChild(document.createTextNode(appService.getEventStatusString(selectedEvent.getStatus())));
+                            event.appendChild(status);
+                        }
                     }
                     if (selectedEvent.getGuests() != null) {
                         Element guests = (Element) event.getElementsByTagName("guests").item(0);

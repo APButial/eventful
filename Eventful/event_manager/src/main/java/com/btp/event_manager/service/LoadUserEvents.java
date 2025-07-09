@@ -1,5 +1,6 @@
 package com.btp.event_manager.service;
 
+import com.btp.appfx.enums.EventStatus;
 import com.btp.appfx.service.AppService;
 import com.btp.budget.model.BudgetTracker;
 import com.btp.budget.model.ExpenseEntry;
@@ -43,9 +44,11 @@ public class LoadUserEvents {
                 LocalDate startDate = LocalDate.parse(event.getElementsByTagName("startDate").item(0).getTextContent());
                 LocalDate endDate = LocalDate.parse(event.getElementsByTagName("endDate").item(0).getTextContent());
                 LocalDateTime lastAccessed = LocalDateTime.parse(event.getElementsByTagName("lastAccessed").item(0).getTextContent());
+                EventStatus eventStatus = appService.getEventStatusEnum(event.getElementsByTagName("status").item(0).getTextContent());
 
                 Event savedEvent = new Event(eventName, startDate, endDate);
                 savedEvent.setLastAccessed(lastAccessed);
+                savedEvent.setStatus(eventStatus);
 
                 // optional
                 String description;

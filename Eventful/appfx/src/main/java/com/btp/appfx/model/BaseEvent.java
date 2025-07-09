@@ -1,6 +1,8 @@
 package com.btp.appfx.model;
 
 
+import com.btp.appfx.enums.EventStatus;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,6 +19,7 @@ public class BaseEvent {
     private LocalTime startTime;
     private LocalTime endTime;
     private String description;
+    private EventStatus status;
 
     private List<String> guests;
 
@@ -29,9 +32,11 @@ public class BaseEvent {
         this.eventName = eventName;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.startTime = LocalTime.of(0,0);
-        this.endTime = LocalTime.of(0,0);
+        this.startTime = LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute());
+        this.endTime = LocalTime.of(LocalTime.now().getHour(), LocalTime.now().getMinute());
+        this.endTime = this.endTime.plusHours(1);
         this.description = "";
+        this.status = EventStatus.DRAFT;
         guests = new ArrayList<>();
     }
 
@@ -105,5 +110,13 @@ public class BaseEvent {
 
     public void setLastAccessed(LocalDateTime lastAccessed) {
         this.lastAccessed = lastAccessed;
+    }
+
+    public EventStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EventStatus status) {
+        this.status = status;
     }
 }

@@ -7,6 +7,7 @@ import com.btp.event_manager.service.EventFormListener;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -24,6 +25,7 @@ public class EventDetailsUI extends Application {
     private EventDetailListener eventDetailListener;
     private EventFormListener eventFormListener;
     private EventForm eventForm;
+    private ComboBox<String> statusBox;
 
     public EventDetailsUI(AppService appService, DashNavigateListener dashNavigateListener, EventDetailListener eventDetailListener, EventFormListener eventFormListener) {
         this.appService = appService;
@@ -46,12 +48,29 @@ public class EventDetailsUI extends Application {
         UpperHeader upperHeader = new UpperHeader(appService, primaryStage);
         LowerHeader lowerHeader = new LowerHeader("Event Details - " + appService.getEventName().toUpperCase(), "no"); // "no" to hide date
 
+        statusBox = new ComboBox<>();
+        statusBox.getItems().addAll("Draft", "Pending", "Done");
+        statusBox.setOnAction(event -> {
+            String status = statusBox.getSelectionModel().getSelectedItem();
+            if (status.equals("Draft")) {
+                statusBox.setStyle("-fx-background-color: #D3D3D3;");
+            } else if (status.equals("Pending")) {
+                statusBox.setStyle("-fx-background-color: #FFFFE0;");
+            } else if (status.equals("Done")) {
+                statusBox.setStyle("-fx-background-color: #90EE90;");
+            }
+
+            eventFormListener.statusUpdated();
+        });
+        statusBox.setPrefWidth(100);
+        statusBox.setPrefHeight(10);
+
         Button inboxButton = new Button();
         ImageView inboxImg = new ImageView("/inbox.png");
         inboxButton.setGraphic(inboxImg);
         inboxButton.setBackground(null);
-        inboxButton.setPrefWidth(15);
-        inboxButton.setPrefHeight(15);
+        inboxButton.setPrefWidth(10);
+        inboxButton.setPrefHeight(10);
         inboxButton.setOnAction(event -> {
             eventFormListener.onInbox();
         });
@@ -70,8 +89,8 @@ public class EventDetailsUI extends Application {
         ImageView exportImg = new ImageView("/export.png");
         exportButton.setGraphic(exportImg);
         exportButton.setBackground(null);
-        exportButton.setPrefWidth(80);
-        exportButton.setPrefHeight(15);
+        exportButton.setPrefWidth(50);
+        exportButton.setPrefHeight(10);
         exportButton.setOnAction(event -> {
             try {
                 eventFormListener.onExport();
@@ -84,8 +103,8 @@ public class EventDetailsUI extends Application {
         ImageView delImg = new ImageView("/trash.png");
         delButton.setGraphic(delImg);
         delButton.setBackground(null);
-        delButton.setPrefWidth(15);
-        delButton.setPrefHeight(15);
+        delButton.setPrefWidth(10);
+        delButton.setPrefHeight(10);
         delButton.setOnAction(event -> {
             eventFormListener.onDelete();
         });
@@ -99,6 +118,7 @@ public class EventDetailsUI extends Application {
             exportImg.setEffect(null);
         });
 
+        lowerHeader.getComponent().getChildren().add(statusBox);
         lowerHeader.getComponent().getChildren().add(delButton);
         lowerHeader.getComponent().getChildren().add(inboxButton);
         lowerHeader.getComponent().getChildren().add(exportButton);
@@ -141,6 +161,14 @@ public class EventDetailsUI extends Application {
 
     public EventForm getEventForm() {
         return eventForm;
+    }
+
+    public ComboBox<String> getStatusBox() {
+        return statusBox;
+    }
+
+    public void setStatusBox(ComboBox<String> statusBox) {
+        this.statusBox = statusBox;
     }
 
     public static void main(String[] args) {

@@ -1,6 +1,7 @@
 package com.btp.event_manager.service;
 
 import com.btp.appfx.enums.EventFormEvents;
+import com.btp.appfx.enums.EventStatus;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
@@ -140,6 +141,26 @@ public class EventManAppService implements AppService, LogService {
                 setSaveStatus(SaveStatus.UNSAVED);
                 getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
                 break;
+            case STATUS:
+                EventStatus status = getEventStatus();
+                EventStatus tempStatus;
+
+                if (input.equals("Draft")) {
+                    tempStatus = EventStatus.DRAFT;
+                } else if (input.equals("Pending")) {
+                    tempStatus = EventStatus.PENDING;
+                } else {
+                    tempStatus = EventStatus.DONE;
+                }
+
+                if (tempStatus == status) {
+                    return;
+                }
+
+                eventManState.setEventStatusBuffer(tempStatus);
+                setSaveStatus(SaveStatus.UNSAVED);
+                getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
+                break;
             case UPDATE_CHANGES:
                 if (!RegexService.validate(input)){
                     setGuests(new ArrayList<>());
@@ -170,6 +191,11 @@ public class EventManAppService implements AppService, LogService {
                     _endTimeUpdated();
                 }
 
+                if (getEventStatus() != eventManState.getEventStatusBuffer() && eventManState.getEventStatusBuffer() != null) {
+                    setEventStatus(eventManState.getEventStatusBuffer());
+                    _statusUpdated();
+                }
+
                 WriteEventsService.overwrite(this, eventManState.getStartDateBuffer(), eventManState.getEndDateBuffer());
                 LoadUserEvents.load(this);
                 setSaveStatus(SaveStatus.SAVED);
@@ -181,6 +207,7 @@ public class EventManAppService implements AppService, LogService {
                 eventManState.setDescriptionBuffer(null);
                 eventManState.setStartTimeBuffer(null);
                 eventManState.setEndTimeBuffer(null);
+                eventManState.setEventStatusBuffer(null);
 
                 break;
         }
@@ -203,6 +230,7 @@ public class EventManAppService implements AppService, LogService {
                 break;
         }
         setSaveStatus(SaveStatus.UNSAVED);
+        getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
     }
 
     @Override
@@ -222,6 +250,7 @@ public class EventManAppService implements AppService, LogService {
                 break;
         }
         setSaveStatus(SaveStatus.UNSAVED);
+        getEventDetailsUI().getEventForm().getUpdateButton().setDisable(false);
     }
 
     @Override
@@ -309,6 +338,42 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public void setDescription(String description) {
         eventManState.getCurrSelectedEvent().setDescription(description);
+    }
+
+    @Override
+    public EventStatus getEventStatus() {
+        return eventManState.getCurrSelectedEvent().getStatus();
+    }
+
+    @Override
+    public void setEventStatus(EventStatus status) {
+        eventManState.getCurrSelectedEvent().setStatus(status);
+    }
+
+    @Override
+    public String getEventStatusString(EventStatus status) {
+        String stat = "";
+        if (status == EventStatus.DRAFT) {
+            stat = "Draft";
+        } else if (status == EventStatus.PENDING) {
+            stat = "Pending";
+        } else if (status == EventStatus.DONE) {
+            stat = "Done";
+        }
+        return stat;
+    }
+
+    @Override
+    public EventStatus getEventStatusEnum(String status) {
+        EventStatus stat = null;
+        if (status.equals("Draft")) {
+            stat = EventStatus.DRAFT;
+        } else if (status.equals("Pending")) {
+            stat = EventStatus.PENDING;
+        } else if (status.equals("Done")) {
+            stat = EventStatus.DONE;
+        }
+        return stat;
     }
 
     @Override
@@ -752,6 +817,12 @@ public class EventManAppService implements AppService, LogService {
     @Override
     public void _guestsInvited() {
         _updateLogs("Sent an invitation email to the following addresses: " + String.join(";", getGuests()) + ".");
+    }
+
+    @Override
+    public void _statusUpdated() {
+
+        _updateLogs("Changed status of " + getSelectedEvent().getEventName() + " to " + getEventStatusString(getEventStatus()) + ".");
     }
 
     @Override

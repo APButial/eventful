@@ -1,6 +1,7 @@
 package com.btp.appfx.service;
 
 import com.btp.appfx.enums.EventFormEvents;
+import com.btp.appfx.enums.EventStatus;
 import com.btp.appfx.enums.SaveStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.model.User;
@@ -45,6 +46,10 @@ public interface AppService {
     void setEndTime(LocalTime time);
     String getDescription();
     void setDescription(String description);
+    EventStatus getEventStatus();
+    void setEventStatus(EventStatus status);
+    String getEventStatusString(EventStatus status);
+    EventStatus getEventStatusEnum(String status);
     List<String> getGuests();
     void setGuests(List<String> guests);
     void addGuest(String guest);
