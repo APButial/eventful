@@ -6,6 +6,8 @@ import com.btp.appfx.enums.SaveStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AppState {
@@ -17,6 +19,7 @@ public class AppState {
     protected SaveStatus saveStatus;
     protected String emailAdd;
     protected String emailPass;
+    protected EventStatus eventFilter = null;
 
     // buffers
     protected LocalDate startDateBuffer;
@@ -136,5 +139,13 @@ public class AppState {
 
     public void setEmailPass(String emailPass) {
         this.emailPass = emailPass;
+    }
+
+    public EventStatus getEventFilter() {
+        return eventFilter;
+    }
+
+    public void setEventFilter(EventStatus eventFilter) {
+        this.eventFilter = eventFilter;
     }
 }

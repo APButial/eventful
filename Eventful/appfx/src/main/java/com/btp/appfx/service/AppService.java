@@ -82,4 +82,7 @@ public interface AppService {
     void setEmailAdd(String emailAdd);
     String getEmailPass();
     void setEmailPass(String emailPass);
+
+    EventStatus getEventFilter();
+    void setEventFilter(EventStatus eventStatus);
 }

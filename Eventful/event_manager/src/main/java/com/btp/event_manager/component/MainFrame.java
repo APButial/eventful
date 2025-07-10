@@ -146,6 +146,11 @@ public class MainFrame extends Application {
                 appService.setSaveStatus(SaveStatus.SAVED);
                 ((EventManAppService) appService).getEventDetailsUI().start(primaryStage);
             }
+
+            @Override
+            public void onFilterTriggered() {
+                ((EventManAppService) appService).getMyEventUI().start(primaryStage);
+            }
         };
         EventFormListener eventFormListener = new EventFormListener() {
             @Override

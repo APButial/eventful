@@ -55,7 +55,7 @@ public class EventDetailsUI extends Application {
             if (status.equals("Draft")) {
                 statusBox.setStyle("-fx-background-color: #D3D3D3;");
             } else if (status.equals("Pending")) {
-                statusBox.setStyle("-fx-background-color: #FFFFE0;");
+                statusBox.setStyle("-fx-background-color: #FFF25F;");
             } else if (status.equals("Done")) {
                 statusBox.setStyle("-fx-background-color: #90EE90;");
             }

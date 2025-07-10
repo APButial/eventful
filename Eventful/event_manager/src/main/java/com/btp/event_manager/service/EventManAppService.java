@@ -697,6 +697,16 @@ public class EventManAppService implements AppService, LogService {
         eventManState.setEmailPass(emailPass);
     }
 
+    @Override
+    public EventStatus getEventFilter() {
+        return eventManState.getEventFilter();
+    }
+
+    @Override
+    public void setEventFilter(EventStatus eventStatus) {
+        eventManState.setEventFilter(eventStatus);
+    }
+
     public void setMainStage(Stage stage) {
         eventManState.setMainStage(stage);
     }
