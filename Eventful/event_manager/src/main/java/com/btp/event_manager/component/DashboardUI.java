@@ -44,7 +44,7 @@ public class DashboardUI extends Application {
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader(appService, primaryStage);
-        LowerHeader lowerHeader = new LowerHeader("Recent Events","yes");//requires string for page name
+        LowerHeader lowerHeader = new LowerHeader("Incoming Events","yes");//requires string for page name
         lowerHeader.setDateLabel(appService.getSysDateTime());
         lowerHeader.setDateTimeListener(new DateTimeListener() {
             @Override

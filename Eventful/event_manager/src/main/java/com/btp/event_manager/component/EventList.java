@@ -1,5 +1,6 @@
 package com.btp.event_manager.component;
 
+import com.btp.appfx.enums.EventStatus;
 import com.btp.appfx.model.BaseEvent;
 import com.btp.appfx.service.AppService;
 import com.btp.event_manager.service.EventDetailListener;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.layout.StackPane;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Collections;
@@ -30,17 +32,20 @@ public class EventList {
         eventList = new VBox(10);
         eventList.setPadding(new Insets(10, 20, 10, 20));
 
-        // sorts events in descending order by their lastAccessed
+        // sorts events in descending order by their start date
         Collections.sort(appService.getCurrUser().getEvents(), new Comparator<BaseEvent>() {
             @Override
             public int compare(BaseEvent e1, BaseEvent e2) {
-                return e2.getLastAccessed().compareTo(e1.getLastAccessed());
+                return e2.getStartDate().compareTo(e1.getStartDate());
             }
         });
 
-        int count = 0;
-        for (BaseEvent event : appService.getCurrUser().getEvents()) { // Simulating multiple events
-            if(count >= 5) {break;}     // limit to 5 recent events
+        LocalDate maxDate = appService.getSysDateTime().toLocalDate().plusDays(7); // 1 week
+        for (BaseEvent event : appService.getCurrUser().getEvents()) {
+            // show events within the week
+            if (event.getStartDate().isAfter(maxDate) || event.getStartDate().isBefore(appService.getSysDateTime().toLocalDate())
+                || event.getStatus() == EventStatus.DONE
+            ) {continue;}
             HBox eventBox = new HBox(20);
             VBox eventText = new VBox();
             eventBox.setPadding(new Insets(15));
@@ -50,13 +55,12 @@ public class EventList {
 
             Label eventTitle = new Label(event.getEventName());
             eventTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
-            String eventLastAccessedPattern = "Last Accessed: " +
-                    event.getLastAccessed().getMonth().getDisplayName(TextStyle.SHORT,Locale.ENGLISH) + " " +
-                    event.getLastAccessed().getDayOfMonth() + " " +
-                    event.getLastAccessed().format(DateTimeFormatter.ofPattern("HH:mm"));
-            Label eventLastAccessed = new Label(eventLastAccessedPattern);
-            eventLastAccessed.setStyle("-fx-font-size: 14px; -fx-text-fill: #AAB2C8");
-            eventText.getChildren().addAll(eventTitle, eventLastAccessed);
+            String startDate = "Starts at " +
+                    event.getStartDate().getMonth().getDisplayName(TextStyle.SHORT,Locale.ENGLISH) + " " +
+                    event.getStartDate().getDayOfMonth() + " " + event.getStartDate().getYear();
+            Label eventStart = new Label(startDate);
+            eventStart.setStyle("-fx-font-size: 14px; -fx-text-fill: #AAB2C8");
+            eventText.getChildren().addAll(eventTitle, eventStart);
 
             Button guestsButton = new Button("👥 " + event.getGuests().size());
             Button settingsButton = new Button("⚙ Configure");
@@ -81,7 +85,6 @@ public class EventList {
             StackPane eventWrapper = new StackPane(eventBox);
             eventWrapper.setMaxWidth(900);
             eventList.getChildren().add(eventWrapper);
-            count++;
         }
     }
 
