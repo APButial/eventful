@@ -6,6 +6,8 @@ public class FurnitureFactory {
     }
 
     private static FurnitureType currentType = FurnitureType.CHAIR;
+    private static int chairCount = 0;
+    private static int tableCount = 0;
 
     public static void setCurrentType(FurnitureType type) {
         currentType = type;
@@ -27,12 +29,56 @@ public class FurnitureFactory {
             currentStyle = FurnitureStyle.getDefaultStyleForType(currentType);
         }
 
-        return switch (currentType) {
-            case CHAIR -> new Chair(gridX, gridY, currentStyle);
-            case TABLE -> new Table(gridX, gridY, currentStyle);
-            case WALL -> new Wall(gridX, gridY, currentStyle);
-            case FLOOR -> new Floor(gridX, gridY, currentStyle);
-            case EDIT, ERASE -> null; // This case won't be reached due to the check above
-        };
+        switch (currentType) {
+            case CHAIR -> {
+                chairCount++;
+                return new Chair(gridX, gridY, currentStyle, "C" + chairCount);
+            }
+            case TABLE -> {
+                tableCount++;
+                return new Table(gridX, gridY, currentStyle, "T" + tableCount);
+            }
+            case WALL -> {
+                return new Wall(gridX, gridY, currentStyle);
+            }
+            case FLOOR -> {
+                return new Floor(gridX, gridY, currentStyle);
+            }
+            default -> {
+                return null;
+            }
+        }
     }
+
+    // Call this after erasing or undoing erase to relabel all chairs/tables sequentially
+    public static void relabelFurniture(java.util.List<com.almasb.fxgl.entity.Entity> entities) {
+        int c = 1;
+        int t = 1;
+        for (var entity : entities) {
+            if (entity instanceof Chair) {
+                ((Chair) entity).setFurnitureLabel("C" + c);
+                c++;
+            } else if (entity instanceof Table) {
+                ((Table) entity).setFurnitureLabel("T" + t);
+                t++;
+            }
+        }
+        chairCount = c - 1;
+        tableCount = t - 1;
+    }
+
+    public static void decrementChairCount() {
+        if (chairCount > 0) chairCount--;
+    }
+    public static void decrementTableCount() {
+        if (tableCount > 0) tableCount--;
+    }
+    public static void incrementChairCount() {
+        chairCount++;
+    }
+    public static void incrementTableCount() {
+        tableCount++;
+    }
+    public static int getChairCount() { return chairCount; }
+    public static int getTableCount() { return tableCount; }
 } 

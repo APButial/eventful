@@ -28,8 +28,9 @@ public abstract class Furniture extends Entity {
     private int rotation = 0; // 0 = 0°, 1 = 90°, 2 = 180°, 3 = 270°
     private final FurnitureType type; // Added type field
     private Label cellLabel; // Cell label displayed on top of furniture
+    private String furnitureLabel; // Label like C1, T1, ...
 
-    public Furniture(int gridX, int gridY, String imagePath, boolean supportsMultipleGuests, FurnitureType type) {
+    public Furniture(int gridX, int gridY, String imagePath, boolean supportsMultipleGuests, FurnitureType type, String furnitureLabel) {
         this.gridX = gridX;
         this.gridY = gridY;
         this.imagePath = imagePath; // Store the image path
@@ -37,6 +38,10 @@ public abstract class Furniture extends Entity {
         this.assignedGuest = null;
         this.assignedGuests = supportsMultipleGuests ? new ArrayList<>() : null;
         this.type = type;
+        this.furnitureLabel = furnitureLabel;
+        
+        // Set lower z-index so grid appears on top
+        this.setZIndex(100);
         
         setupImage(imagePath);
         setupCellLabel();
@@ -49,6 +54,7 @@ public abstract class Furniture extends Entity {
         this.imagePath = other.imagePath;
         this.supportsMultipleGuests = other.supportsMultipleGuests;
         this.type = other.type;
+        this.furnitureLabel = other.furnitureLabel;
         
         // Deep copy of assigned guests
         this.assignedGuest = other.assignedGuest;
@@ -64,30 +70,31 @@ public abstract class Furniture extends Entity {
         // Load and set up the image
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
         imageView = new ImageView(image);
-        imageView.setFitWidth(CELL_SIZE - 1);
-        imageView.setFitHeight(CELL_SIZE - 1);
+        // Change from CELL_SIZE - 1 to CELL_SIZE for full cell coverage
+        imageView.setFitWidth(CELL_SIZE);
+        imageView.setFitHeight(CELL_SIZE);
         imageView.setPreserveRatio(true);
         
         // Set position
         setPosition(gridX * CELL_SIZE, gridY * CELL_SIZE);
         getViewComponent().addChild(imageView);
 
-        // Add collision box
-        getBoundingBoxComponent().addHitBox(new HitBox("MAIN", BoundingShape.box(CELL_SIZE - 1, CELL_SIZE - 1)));
+        // Update collision box to match new size
+        getBoundingBoxComponent().addHitBox(new HitBox("MAIN", BoundingShape.box(CELL_SIZE, CELL_SIZE)));
     }
 
     private void setupCellLabel() {
         if (cellLabel != null) {
             getViewComponent().removeChild(cellLabel);
         }
-        String cell = com.btp.layout.model.CellLabeler.getCellLabel(gridX, gridY);
+        String cell = furnitureLabel != null ? furnitureLabel : "";
         cellLabel = new Label(cell);
-        cellLabel.setFont(Font.font("Arial", FontWeight.BOLD, 36)); // 2x larger (18 -> 36)
-        cellLabel.setTextFill(Color.BLACK);
-        cellLabel.setStyle("-fx-background-color: rgba(255,255,255,0.8); -fx-padding: 2 4 2 4; -fx-border-radius: 4; -fx-background-radius: 4;");
-        // Center label both horizontally and vertically on the furniture
-        cellLabel.setTranslateX((CELL_SIZE - 1) / 2.0 - 24); // Adjust for larger label width
-        cellLabel.setTranslateY((CELL_SIZE - 1) / 2.0 - 18); // Center vertically
+        cellLabel.setFont(Font.font("Arial", FontWeight.BOLD, 30)); // Decreased size for less padding
+        cellLabel.setTextFill(Color.rgb(0, 0, 0, 0.9)); // 10% more transparent (alpha 0.9)
+        cellLabel.setStyle("-fx-background-color: rgba(255,255,255,0.7); -fx-padding: 0 1 0 1; -fx-border-radius: 4; -fx-background-radius: 4;");
+        // Update positioning for new cell size
+        cellLabel.setTranslateX(CELL_SIZE / 2.0 - 20); // Adjust for new label width
+        cellLabel.setTranslateY(CELL_SIZE / 2.0 - 15); // Center vertically for smaller font
         cellLabel.setVisible(false); // Hide by default
         getViewComponent().addChild(cellLabel);
     }
@@ -108,7 +115,7 @@ public abstract class Furniture extends Entity {
         this.gridY = gridY;
         setPosition(gridX * CELL_SIZE, gridY * CELL_SIZE);
         if (cellLabel != null) {
-            cellLabel.setText(com.btp.layout.model.CellLabeler.getCellLabel(gridX, gridY));
+            cellLabel.setText(furnitureLabel);
         }
     }
 
@@ -188,5 +195,18 @@ public abstract class Furniture extends Entity {
     
     public static void hideAllCellLabels() {
         // This will be called from the main app to hide all labels
+    }
+
+    public String getFurnitureLabel() {
+        return furnitureLabel;
+    }
+    public void setFurnitureLabel(String label) {
+        this.furnitureLabel = label;
+        if (cellLabel != null) {
+            cellLabel.setText(label);
+        }
+    }
+    public String getImagePath() {
+        return imagePath;   
     }
 } 

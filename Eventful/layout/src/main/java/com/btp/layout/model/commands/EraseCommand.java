@@ -43,6 +43,15 @@ public class EraseCommand implements Command {
             }
         }
         FXGL.getGameWorld().removeEntity(originalFurniture);
+        // Decrement and relabel
+        if (originalFurniture.getFurnitureType() == com.btp.layout.model.FurnitureType.CHAIR) {
+            com.btp.layout.model.FurnitureFactory.decrementChairCount();
+        } else if (originalFurniture.getFurnitureType() == com.btp.layout.model.FurnitureType.TABLE) {
+            com.btp.layout.model.FurnitureFactory.decrementTableCount();
+        }
+        com.btp.layout.model.FurnitureFactory.relabelFurniture(
+            FXGL.getGameWorld().getEntities().stream().toList()
+        );
     }
 
     private boolean isCellOccupied(int gridX, int gridY) {
@@ -133,6 +142,15 @@ public class EraseCommand implements Command {
             }
         }
         
+        // Increment and relabel
+        if (furnitureCopy.getFurnitureType() == com.btp.layout.model.FurnitureType.CHAIR) {
+            com.btp.layout.model.FurnitureFactory.incrementChairCount();
+        } else if (furnitureCopy.getFurnitureType() == com.btp.layout.model.FurnitureType.TABLE) {
+            com.btp.layout.model.FurnitureFactory.incrementTableCount();
+        }
+        com.btp.layout.model.FurnitureFactory.relabelFurniture(
+            FXGL.getGameWorld().getEntities().stream().toList()
+        );
         return true; // Undo succeeded
     }
 } 

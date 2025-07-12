@@ -20,6 +20,13 @@ public class PlaceFurnitureCommand implements Command {
     @Override
     public void execute() {
         FXGL.getGameWorld().addEntity(furniture);
+        // Relabel all after placement
+        if (furniture.getFurnitureType() == com.btp.layout.model.FurnitureType.CHAIR ||
+            furniture.getFurnitureType() == com.btp.layout.model.FurnitureType.TABLE) {
+            com.btp.layout.model.FurnitureFactory.relabelFurniture(
+                FXGL.getGameWorld().getEntities().stream().toList()
+            );
+        }
     }
 
     private Optional<Entity> findFurnitureAt(int gridX, int gridY) {
@@ -56,6 +63,15 @@ public class PlaceFurnitureCommand implements Command {
             
             // Remove the furniture
             FXGL.getGameWorld().removeEntity(furnitureToRemove);
+            // Decrement and relabel
+            if (furnitureToRemove.getFurnitureType() == com.btp.layout.model.FurnitureType.CHAIR) {
+                com.btp.layout.model.FurnitureFactory.decrementChairCount();
+            } else if (furnitureToRemove.getFurnitureType() == com.btp.layout.model.FurnitureType.TABLE) {
+                com.btp.layout.model.FurnitureFactory.decrementTableCount();
+            }
+            com.btp.layout.model.FurnitureFactory.relabelFurniture(
+                FXGL.getGameWorld().getEntities().stream().toList()
+            );
         }
         
         return true; // Undo always succeeds

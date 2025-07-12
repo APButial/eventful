@@ -40,4 +40,8 @@ public class CommandManager {
     public boolean canUndo() {
         return !undoStack.isEmpty();
     }
+
+    public void clearUndoStack() {
+        undoStack.clear();
+    }
 } 

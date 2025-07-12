@@ -5,6 +5,9 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.core.math.FXGLMath;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -12,8 +15,12 @@ import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.geometry.Orientation;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -43,26 +50,35 @@ import com.btp.layout.model.FurnitureStyle;
 import com.btp.layout.model.commands.CommandManager;
 import com.btp.layout.model.commands.PlaceFurnitureCommand;
 import com.btp.layout.model.commands.EraseCommand;
+import com.btp.layout.model.commands.MoveFurnitureCommand;
 import com.btp.layout.ui.EditWindow;
 import com.btp.layout.ui.GuestListWindow;
+
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.Cursor;
+import javafx.scene.layout.Region;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.Priority;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import com.btp.layout.model.LayoutManager;
 
 public class LayoutDiagramApp extends GameApplication {
 
     private static final int CELL_SIZE = 80;
     private static final int GRID_WIDTH = 60;
     private static final int GRID_HEIGHT = 60;
-    private static final int BOTTOM_BAR_HEIGHT = 80; // New constant for bottom bar
+    private static final int BOTTOM_BAR_HEIGHT = 100; // Increased by 20 pixels
+    private static final int MENU_BAR_HEIGHT = 20; // Height for the menu bar
     
     // World size (total size of the pannable area)
     private static final int WORLD_WIDTH = GRID_WIDTH * CELL_SIZE;
@@ -101,7 +117,7 @@ public class LayoutDiagramApp extends GameApplication {
     private StackPane selectedButton = null;
 
     // Store sidebar reference
-    private VBox sidebar;
+    private HBox sidebar;
 
     private static final double MIN_SCALE = 0.3;
     private static final double MAX_SCALE = 2.0;
@@ -112,6 +128,8 @@ public class LayoutDiagramApp extends GameApplication {
 
     private Entity lastClickedFurniture = null;
     private Point2D initialDragPoint = null;
+    private int initialGridX = -1;
+    private int initialGridY = -1;
     private boolean isRotating = false;
     private CommandManager commandManager;
     private int lastRotation = 0;
@@ -123,6 +141,15 @@ public class LayoutDiagramApp extends GameApplication {
     private Rectangle selectionBox;
     private Point2D selectionStart;
     private boolean isSelecting = false;
+
+    // Add fields for viewport drag
+    private boolean isDraggingViewport = false;
+    private double lastDragX = 0;
+    private double lastDragY = 0;
+
+    private javafx.scene.layout.HBox styleButtonBox = null;
+    private StackPane selectedStyleButton = null;
+    private MenuBar menuBar = null;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -136,10 +163,101 @@ public class LayoutDiagramApp extends GameApplication {
         commandManager = CommandManager.getInstance();
     }
 
+    private void initMenuBar() {
+        menuBar = new MenuBar();
+        Menu fileMenu = new Menu("File");
+        
+        // Save menu item
+        MenuItem saveItem = new MenuItem("Save Layout");
+        saveItem.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Layout");
+            saveItem.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN));
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Layout files (*.layout)", "*.layout")
+            );
+            File file = fileChooser.showSaveDialog(FXGL.getGameScene().getRoot().getScene().getWindow());
+            if (file != null) {
+                try {
+                    LayoutManager.getInstance().saveLayout(file.getAbsolutePath());
+                } catch (IOException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Failed to save layout");
+                    alert.setContentText(ex.getMessage());
+                    alert.showAndWait();
+                }
+            }
+        });
+        
+        // Load menu item
+        MenuItem loadItem = new MenuItem("Load Layout");
+        loadItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
+        loadItem.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Load Layout");
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Layout files (*.layout)", "*.layout")
+            );
+            File file = fileChooser.showOpenDialog(FXGL.getGameScene().getRoot().getScene().getWindow());
+            if (file != null) {
+                try {
+                    LayoutManager.getInstance().loadLayout(file.getAbsolutePath());
+                } catch (IOException ex) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("Failed to load layout");
+                    alert.setContentText(ex.getMessage());
+                    alert.showAndWait();
+                }
+            }
+        });
+        
+        // Save image menu item
+        MenuItem saveImageItem = new MenuItem("Export");
+        saveImageItem.setOnAction(e -> saveLayoutImage());
+        
+        fileMenu.getItems().addAll(saveItem, loadItem, new SeparatorMenuItem(), saveImageItem);
+        
+        // Add Guest List menu
+        Menu guestMenu = new Menu("Guest List");
+        MenuItem guestListItem = new MenuItem("Open Guest List");
+        guestListItem.setOnAction(e -> {
+            GuestListWindow guestListWindow = new GuestListWindow();
+            guestListWindow.showAndWait();
+        });
+        guestMenu.getItems().add(guestListItem);
+        
+        menuBar.getMenus().addAll(fileMenu, guestMenu);
+        
+        // Style the menu bar and its components
+        menuBar.setPrefWidth(FXGL.getAppWidth());
+        menuBar.setPrefHeight(MENU_BAR_HEIGHT);
+        
+        // Apply CSS styling
+        menuBar.setStyle(
+            "-fx-background-color: #c7aef7;" +
+            "-fx-text-fill: white;"
+        );
+        
+        // Add CSS stylesheet for menu components
+        FXGL.getGameScene().getRoot().setStyle(
+            ".menu-bar { -fx-background-color: #c7aef7; }" +
+            ".menu-bar .menu { -fx-text-fill: white; }" +
+            ".menu-bar .menu:showing { -fx-background-color: #a259e6; }" +
+            ".menu-bar .menu-item { -fx-background-color: #c7aef7; -fx-text-fill: white; }" +
+            ".menu-bar .menu-item:hover { -fx-background-color: #a259e6; -fx-text-fill: white; }" +
+            ".context-menu { -fx-background-color: #c7aef7; -fx-text-fill: white; }"
+        );
+        
+        FXGL.addUINode(menuBar, 0, 0);
+    }
+
     @Override
     protected void initGame() {
         FXGL.getGameScene().setBackgroundColor(Color.WHITE);
         FXGL.getGameScene().getRoot().setCursor(Cursor.DEFAULT);
+        initMenuBar();
         initGrid();
         initSidebar();
         initMouseInput();
@@ -174,7 +292,7 @@ public class LayoutDiagramApp extends GameApplication {
         // Create vertical scrollbar
         verticalScrollBar = new ScrollBar();
         verticalScrollBar.setOrientation(Orientation.VERTICAL);
-        verticalScrollBar.setPrefHeight(FXGL.getAppHeight() - BOTTOM_BAR_HEIGHT - 17); // Leave space for horizontal scrollbar
+        verticalScrollBar.setPrefHeight(FXGL.getAppHeight() - BOTTOM_BAR_HEIGHT - MENU_BAR_HEIGHT - 22); // Adjust for menu bar and horizontal scrollbar
         verticalScrollBar.setMin(0);
         verticalScrollBar.setUnitIncrement(CELL_SIZE);
         verticalScrollBar.setBlockIncrement(CELL_SIZE * 5);
@@ -182,12 +300,12 @@ public class LayoutDiagramApp extends GameApplication {
 
         // Add scrollbars to UI
         FXGL.addUINode(horizontalScrollBar, 0, FXGL.getAppHeight() - BOTTOM_BAR_HEIGHT - 17);
-        FXGL.addUINode(verticalScrollBar, FXGL.getAppWidth() - 17, 0);
+        FXGL.addUINode(verticalScrollBar, FXGL.getAppWidth() - 17, MENU_BAR_HEIGHT + 5);
 
         // Add listeners to update viewport when scrollbars change
         horizontalScrollBar.valueProperty().addListener((obs, old, newValue) -> {
             if (!isUpdatingScrollBars) {
-                var viewport = FXGL.getGameScene().getViewport();
+        var viewport = FXGL.getGameScene().getViewport();
                 viewport.setX(newValue.doubleValue());
             }
         });
@@ -208,8 +326,8 @@ public class LayoutDiagramApp extends GameApplication {
         double currentZoom = viewport.getZoom();
 
         // Calculate max scroll ranges based on world size and current zoom
-        double maxX = Math.max(0, WORLD_WIDTH - (FXGL.getAppWidth() / currentZoom));
-        double maxY = Math.max(0, WORLD_HEIGHT - ((FXGL.getAppHeight() - BOTTOM_BAR_HEIGHT) / currentZoom));
+            double maxX = Math.max(0, WORLD_WIDTH - (FXGL.getAppWidth() / currentZoom));
+            double maxY = Math.max(0, WORLD_HEIGHT - ((FXGL.getAppHeight() - BOTTOM_BAR_HEIGHT) / currentZoom));
 
         // Calculate visible amounts (thumb sizes)
         double visibleWidth = FXGL.getAppWidth() / currentZoom;
@@ -232,7 +350,7 @@ public class LayoutDiagramApp extends GameApplication {
         verticalScrollBar.setVisibleAmount(maxY * verticalProportion);
         
         isUpdatingScrollBars = false;
-    }
+            }
 
     @Override
     protected void onUpdate(double tpf) {
@@ -257,14 +375,16 @@ public class LayoutDiagramApp extends GameApplication {
         var gridEntity = FXGL.entityBuilder()
                 .buildAndAttach();
 
-        // Draw grid lines
+        // Draw grid lines with higher z-order to appear on top
         for (int x = 0; x <= GRID_WIDTH; x++) {
             Line line = new Line(0, 0, 0, GRID_HEIGHT * CELL_SIZE);
             line.setStroke(Color.GRAY);
+            line.setStrokeWidth(1.0); // Ensure consistent line width
             
             Entity gridLine = FXGL.entityBuilder()
                     .at(x * CELL_SIZE, 0)
                     .view(line)
+                    .zIndex(1000) // Set high z-index to render on top of furniture
                     .buildAndAttach();
             gridLines.add(gridLine);
         }
@@ -272,83 +392,104 @@ public class LayoutDiagramApp extends GameApplication {
         for (int y = 0; y <= GRID_HEIGHT; y++) {
             Line line = new Line(0, 0, GRID_WIDTH * CELL_SIZE, 0);
             line.setStroke(Color.GRAY);
+            line.setStrokeWidth(1.0); // Ensure consistent line width
             
             Entity gridLine = FXGL.entityBuilder()
                     .at(0, y * CELL_SIZE)
                     .view(line)
+                    .zIndex(1000) // Set high z-index to render on top of furniture
                     .buildAndAttach();
             gridLines.add(gridLine);
         }
     }
 
     private void initSidebar() {
-        sidebar = new VBox(20);
+        sidebar = new HBox();
         sidebar.setAlignment(Pos.CENTER_LEFT);
         sidebar.setPadding(new Insets(10));
-        sidebar.setStyle("-fx-background-color: lightgray;");
+        sidebar.setStyle("-fx-background-color: #c7aef7;"); // Light purple background
         sidebar.setPrefHeight(BOTTOM_BAR_HEIGHT);
         sidebar.setPrefWidth(WINDOW_WIDTH);
-        sidebar.setSpacing(20); // Space between elements
-        
-        // Create guest list label with larger font
-        Label guestListLabel = new Label("Guest List");
-        guestListLabel.setStyle("-fx-font-size: 24px; -fx-underline: true; -fx-cursor: hand;");
-        guestListLabel.setOnMouseClicked(e -> {
-            GuestListWindow guestListWindow = new GuestListWindow();
-            guestListWindow.showAndWait();
-        });
-        
-        // Create a horizontal box for the main furniture buttons
-        var mainButtonBox = new javafx.scene.layout.HBox(20);
-        mainButtonBox.setAlignment(Pos.CENTER_LEFT);
-        mainButtonBox.setPrefWidth(WINDOW_WIDTH / 2);
-        
-        // Create a horizontal box for the style buttons
-        var styleButtonBox = new javafx.scene.layout.HBox(20);
-        styleButtonBox.setAlignment(Pos.CENTER_LEFT);
-        styleButtonBox.setPrefWidth(WINDOW_WIDTH / 2);
-        
-        // Create buttons for each furniture type
+        sidebar.setSpacing(20); // Spacing between sections
+
+        // Tools Section
+        VBox toolsSection = new VBox(5);
+        Label toolsLabel = new Label("Tools");
+        toolsLabel.setStyle("-fx-font-size: 16px;");
+        var labelBox = new HBox();
+        labelBox.setAlignment(Pos.CENTER);
+        labelBox.getChildren().add(toolsLabel);
+        var toolsHBox = new HBox(10);
+        toolsHBox.setAlignment(Pos.CENTER_LEFT);
+        toolsHBox.setPadding(new Insets(5, 0, 5, 0));
+
+        // Create tool buttons
+        StackPane editButton = createImageButton("Edit Tool", FurnitureType.EDIT, "/com/btp/layout/images/edit.png");
+        StackPane eraseButton = createImageButton("Erase Tool", FurnitureType.ERASE, "/com/btp/layout/images/eraser.png");
+        toolsHBox.getChildren().addAll(editButton, eraseButton);
+        toolsSection.getChildren().addAll(labelBox, toolsHBox);
+
+        // Furniture Section
+        VBox furnitureSection = new VBox(5);
+        Label furnitureLabel = new Label("Furniture");
+        furnitureLabel.setStyle("-fx-font-size: 16px;");
+        var furnitureLabelBox = new HBox();
+        furnitureLabelBox.setAlignment(Pos.CENTER);
+        furnitureLabelBox.getChildren().add(furnitureLabel);
+        var furnitureHBox = new HBox(10);
+        furnitureHBox.setAlignment(Pos.CENTER_LEFT);
+        furnitureHBox.setPadding(new Insets(5, 0, 5, 0));
+
+        // Create furniture buttons
         StackPane chairButton = createImageButton("Chair", FurnitureType.CHAIR, "/com/btp/layout/images/chairIcon.png");
         StackPane tableButton = createImageButton("Table", FurnitureType.TABLE, "/com/btp/layout/images/tableIcon.png");
         StackPane wallButton = createImageButton("Wall", FurnitureType.WALL, "/com/btp/layout/images/wallIcon.png");
         StackPane floorButton = createImageButton("Floor", FurnitureType.FLOOR, "/com/btp/layout/images/floorIcon.png");
-        StackPane editButton = createImageButton("Edit Tool", FurnitureType.EDIT, "/com/btp/layout/images/edit.png");
-        StackPane eraseButton = createImageButton("Erase Tool", FurnitureType.ERASE, "/com/btp/layout/images/eraser.png");
-        
-        mainButtonBox.getChildren().addAll(
-            guestListLabel,
-            chairButton, tableButton, wallButton, floorButton,
-            editButton, eraseButton
-        );
+        furnitureHBox.getChildren().addAll(chairButton, tableButton, wallButton, floorButton);
+        furnitureSection.getChildren().addAll(furnitureLabelBox, furnitureHBox);
 
-        // Create a container for both HBoxes
-        var buttonContainer = new javafx.scene.layout.HBox(20);
-        buttonContainer.setAlignment(Pos.CENTER_LEFT);
-        buttonContainer.getChildren().addAll(mainButtonBox, styleButtonBox);
+        // Styles Section
+        VBox stylesSection = new VBox(5);
+        Label stylesLabel = new Label("Styles");
+        stylesLabel.setStyle("-fx-font-size: 16px;");
+        var stylesLabelBox = new HBox();
+        stylesLabelBox.setAlignment(Pos.CENTER);
+        stylesLabelBox.getChildren().add(stylesLabel);
+        styleButtonBox = new javafx.scene.layout.HBox(10);
+        styleButtonBox.setAlignment(Pos.CENTER_LEFT);
+        styleButtonBox.setPadding(new Insets(5, 0, 5, 0));
+        stylesSection.getChildren().addAll(stylesLabelBox, styleButtonBox);
+        stylesSection.setVisible(false);
+        stylesSection.setManaged(false);
+
+        // Create separators
+        Separator sep1 = new Separator(Orientation.VERTICAL);
+        Separator sep2 = new Separator(Orientation.VERTICAL);
         
-        sidebar.getChildren().add(buttonContainer);
+        // Add all sections to sidebar
+        sidebar.getChildren().addAll(
+            toolsSection, sep1,
+            furnitureSection, sep2,
+            stylesSection
+        );
         
         // Add sidebar to UI at the bottom
         FXGL.addUINode(sidebar, 0, WINDOW_HEIGHT - BOTTOM_BAR_HEIGHT);
-
-        // Update style buttons when a furniture type is selected
-        updateStyleButtons(FurnitureType.CHAIR, styleButtonBox);
     }
     
     private StackPane createImageButton(String text, FurnitureType type, String imagePath) {
         StackPane button = new StackPane();
-        button.setPrefWidth(80);
-        button.setPrefHeight(80);
-        button.setStyle("-fx-background-color: white; -fx-border-color: transparent; -fx-border-width: 2;");
+        button.setPrefWidth(30);
+        button.setPrefHeight(30);
+        button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 2;");
         
         // Create image view
         ImageView imageView = new ImageView();
         try {
             Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
             imageView.setImage(image);
-            imageView.setFitWidth(60);
-            imageView.setFitHeight(60);
+            imageView.setFitWidth(30);
+            imageView.setFitHeight(30);
             imageView.setPreserveRatio(true);
         } catch (Exception e) {
             // If image fails to load, create a colored rectangle as fallback
@@ -374,23 +515,41 @@ public class LayoutDiagramApp extends GameApplication {
     }
     
     private void selectButton(StackPane button, FurnitureType type) {
+        // Deselect if already selected
+        if (selectedButton == button) {
+            selectedButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 2;");
+            selectedButton = null;
+            FurnitureFactory.setCurrentType(null); // Use null or a NONE type to indicate no tool
+            FurnitureStyle.setCurrentStyle(null); // Clear style selection as well
+            // Clear style buttons but keep the container
+            if (styleButtonBox != null) {
+                styleButtonBox.getChildren().clear();
+            }
+            return;
+        }
         // Reset previous selection
         if (selectedButton != null) {
-            selectedButton.setStyle("-fx-background-color: white; -fx-border-color: transparent; -fx-border-width: 2;");
+            selectedButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 2;");
         }
         
         // Set new selection
         selectedButton = button;
-        button.setStyle("-fx-background-color: white; -fx-border-color: #0078D7; -fx-border-width: 2;");
+        button.setStyle("-fx-background-color: transparent; -fx-border-color: #a259e6; -fx-border-width: 2;");
         
         // Update current furniture type
         FurnitureFactory.setCurrentType(type);
 
-        // Find the style button box and update it
-        if (sidebar != null) {
-            var buttonContainer = (javafx.scene.layout.HBox) sidebar.getChildren().get(0);
-            var styleButtonBox = (javafx.scene.layout.HBox) buttonContainer.getChildren().get(1);
+        // Update style buttons based on type
+        VBox stylesSection = (VBox) styleButtonBox.getParent();
+        if (type == FurnitureType.CHAIR || type == FurnitureType.TABLE || type == FurnitureType.WALL || type == FurnitureType.FLOOR) {
             updateStyleButtons(type, styleButtonBox);
+            stylesSection.setVisible(true);
+            stylesSection.setManaged(true);
+        } else {
+            // Hide style buttons for edit/erase
+            styleButtonBox.getChildren().clear();
+            stylesSection.setVisible(false);
+            stylesSection.setManaged(false);
         }
     }
 
@@ -407,25 +566,33 @@ public class LayoutDiagramApp extends GameApplication {
         List<String> styles = FurnitureStyle.getStylesForType(type);
         
         // Create a button for each style
+        StackPane firstStyleButton = null;
         for (String style : styles) {
             StackPane styleButton = createStyleButton(style, type);
             styleButtonBox.getChildren().add(styleButton);
+            if (firstStyleButton == null) {
+                firstStyleButton = styleButton;
+            }
+        }
+        // Auto-select the first style button
+        if (firstStyleButton != null) {
+            selectStyleButton(firstStyleButton, styles.get(0));
         }
     }
 
     private StackPane createStyleButton(String imagePath, FurnitureType type) {
         StackPane button = new StackPane();
-        button.setPrefWidth(80);
-        button.setPrefHeight(80);
-        button.setStyle("-fx-background-color: white; -fx-border-color: transparent; -fx-border-width: 2;");
+        button.setPrefWidth(30);
+        button.setPrefHeight(30);
+        button.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 2;");
         
         // Create image view
         ImageView imageView = new ImageView();
         try {
             Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
             imageView.setImage(image);
-            imageView.setFitWidth(60);
-            imageView.setFitHeight(60);
+            imageView.setFitWidth(30);
+            imageView.setFitHeight(30);
             imageView.setPreserveRatio(true);
         } catch (Exception e) {
             // If image fails to load, create a colored rectangle as fallback
@@ -435,28 +602,28 @@ public class LayoutDiagramApp extends GameApplication {
         }
         
         // Add click handler
-        final javafx.scene.layout.HBox parentBox = (javafx.scene.layout.HBox) button.getParent();
         button.setOnMouseClicked(e -> {
-            // Update style selection visual
-            if (parentBox != null) {
-                parentBox.getChildren().forEach(node -> 
-                    node.setStyle("-fx-background-color: white; -fx-border-color: transparent; -fx-border-width: 2;")
-                );
-            }
-            button.setStyle("-fx-background-color: white; -fx-border-color: #0078D7; -fx-border-width: 2;");
-            
-            // Set the selected style
-            FurnitureStyle.setCurrentStyle(imagePath);
+            selectStyleButton(button, imagePath);
         });
         
         button.getChildren().add(imageView);
         return button;
     }
 
+    private void selectStyleButton(StackPane button, String stylePath) {
+        // Deselect previous
+        if (selectedStyleButton != null) {
+            selectedStyleButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-border-width: 2;");
+        }
+        selectedStyleButton = button;
+        button.setStyle("-fx-background-color: transparent; -fx-border-color: #a259e6; -fx-border-width: 2;");
+        FurnitureStyle.setCurrentStyle(stylePath);
+    }
+
     private void initHighlight() {
         Rectangle highlight = new Rectangle(CELL_SIZE, CELL_SIZE);
-        highlight.setFill(Color.BLUE);
-        highlight.setOpacity(0.1);
+        highlight.setFill(Color.web("#e6d6fa")); // Light purple
+        highlight.setOpacity(0.5);
         
         highlightEntity = FXGL.entityBuilder()
                 .view(highlight)
@@ -631,8 +798,11 @@ public class LayoutDiagramApp extends GameApplication {
         if (clickedFurniture != null) {
             lastClickedFurniture = clickedFurniture;
             initialDragPoint = point;
-            // Highlight the selected furniture by changing its opacity
+            // Store initial grid position
             Furniture furniture = (Furniture) clickedFurniture;
+            initialGridX = furniture.getGridX();
+            initialGridY = furniture.getGridY();
+            // Highlight the selected furniture by changing its opacity
             furniture.getViewComponent().setOpacity(0.7);
         } else {
             // Start selection box using world coordinates
@@ -734,7 +904,7 @@ public class LayoutDiagramApp extends GameApplication {
                 // Only move if the new cell is different and not occupied
                 if (furniture.getGridX() != gridX || furniture.getGridY() != gridY) {
                     if (!isCellOccupied(gridX, gridY) || (gridX == furniture.getGridX() && gridY == furniture.getGridY())) {
-                        // Update the furniture's position
+                        // Just update the position during drag
                         furniture.setPosition(gridX * CELL_SIZE, gridY * CELL_SIZE);
                         furniture.setGridPosition(gridX, gridY);
                     }
@@ -746,8 +916,16 @@ public class LayoutDiagramApp extends GameApplication {
     // Add mouse release handler for edit mode
     private void handleEditRelease() {
         if (lastClickedFurniture != null && lastClickedFurniture instanceof Furniture) {
-            // Reset the opacity of the furniture
             Furniture furniture = (Furniture) lastClickedFurniture;
+            
+            // Create and execute move command if the position changed
+            if (furniture.getGridX() != initialGridX || furniture.getGridY() != initialGridY) {
+                MoveFurnitureCommand command = new MoveFurnitureCommand(furniture, initialGridX, initialGridY, 
+                    furniture.getGridX(), furniture.getGridY());
+                commandManager.executeCommand(command);
+            }
+            
+            // Reset the opacity of the furniture
             furniture.getViewComponent().setOpacity(1.0);
             lastClickedFurniture = null;
             initialDragPoint = null;
@@ -766,7 +944,7 @@ public class LayoutDiagramApp extends GameApplication {
         
         // Add mouse press handler
         FXGL.getInput().addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
-            var mousePosition = FXGL.getInput().getMousePositionWorld();
+                var mousePosition = FXGL.getInput().getMousePositionWorld();
         
             // Handle right click for context menu
             if (e.getButton() == MouseButton.SECONDARY) {
@@ -812,18 +990,28 @@ public class LayoutDiagramApp extends GameApplication {
                     handleEditClick(mousePosition, e);
                 } else if (currentType != FurnitureType.ERASE) {
                     // Check for existing furniture first
-                    lastClickedFurniture = findFurnitureAt(mousePosition.getX(), mousePosition.getY());
+                lastClickedFurniture = findFurnitureAt(mousePosition.getX(), mousePosition.getY());
                     
-                    if (lastClickedFurniture != null && lastClickedFurniture instanceof Furniture) {
+                if (lastClickedFurniture != null && lastClickedFurniture instanceof Furniture) {
                         // If we found furniture, enable rotation
                         initialDragPoint = mousePosition;
-                        isRotating = true;
+                    isRotating = true;
                     } else {
                         // If no furniture found, try to place new furniture
                         handleMouseAtPosition(mousePosition.getX(), mousePosition.getY());
                     }
                 } else {
                     handleMouseAtPosition(mousePosition.getX(), mousePosition.getY());
+                }
+            }
+            // Add viewport drag start
+            if (selectedButton == null && e.getButton() == MouseButton.PRIMARY) {
+                // Only start drag if inside grid area
+                if (mousePosition.getX() >= 0 && mousePosition.getX() < GRID_WIDTH * CELL_SIZE &&
+                    mousePosition.getY() >= 0 && mousePosition.getY() < GRID_HEIGHT * CELL_SIZE) {
+                    isDraggingViewport = true;
+                    lastDragX = e.getSceneX();
+                    lastDragY = e.getSceneY();
                 }
             }
         });
@@ -877,6 +1065,22 @@ public class LayoutDiagramApp extends GameApplication {
                 updateHighlight(mousePosition.getX(), mousePosition.getY());
                 updateTooltip(mousePosition.getX(), mousePosition.getY());
             }
+            // Handle viewport drag if no tool is selected
+            if (selectedButton == null && isDraggingViewport && e.getButton() == MouseButton.PRIMARY) {
+                double dx = e.getSceneX() - lastDragX;
+                double dy = e.getSceneY() - lastDragY;
+                var viewport = FXGL.getGameScene().getViewport();
+                double newX = viewport.getX() - dx / viewport.getZoom();
+                double newY = viewport.getY() - dy / viewport.getZoom();
+                // Clamp to grid area
+                newX = Math.max(0, Math.min(newX, GRID_WIDTH * CELL_SIZE - FXGL.getAppWidth() / viewport.getZoom()));
+                newY = Math.max(0, Math.min(newY, GRID_HEIGHT * CELL_SIZE - FXGL.getAppHeight() / viewport.getZoom()));
+                viewport.setX(newX);
+                viewport.setY(newY);
+                lastDragX = e.getSceneX();
+                lastDragY = e.getSceneY();
+                return;
+            }
         });
 
         // Modify mouse released handler to reset erase tracking
@@ -893,10 +1097,13 @@ public class LayoutDiagramApp extends GameApplication {
                 lastPlacementY = -1;
                 lastClickedFurniture = null;
                 initialDragPoint = null;
+                initialGridX = -1;
+                initialGridY = -1;
                 isRotating = false;
                 lastRotation = 0;
                 lastEraseX = -1;  // Reset erase position tracking
                 lastEraseY = -1;
+                isDraggingViewport = false;
             }
         });
     }
@@ -927,26 +1134,29 @@ public class LayoutDiagramApp extends GameApplication {
 
         // Check if position is within grid bounds
         if (gridX >= 0 && gridX < GRID_WIDTH && gridY >= 0 && gridY < GRID_HEIGHT) {
-            if (FurnitureFactory.getCurrentType() == FurnitureType.EDIT) {
-                handleEditClick(worldMouse, null); // Pass null for MouseEvent
-            } else if (FurnitureFactory.getCurrentType() == FurnitureType.ERASE) {
-                handleEraseClick(worldMouse);
-            } else {
-                // Check if the cell is already occupied
-                if (!isCellOccupied(gridX, gridY)) {
-                    var furniture = FurnitureFactory.createFurniture(gridX, gridY);
-                    if (furniture != null) {
-                        // Create and execute the placement command
-                        PlaceFurnitureCommand command = new PlaceFurnitureCommand(furniture);
-                        commandManager.executeCommand(command);
-                        
-                        // Enable rotation for the newly placed furniture
-                        lastClickedFurniture = furniture;
-                        initialDragPoint = worldMouse;
-                        isRotating = true;
+            // Only place furniture if both a tool and a style are selected
+            if (selectedButton != null && FurnitureStyle.getCurrentStyle() != null) {
+                if (FurnitureFactory.getCurrentType() == FurnitureType.EDIT) {
+                    handleEditClick(worldMouse, null); // Pass null for MouseEvent
+                } else if (FurnitureFactory.getCurrentType() == FurnitureType.ERASE) {
+                    handleEraseClick(worldMouse);
+                } else {
+                    // Check if the cell is already occupied
+                    if (!isCellOccupied(gridX, gridY)) {
+                        var furniture = FurnitureFactory.createFurniture(gridX, gridY);
+                        if (furniture != null) {
+                            // Create and execute the placement command
+                            PlaceFurnitureCommand command = new PlaceFurnitureCommand(furniture);
+                            commandManager.executeCommand(command);
+                            // Enable rotation for the newly placed furniture
+                            lastClickedFurniture = furniture;
+                            initialDragPoint = worldMouse;
+                            isRotating = true;
+                        }
                     }
                 }
             }
+            // If not, do nothing (viewport drag is handled elsewhere)
         }
     }
 
@@ -992,35 +1202,35 @@ public class LayoutDiagramApp extends GameApplication {
     private void initZoomAndScroll() {
         FXGL.getInput().addEventHandler(ScrollEvent.SCROLL, e -> {
             if (e.isControlDown()) {                    
-                var viewport = FXGL.getGameScene().getViewport();
-                float currentScale = (float) viewport.getZoom();
-        
-                // Calculate zoom direction
-                float zoomChange = e.getDeltaY() > 0 ? (float) ZOOM_FACTOR : -(float) ZOOM_FACTOR;
-                float newScale = FXGLMath.clamp(currentScale + zoomChange, (float) MIN_SCALE, (float) MAX_SCALE);
-        
-                if (newScale != currentScale) {
-                    // Mouse position relative to viewport
-                    double mouseX = e.getSceneX();
-                    double mouseY = e.getSceneY();
-        
-                    // Convert mouse position to world coordinates
-                    double worldX = viewport.getX() + mouseX / currentScale;
-                    double worldY = viewport.getY() + mouseY / currentScale;
-        
-                    // Apply new zoom
-                    viewport.setZoom(newScale);
-        
-                    // Calculate new viewport position to keep mouse point fixed
-                    double newViewportX = worldX - mouseX / newScale;
-                    double newViewportY = worldY - mouseY / newScale;
-        
-                    // Clamp position if necessary
-                    double maxX = Math.max(0, WORLD_WIDTH - (WINDOW_WIDTH / newScale));
-                    double maxY = Math.max(0, WORLD_HEIGHT - ((WINDOW_HEIGHT - BOTTOM_BAR_HEIGHT) / newScale));
-        
-                    viewport.setX(FXGLMath.clamp((float) newViewportX, 0f, (float) maxX));
-                    viewport.setY(FXGLMath.clamp((float) newViewportY, 0f, (float) maxY));
+            var viewport = FXGL.getGameScene().getViewport();
+            float currentScale = (float) viewport.getZoom();
+    
+            // Calculate zoom direction
+            float zoomChange = e.getDeltaY() > 0 ? (float) ZOOM_FACTOR : -(float) ZOOM_FACTOR;
+            float newScale = FXGLMath.clamp(currentScale + zoomChange, (float) MIN_SCALE, (float) MAX_SCALE);
+    
+            if (newScale != currentScale) {
+                // Mouse position relative to viewport
+                double mouseX = e.getSceneX();
+                double mouseY = e.getSceneY();
+    
+                // Convert mouse position to world coordinates
+                double worldX = viewport.getX() + mouseX / currentScale;
+                double worldY = viewport.getY() + mouseY / currentScale;
+    
+                // Apply new zoom
+                viewport.setZoom(newScale);
+    
+                // Calculate new viewport position to keep mouse point fixed
+                double newViewportX = worldX - mouseX / newScale;
+                double newViewportY = worldY - mouseY / newScale;
+    
+                // Clamp position if necessary
+                double maxX = Math.max(0, WORLD_WIDTH - (WINDOW_WIDTH / newScale));
+                double maxY = Math.max(0, WORLD_HEIGHT - ((WINDOW_HEIGHT - BOTTOM_BAR_HEIGHT) / newScale));
+    
+                viewport.setX(FXGLMath.clamp((float) newViewportX, 0f, (float) maxX));
+                viewport.setY(FXGLMath.clamp((float) newViewportY, 0f, (float) maxY));
 
                     // Update scrollbar ranges after zoom
                     updateScrollbarRanges();
@@ -1037,7 +1247,8 @@ public class LayoutDiagramApp extends GameApplication {
     }
 
     private void saveLayoutImage() {
-        // Hide grid lines, sidebar, scrollbars, and highlight
+        // Hide grid lines, sidebar, scrollbars, and highlight'
+        menuBar.setVisible(false);
         gridLines.forEach(line -> line.setVisible(false));
         sidebar.setVisible(false);
         horizontalScrollBar.setVisible(false);
@@ -1050,6 +1261,7 @@ public class LayoutDiagramApp extends GameApplication {
         FXGL.getGameWorld().getEntities().stream()
             .filter(e -> e instanceof Furniture)
             .map(e -> (Furniture) e)
+            .filter(f -> f.getFurnitureType() == com.btp.layout.model.FurnitureType.CHAIR || f.getFurnitureType() == com.btp.layout.model.FurnitureType.TABLE)
             .forEach(Furniture::showCellLabel);
 
         // Create a FileChooser
@@ -1093,18 +1305,18 @@ public class LayoutDiagramApp extends GameApplication {
                     int width = (int) (maxX - minX);
                     int height = (int) (maxY - minY);
                     
-                    // Add space for legend on the right (1000 pixels at 4x resolution = 4000 pixels)
-                    int legendWidth = 1000 * 4;
-                    int totalWidth = width * 4 + legendWidth;
-                    int scaledHeight = height * 4;
+                    // Add space for legend on the right (1000 pixels at 3x resolution = 3000 pixels)
+                    int legendWidth = 1000 * 3;
+                    int totalWidth = width * 3 + legendWidth;
+                    int scaledHeight = height * 3;
                     
                     // Create a WritableImage with space for legend
                     WritableImage image = new WritableImage(totalWidth, scaledHeight);
 
-                    // Set up snapshot parameters
-                    SnapshotParameters params = new SnapshotParameters();
-                    params.setFill(Color.WHITE); // Set background color
-                    
+                // Set up snapshot parameters
+                SnapshotParameters params = new SnapshotParameters();
+                params.setFill(Color.WHITE); // Set background color
+
                     // Set the viewport to capture only the furniture area
                     var viewport = FXGL.getGameScene().getViewport();
                     double originalX = viewport.getX();
@@ -1114,26 +1326,26 @@ public class LayoutDiagramApp extends GameApplication {
                     // Set viewport to capture the furniture area
                     viewport.setX(minX);
                     viewport.setY(minY);
-                    viewport.setZoom(4.0); // 4x zoom for 4x resolution
+                    viewport.setZoom(3.0); // 3x zoom for 3x resolution
 
                     // Take the snapshot of the layout area
-                    WritableImage layoutImage = new WritableImage(width * 4, scaledHeight);
+                    WritableImage layoutImage = new WritableImage(width * 3, scaledHeight);
                     FXGL.getGameScene().getRoot().snapshot(params, layoutImage);
                     
                     // Create legend content
-                    createLegendContent(image, layoutImage, width * 4, scaledHeight, legendWidth, furnitureEntities);
+                    createLegendContent(image, layoutImage, width * 3, scaledHeight, legendWidth, furnitureEntities);
 
                     // Restore original viewport
                     viewport.setX(originalX);
                     viewport.setY(originalY);
                     viewport.setZoom(originalZoom);
 
-                    // Save the image
-                    ImageIO.write(
-                        SwingFXUtils.fromFXImage(image, null),
-                        "png",
-                        file
-                    );
+                // Save the image
+                ImageIO.write(
+                    SwingFXUtils.fromFXImage(image, null),
+                    "png",
+                    file
+                );
                 } else {
                     // No furniture, save empty image
                     WritableImage image = new WritableImage(800, 600);
@@ -1147,11 +1359,12 @@ public class LayoutDiagramApp extends GameApplication {
                 e.printStackTrace();
                 System.out.println("Failed to save image: " + e.getMessage());
             } finally {
-                // Show grid lines, sidebar, scrollbars, and highlight again, hide cell labels
+                // Show grid lines, sidebar, scrollbars, menu bar, and highlight again, hide cell labels
                 gridLines.forEach(line -> line.setVisible(true));
                 sidebar.setVisible(true);
                 horizontalScrollBar.setVisible(true);
                 verticalScrollBar.setVisible(true);
+                menuBar.setVisible(true);
                 if (highlightEntity != null) {
                     highlightEntity.setVisible(true);
                 }
@@ -1160,6 +1373,7 @@ public class LayoutDiagramApp extends GameApplication {
                 FXGL.getGameWorld().getEntities().stream()
                     .filter(e -> e instanceof Furniture)
                     .map(e -> (Furniture) e)
+                    .filter(f -> f.getFurnitureType() == com.btp.layout.model.FurnitureType.CHAIR || f.getFurnitureType() == com.btp.layout.model.FurnitureType.TABLE)
                     .forEach(Furniture::hideCellLabel);
             }
         } else {
@@ -1168,6 +1382,7 @@ public class LayoutDiagramApp extends GameApplication {
             sidebar.setVisible(true);
             horizontalScrollBar.setVisible(true);
             verticalScrollBar.setVisible(true);
+            menuBar.setVisible(true);
             if (highlightEntity != null) {
                 highlightEntity.setVisible(true);
             }
@@ -1176,6 +1391,7 @@ public class LayoutDiagramApp extends GameApplication {
             FXGL.getGameWorld().getEntities().stream()
                 .filter(e -> e instanceof Furniture)
                 .map(e -> (Furniture) e)
+                .filter(f -> f.getFurnitureType() == com.btp.layout.model.FurnitureType.CHAIR || f.getFurnitureType() == com.btp.layout.model.FurnitureType.TABLE)
                 .forEach(Furniture::hideCellLabel);
         }
     }
@@ -1184,9 +1400,10 @@ public class LayoutDiagramApp extends GameApplication {
         contextMenu = new VBox(5); // 5px spacing between items
         contextMenu.setStyle(
             "-fx-background-color: white;" +
-            "-fx-border-color: #cccccc;" +
             "-fx-border-width: 1px;" +
-            "-fx-padding: 5;" +
+            
+            
+            
             "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 4, 0, 0, 2);"
         );
         contextMenu.setVisible(false);
@@ -1266,7 +1483,7 @@ public class LayoutDiagramApp extends GameApplication {
         javafx.scene.layout.HBox legendContainer = new javafx.scene.layout.HBox(40); // 40px spacing between columns
         legendContainer.setStyle("-fx-background-color: white; -fx-padding: 20;");
         legendContainer.setPrefWidth(legendWidth / 4.0); // Convert back to normal scale
-        legendContainer.setAlignment(javafx.geometry.Pos.TOP_LEFT); // Align content to top
+        legendContainer.setAlignment(javafx.geometry.Pos.TOP_LEFT); // Align content to top left
         
         // Separate furniture into chairs and tables
         List<Furniture> chairs = new ArrayList<>();
@@ -1285,15 +1502,11 @@ public class LayoutDiagramApp extends GameApplication {
         
         // Sort both lists by cell label
         chairs.sort((f1, f2) -> {
-            String label1 = com.btp.layout.model.CellLabeler.getCellLabel(f1.getGridX(), f1.getGridY());
-            String label2 = com.btp.layout.model.CellLabeler.getCellLabel(f2.getGridX(), f2.getGridY());
-            return label1.compareTo(label2);
+            return f1.getFurnitureLabel().compareTo(f2.getFurnitureLabel());
         });
         
         tables.sort((f1, f2) -> {
-            String label1 = com.btp.layout.model.CellLabeler.getCellLabel(f1.getGridX(), f1.getGridY());
-            String label2 = com.btp.layout.model.CellLabeler.getCellLabel(f2.getGridX(), f2.getGridY());
-            return label1.compareTo(label2);
+            return f1.getFurnitureLabel().compareTo(f2.getFurnitureLabel());
         });
         
         // Create Chair column
@@ -1308,9 +1521,7 @@ public class LayoutDiagramApp extends GameApplication {
         
         // Add chairs
         for (Furniture chair : chairs) {
-            String cellLabel = com.btp.layout.model.CellLabeler.getCellLabel(chair.getGridX(), chair.getGridY());
-            
-            // Create the main label with cell
+            String cellLabel = chair.getFurnitureLabel();
             javafx.scene.control.Label mainLabel = new javafx.scene.control.Label(cellLabel);
             mainLabel.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 36));
             mainLabel.setStyle("-fx-text-fill: black;");
@@ -1346,9 +1557,7 @@ public class LayoutDiagramApp extends GameApplication {
         
         // Add tables
         for (Furniture table : tables) {
-            String cellLabel = com.btp.layout.model.CellLabeler.getCellLabel(table.getGridX(), table.getGridY());
-            
-            // Create the main label with cell
+            String cellLabel = table.getFurnitureLabel();
             javafx.scene.control.Label mainLabel = new javafx.scene.control.Label(cellLabel);
             mainLabel.setFont(javafx.scene.text.Font.font("Arial", javafx.scene.text.FontWeight.BOLD, 36));
             mainLabel.setStyle("-fx-text-fill: black;");
@@ -1425,7 +1634,7 @@ public class LayoutDiagramApp extends GameApplication {
         FXGL.getInput().addEventHandler(KeyEvent.KEY_PRESSED, e -> {
             if (e.isControlDown() && e.getCode() == KeyCode.Z) {
                 handleUndo();
-            } else if (e.isControlDown() && e.getCode() == KeyCode.S) {
+            } else if (e.isControlDown() && e.getCode() == KeyCode.S && e.isShiftDown()) {
                 saveLayoutImage();
             }
         });

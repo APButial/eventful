@@ -128,4 +128,21 @@ public class GuestList {
     public Table getAssignedTable(String guest) {
         return guestToTable.get(guest);
     }
+
+    public void clear() {
+        // Clear all guest assignments from furniture
+        for (Furniture chair : guestToChair.values()) {
+            chair.setAssignedGuest(null);
+        }
+        for (Table table : guestToTable.values()) {
+            table.clearAssignedGuests();
+        }
+        
+        // Clear all collections
+        guests.clear();
+        assignedToChairs.clear();
+        assignedToTables.clear();
+        guestToChair.clear();
+        guestToTable.clear();
+    }
 } 

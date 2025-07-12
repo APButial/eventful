@@ -8,7 +8,7 @@ public class Wall extends Furniture {
     }
 
     public Wall(int gridX, int gridY, String imagePath) {
-        super(gridX, gridY, imagePath, false, FurnitureType.WALL);
+        super(gridX, gridY, imagePath, false, FurnitureType.WALL, "W");
     }
 
     // Copy constructor
