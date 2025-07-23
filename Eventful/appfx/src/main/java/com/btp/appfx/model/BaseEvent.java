@@ -16,6 +16,7 @@ public class BaseEvent {
     private LocalDate endDate;
 
     // optional event details
+    private String eventID = null; // for google calendar
     private LocalTime startTime;
     private LocalTime endTime;
     private String description;
@@ -118,5 +119,13 @@ public class BaseEvent {
 
     public void setStatus(EventStatus status) {
         this.status = status;
+    }
+
+    public String getEventID() {
+        return eventID;
+    }
+
+    public void setEventID(String eventID) {
+        this.eventID = eventID;
     }
 }

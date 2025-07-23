@@ -4,6 +4,8 @@ import com.btp.appfx.service.AppService;
 import com.btp.event_manager.service.DashNavigateListener;
 import com.btp.event_manager.service.EventDetailListener;
 import com.btp.event_manager.service.EventFormListener;
+import com.btp.event_manager.service.GoogleCalendar;
+import com.google.api.services.calendar.model.Event;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -46,7 +48,7 @@ public class EventDetailsUI extends Application {
         mainContent.setPrefWidth(900);
 
         UpperHeader upperHeader = new UpperHeader(appService, primaryStage);
-        LowerHeader lowerHeader = new LowerHeader("Event Details - " + appService.getEventName().toUpperCase(), "no"); // "no" to hide date
+        LowerHeader lowerHeader = new LowerHeader(appService.getEventName().toUpperCase(), "no"); // "no" to hide date
 
         statusBox = new ComboBox<>();
         statusBox.getItems().addAll("Draft", "Pending", "Done");
@@ -72,7 +74,11 @@ public class EventDetailsUI extends Application {
         inboxButton.setPrefWidth(10);
         inboxButton.setPrefHeight(10);
         inboxButton.setOnAction(event -> {
-            eventFormListener.onInbox();
+            try {
+                GoogleCalendar.printAttendeesResponse("primary", appService.getEventID());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         ColorAdjust colorAdjust = new ColorAdjust();

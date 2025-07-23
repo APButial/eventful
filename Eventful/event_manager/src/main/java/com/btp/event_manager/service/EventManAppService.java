@@ -707,6 +707,16 @@ public class EventManAppService implements AppService, LogService {
         eventManState.setEventFilter(eventStatus);
     }
 
+    @Override
+    public String getEventID() {
+        return eventManState.getCurrSelectedEvent().getEventID();
+    }
+
+    @Override
+    public void setEventID(String id) {
+        eventManState.getCurrSelectedEvent().setEventID(id);
+    }
+
     public void setMainStage(Stage stage) {
         eventManState.setMainStage(stage);
     }

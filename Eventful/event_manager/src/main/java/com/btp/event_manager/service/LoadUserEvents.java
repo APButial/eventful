@@ -79,6 +79,13 @@ public class LoadUserEvents {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                String eventID;
+                try {
+                    eventID = event.getElementsByTagName("eventID").item(0).getTextContent();
+                    savedEvent.setEventID(eventID);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 // Load budget tracker data
                 Element budgetTracker = (Element) event.getElementsByTagName("budgetTracker").item(0);
                 if (budgetTracker != null) {

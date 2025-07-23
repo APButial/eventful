@@ -85,4 +85,7 @@ public interface AppService {
 
     EventStatus getEventFilter();
     void setEventFilter(EventStatus eventStatus);
+
+    String getEventID();
+    void setEventID(String id);
 }

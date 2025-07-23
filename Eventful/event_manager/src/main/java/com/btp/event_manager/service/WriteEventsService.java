@@ -65,6 +65,11 @@ public class WriteEventsService {
             Element lastAccessed = document.createElement("lastAccessed");
             lastAccessed.appendChild(document.createTextNode(CipherService.encrypt(appService.getSysDateTime().toString())));
             event.appendChild(lastAccessed);
+
+            if (newEvent.getEventID() != null) {
+                Element eventID = document.createElement("eventID");
+                eventID.appendChild(document.createTextNode(CipherService.encrypt(newEvent.getEventID())));
+            }
             //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -168,6 +173,17 @@ public class WriteEventsService {
                             event.appendChild(status);
                         }
                     }
+                    if (selectedEvent.getEventID() != null) {
+                        Element id = (Element) event.getElementsByTagName("eventID").item(0);
+                        if (id != null) {
+                            id.setTextContent(selectedEvent.getEventID());
+                        } else {
+                            id = document.createElement("eventID");
+                            id.appendChild(document.createTextNode(selectedEvent.getEventID()));
+                            event.appendChild(id);
+                        }
+                    }
+
                     if (selectedEvent.getGuests() != null) {
                         Element guests = (Element) event.getElementsByTagName("guests").item(0);
                         if (guests != null) {

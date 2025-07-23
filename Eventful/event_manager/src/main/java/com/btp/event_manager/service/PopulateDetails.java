@@ -21,7 +21,6 @@ public class PopulateDetails {
         ((EventManAppService) appService).getEventManState().setEndDateBuffer(event.getEndDate());
         event.setLastAccessed(appService.getSysDateTime());
         eventDetailsUI.getStatusBox().setValue(appService.getEventStatusString(event.getStatus()));
-
         try {
             eventDetailsUI.getEventForm().getTimeStartField().getHourDropdown().setValue(event.getStartTime().format(DateTimeFormatter.ofPattern("HH")));
             eventDetailsUI.getEventForm().getTimeStartField().getMinuteDropdown().setValue(event.getStartTime().format(DateTimeFormatter.ofPattern("mm")));
@@ -29,7 +28,6 @@ public class PopulateDetails {
         } catch(Exception e) {
             e.printStackTrace();
         }
-
         try {
             eventDetailsUI.getEventForm().getTimeEndField().getHourDropdown().setValue(event.getEndTime().format(DateTimeFormatter.ofPattern("HH")));
             eventDetailsUI.getEventForm().getTimeEndField().getMinuteDropdown().setValue(event.getEndTime().format(DateTimeFormatter.ofPattern("mm")));
@@ -40,6 +38,11 @@ public class PopulateDetails {
         try {
             eventDetailsUI.getEventForm().getEventDescArea().setText(event.getDescription());
             appService.setDescription(event.getDescription());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            appService.setEventID(event.getEventID());
         } catch (Exception e) {
             e.printStackTrace();
         }

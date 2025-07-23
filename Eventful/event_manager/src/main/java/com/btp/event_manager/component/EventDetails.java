@@ -83,7 +83,7 @@ public class EventDetails {
                 "-fx-border-radius: 5px; " +
                 "-fx-control-inner-background: #F5F5F5;" );
         endDatePicker.setPromptText("Select end date");
-        endDatePicker.setValue(LocalDate.now().plusDays(1)); // Default to tomorrow's date
+        endDatePicker.setValue(LocalDate.now()); // Default to tomorrow's date
         endDatePicker.setOnAction(event -> {
             appService.setEndDate(endDatePicker.getValue());
         });

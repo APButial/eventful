@@ -55,6 +55,7 @@ public class GoogleCalendar {
             Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String CREDENTIALS_FILE_PATH = "/client_secret.json";
 
+    private static Calendar service;
     /**
      * Creates an authorized Credential object.
      *
@@ -62,6 +63,7 @@ public class GoogleCalendar {
      * @return An authorized Credential object.
      * @throws IOException If the credentials.json file cannot be found.
      */
+
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
         // Load client secrets.
@@ -99,10 +101,10 @@ public class GoogleCalendar {
         return true;
     }
 
-    public static void sendEventInvitation(AppService appService) throws IOException, GeneralSecurityException {
+    public static void sendEventInvitation(AppService appService) throws Exception {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Calendar service =
+        service =
                 new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                         .setApplicationName(APPLICATION_NAME)
                         .build();
@@ -153,11 +155,13 @@ public class GoogleCalendar {
         event.setReminders(reminders);
 
         String calendarId = "primary";
-        event = service.events().insert(calendarId, event).execute();
+        event = service.events().insert(calendarId, event).setSendUpdates("all").execute();
         System.out.printf("Event created: %s\n", event.getHtmlLink());
+
+        appService.setEventID(event.getId());
     }
 
-    private static String getString(com.btp.event_manager.model.Event e) {
+    private static String getString(com.btp.event_manager.model.Event e) throws Exception {
         String description;
         if (e.getDescription() != null || !e.getDescription().isEmpty()) {
             description = String.format("You received an invitation to attend \"%s\" from %s to %s. The organizer described this event as: \"%s\". Have an eventful day!",
@@ -171,6 +175,18 @@ public class GoogleCalendar {
                     e.getStartDate().toString(),
                     e.getEndDate().toString());
         }
+
         return description;
+    }
+
+    public static void printAttendeesResponse(String calendarId, String eventId) throws IOException {
+        Event event = service.events().get(calendarId, eventId).execute();
+        if (event.getAttendees() != null) {
+            for (EventAttendee attendee : event.getAttendees()) {
+                String email = attendee.getEmail();
+                String responseStatus = attendee.getResponseStatus();
+                System.out.println("Attendee: " + email + " Response: " + responseStatus);
+            }
+        }
     }
 }

@@ -14,7 +14,6 @@ public interface EventFormListener {
     public void onReturn();
     public void onBudgetTracker();
     public void onExport() throws IOException;
-    public void onInbox();
     public void onDelete();
     public void statusUpdated();
 }
