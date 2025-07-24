@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import com.btp.layout.model.GuestList;
+import javafx.stage.Modality;
 
 public class GuestListWindow extends Stage {
     private final ListView<String> guestListView;
@@ -46,6 +47,7 @@ public class GuestListWindow extends Stage {
         // Set up the scene
         Scene scene = new Scene(layout, 300, 400);
         setScene(scene);
+        this.initModality(Modality.APPLICATION_MODAL);
     }
     
     private void addGuest() {
@@ -67,6 +69,7 @@ public class GuestListWindow extends Stage {
     
     private void refreshGuestList() {
         guestListView.getItems().clear();
-        guestListView.getItems().addAll(guestList.getGuests());
+        guestListView.getItems().addAll(guestList.getAllGuests());
     }
+    
 } 
