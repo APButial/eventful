@@ -1,17 +1,24 @@
 package com.btp.event_manager.component;
 
-    import com.btp.appfx.service.AppService;
-    import com.btp.event_manager.service.EventFormListener;
-    import javafx.beans.value.ChangeListener;
-    import javafx.beans.value.ObservableValue;
-    import javafx.geometry.Insets;
+import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.app.GameSettings;
+import com.btp.appfx.service.AppService;
+import com.btp.event_manager.service.EventFormListener;
+import com.btp.event_manager.service.EventManAppService;
+import com.btp.layout.LayoutDiagramApp;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-    import java.time.LocalDate;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.time.LocalDate;
 
 public class EventForm {
     private CustomDatePicker startDatePicker;
@@ -26,6 +33,7 @@ public class EventForm {
     private MilitaryTimePicker timeStartField;
     private MilitaryTimePicker timeEndField;
     private AppService appService;
+    private Stage gameStage;
 
     public EventForm (AppService appService, EventFormListener eventFormListener) {
         this.eventFormListener = eventFormListener;
@@ -163,9 +171,16 @@ public class EventForm {
         sendEmailButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         sendEmailButton.setPrefWidth(200);
 
+
         Button configureLayoutButton = new Button("Configure Layout");
         configureLayoutButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");
         configureLayoutButton.setPrefWidth(200);
+        configureLayoutButton.setOnAction(event -> {
+            new Thread(() -> {
+                // Wrap in Platform.runLater if FXGL needs JavaFX thread
+                GameApplication.launch(LayoutDiagramApp.class, new String[0]);
+            }).start();
+        });
 
         Button expensesTrackerButton = new Button("Expenses Tracker");
         expensesTrackerButton.setStyle("-fx-background-color: transparent; -fx-border-color: purple; -fx-text-fill: purple; -fx-border-radius: 5px; -fx-padding: 10px 20px;");

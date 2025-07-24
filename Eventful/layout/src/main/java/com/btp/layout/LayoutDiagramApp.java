@@ -35,6 +35,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Popup;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
@@ -155,7 +156,7 @@ public class LayoutDiagramApp extends GameApplication {
     protected void initSettings(GameSettings settings) {
         settings.setWidth(1280);
         settings.setHeight(720);
-        settings.setTitle("Layout Diagram");
+        settings.setTitle("Eventful Layout Diagram");
         settings.setVersion("1.0");
         settings.setPreserveResizeRatio(true); // Keep aspect ratio and letterbox
         settings.setFullScreenAllowed(false);  // Prevent fullscreen
@@ -1643,4 +1644,4 @@ public class LayoutDiagramApp extends GameApplication {
     public static void main(String[] args) {
         launch(args);
     }
-} 
+}
