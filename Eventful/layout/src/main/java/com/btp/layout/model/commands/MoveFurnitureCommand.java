@@ -4,6 +4,8 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.btp.layout.model.Furniture;
 
 public class MoveFurnitureCommand implements Command {
+    private static final int CELL_SIZE = 80;
+    
     private final Furniture furniture;
     private final int oldGridX;
     private final int oldGridY;
@@ -21,7 +23,7 @@ public class MoveFurnitureCommand implements Command {
     @Override
     public void execute() {
         // Update the furniture's position and grid coordinates
-        furniture.setPosition(newGridX * 80, newGridY * 80); // Using CELL_SIZE constant
+        furniture.setPosition(newGridX * CELL_SIZE, newGridY * CELL_SIZE);
         furniture.setGridPosition(newGridX, newGridY);
     }
 
@@ -33,7 +35,7 @@ public class MoveFurnitureCommand implements Command {
         }
 
         // Move furniture back to its original position
-        furniture.setPosition(oldGridX * 80, oldGridY * 80);
+        furniture.setPosition(oldGridX * CELL_SIZE, oldGridY * CELL_SIZE);
         furniture.setGridPosition(oldGridX, oldGridY);
         
         return true;

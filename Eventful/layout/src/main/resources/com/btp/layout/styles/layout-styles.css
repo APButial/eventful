@@ -1,0 +1,73 @@
+/* Layout Diagram Application Styles */
+
+.menu-bar {
+    -fx-background-color: #a259e6; /* Purple background */
+}
+
+.menu-bar .label {
+    -fx-text-fill: white; /* White text for menu titles */
+
+}
+
+.menu-item .label {
+    -fx-text-fill: white; /* White text for menu items */
+
+}
+
+/* Hover effect for menu items */
+.menu-item:hover {
+    -fx-background-color: #7b3db0; /* Darker purple on hover */
+}
+
+/* Style for the dropdown context menu */
+.context-menu {
+    -fx-background-color: #a259e6; /* Purple background */
+}
+
+/* Separator line between menu items */
+.separator-menu-item {
+    -fx-background-color: #8a4dcc; /* Slightly darker purple line */
+}
+
+/* Accelerator text (like Ctrl+S) */
+.menu-item .accelerator-text {
+    -fx-text-fill: #e0d0f5; /* Light purple for accelerator keys */
+}
+
+
+/* Scrollbar Styles */
+.scroll-bar {
+    -fx-background-color: #e6d6fa;
+
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #a259e6;
+
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #8a47cc;
+}
+
+.scroll-bar .thumb:pressed {
+    -fx-background-color: #7a3fb8;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #e6d6fa;
+    -fx-border-color: transparent;
+
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: #c7aef7;
+    -fx-border-color: transparent;
+
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: #a259e6;
+}

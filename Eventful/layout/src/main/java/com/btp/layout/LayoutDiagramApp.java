@@ -5,9 +5,7 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.core.math.FXGLMath;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -32,10 +30,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.control.Tooltip;
 import javafx.stage.Popup;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
@@ -43,6 +39,8 @@ import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
+import java.util.HashMap;
 import com.btp.layout.model.Furniture;
 import com.btp.layout.model.FurnitureFactory;
 import com.btp.layout.model.FurnitureFactory.FurnitureType;
@@ -52,19 +50,18 @@ import com.btp.layout.model.commands.CommandManager;
 import com.btp.layout.model.commands.PlaceFurnitureCommand;
 import com.btp.layout.model.commands.EraseCommand;
 import com.btp.layout.model.commands.MoveFurnitureCommand;
+import com.btp.layout.model.commands.MoveGroupCommand;
 import com.btp.layout.ui.EditWindow;
 import com.btp.layout.ui.GuestListWindow;
 
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
-import javafx.scene.control.ScrollBar;
 import javafx.geometry.Orientation;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.Cursor;
 import javafx.scene.layout.Region;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.Priority;
 
 import java.util.ArrayList;
@@ -143,6 +140,10 @@ public class LayoutDiagramApp extends GameApplication {
     private Point2D selectionStart;
     private boolean isSelecting = false;
 
+    // Multi-furniture selection fields
+    private List<Entity> selectedFurniture = new ArrayList<>();
+    private Map<Entity, Point2D> originalGroupPositions = new HashMap<>();
+
     // Add fields for viewport drag
     private boolean isDraggingViewport = false;
     private double lastDragX = 0;
@@ -156,7 +157,7 @@ public class LayoutDiagramApp extends GameApplication {
     protected void initSettings(GameSettings settings) {
         settings.setWidth(1280);
         settings.setHeight(720);
-        settings.setTitle("Eventful Layout Diagram");
+        settings.setTitle("Layout Diagram");
         settings.setVersion("1.0");
         settings.setPreserveResizeRatio(true); // Keep aspect ratio and letterbox
         settings.setFullScreenAllowed(false);  // Prevent fullscreen
@@ -167,9 +168,11 @@ public class LayoutDiagramApp extends GameApplication {
     private void initMenuBar() {
         menuBar = new MenuBar();
         Menu fileMenu = new Menu("File");
+        fileMenu.setStyle("-fx-text-fill: #a259e6;");
         
         // Save menu item
         MenuItem saveItem = new MenuItem("Save Layout");
+       
         saveItem.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Save Layout");
@@ -193,6 +196,7 @@ public class LayoutDiagramApp extends GameApplication {
         
         // Load menu item
         MenuItem loadItem = new MenuItem("Load Layout");
+     
         loadItem.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN));
         loadItem.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -216,13 +220,16 @@ public class LayoutDiagramApp extends GameApplication {
         
         // Save image menu item
         MenuItem saveImageItem = new MenuItem("Export");
+        
         saveImageItem.setOnAction(e -> saveLayoutImage());
         
         fileMenu.getItems().addAll(saveItem, loadItem, new SeparatorMenuItem(), saveImageItem);
         
         // Add Guest List menu
         Menu guestMenu = new Menu("Guest List");
+        
         MenuItem guestListItem = new MenuItem("Open Guest List");
+       
         guestListItem.setOnAction(e -> {
             GuestListWindow guestListWindow = new GuestListWindow();
             guestListWindow.showAndWait();
@@ -233,23 +240,9 @@ public class LayoutDiagramApp extends GameApplication {
         
         // Style the menu bar and its components
         menuBar.setPrefWidth(FXGL.getAppWidth());
-        menuBar.setPrefHeight(MENU_BAR_HEIGHT);
+        menuBar.setPrefHeight(MENU_BAR_HEIGHT - 5);
         
-        // Apply CSS styling
-        menuBar.setStyle(
-            "-fx-background-color: #c7aef7;" +
-            "-fx-text-fill: white;"
-        );
         
-        // Add CSS stylesheet for menu components
-        FXGL.getGameScene().getRoot().setStyle(
-            ".menu-bar { -fx-background-color: #c7aef7; }" +
-            ".menu-bar .menu { -fx-text-fill: white; }" +
-            ".menu-bar .menu:showing { -fx-background-color: #a259e6; }" +
-            ".menu-bar .menu-item { -fx-background-color: #c7aef7; -fx-text-fill: white; }" +
-            ".menu-bar .menu-item:hover { -fx-background-color: #a259e6; -fx-text-fill: white; }" +
-            ".context-menu { -fx-background-color: #c7aef7; -fx-text-fill: white; }"
-        );
         
         FXGL.addUINode(menuBar, 0, 0);
     }
@@ -258,6 +251,10 @@ public class LayoutDiagramApp extends GameApplication {
     protected void initGame() {
         FXGL.getGameScene().setBackgroundColor(Color.WHITE);
         FXGL.getGameScene().getRoot().setCursor(Cursor.DEFAULT);
+        
+        // Load CSS stylesheet
+        loadStylesheet();
+        
         initMenuBar();
         initGrid();
         initSidebar();
@@ -268,6 +265,15 @@ public class LayoutDiagramApp extends GameApplication {
         initSelectionBox();
         initScrollbars();
         initContextMenu();
+    }
+    
+    private void loadStylesheet() {
+        try {
+            String cssPath = getClass().getResource("/com/btp/layout/styles/layout-styles.css").toExternalForm();
+            FXGL.getGameScene().getRoot().getStylesheets().add(cssPath);
+        } catch (Exception e) {
+            System.err.println("Could not load CSS stylesheet: " + e.getMessage());
+        }
     }
 
     private void initSelectionBox() {
@@ -288,6 +294,12 @@ public class LayoutDiagramApp extends GameApplication {
         horizontalScrollBar.setMin(0);
         horizontalScrollBar.setUnitIncrement(CELL_SIZE);
         horizontalScrollBar.setBlockIncrement(CELL_SIZE * 5);
+        horizontalScrollBar.setStyle(
+        "-fx-background-color: #e6d6fa;" + // Light purple track
+        "-fx-control-inner-background: #e6d6fa;" + // Light purple track inner
+        "-fx-background-radius: 0;" +
+        "-fx-border-radius: 0;"
+    );
         
         
         // Create vertical scrollbar
@@ -300,7 +312,7 @@ public class LayoutDiagramApp extends GameApplication {
         
 
         // Add scrollbars to UI
-        FXGL.addUINode(horizontalScrollBar, 0, FXGL.getAppHeight() - BOTTOM_BAR_HEIGHT - 17);
+        FXGL.addUINode(horizontalScrollBar, 0, FXGL.getAppHeight() - BOTTOM_BAR_HEIGHT - 20);
         FXGL.addUINode(verticalScrollBar, FXGL.getAppWidth() - 17, MENU_BAR_HEIGHT + 5);
 
         // Add listeners to update viewport when scrollbars change
@@ -408,7 +420,7 @@ public class LayoutDiagramApp extends GameApplication {
         sidebar = new HBox();
         sidebar.setAlignment(Pos.CENTER_LEFT);
         sidebar.setPadding(new Insets(10));
-        sidebar.setStyle("-fx-background-color: #c7aef7;"); // Light purple background
+        sidebar.setStyle("-fx-background-color: #f0f0f0ff; -fx-border-color: #bbbbbbff; -fx-border-width: 1px 1 0 0;"); 
         sidebar.setPrefHeight(BOTTOM_BAR_HEIGHT);
         sidebar.setPrefWidth(WINDOW_WIDTH);
         sidebar.setSpacing(20); // Spacing between sections
@@ -416,7 +428,7 @@ public class LayoutDiagramApp extends GameApplication {
         // Tools Section
         VBox toolsSection = new VBox(5);
         Label toolsLabel = new Label("Tools");
-        toolsLabel.setStyle("-fx-font-size: 16px;");
+        toolsLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #a259e6;");
         var labelBox = new HBox();
         labelBox.setAlignment(Pos.CENTER);
         labelBox.getChildren().add(toolsLabel);
@@ -433,7 +445,7 @@ public class LayoutDiagramApp extends GameApplication {
         // Furniture Section
         VBox furnitureSection = new VBox(5);
         Label furnitureLabel = new Label("Furniture");
-        furnitureLabel.setStyle("-fx-font-size: 16px;");
+        furnitureLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #a259e6;");
         var furnitureLabelBox = new HBox();
         furnitureLabelBox.setAlignment(Pos.CENTER);
         furnitureLabelBox.getChildren().add(furnitureLabel);
@@ -452,7 +464,7 @@ public class LayoutDiagramApp extends GameApplication {
         // Styles Section
         VBox stylesSection = new VBox(5);
         Label stylesLabel = new Label("Styles");
-        stylesLabel.setStyle("-fx-font-size: 16px;");
+        stylesLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #a259e6;");
         var stylesLabelBox = new HBox();
         stylesLabelBox.setAlignment(Pos.CENTER);
         stylesLabelBox.getChildren().add(stylesLabel);
@@ -463,14 +475,18 @@ public class LayoutDiagramApp extends GameApplication {
         stylesSection.setVisible(false);
         stylesSection.setManaged(false);
 
-        // Create separators
-        Separator sep1 = new Separator(Orientation.VERTICAL);
-        Separator sep2 = new Separator(Orientation.VERTICAL);
+        // Create spacers
+        Region spacer1 = new Region();
+        spacer1.setPrefWidth(1); // 20px invisible padding
+        spacer1.setStyle("-fx-background-color: transparent;");
         
+        Region spacer2 = new Region();
+        spacer2.setPrefWidth(1); // 20px invisible padding
+        spacer2.setStyle("-fx-background-color: transparent;");
         // Add all sections to sidebar
         sidebar.getChildren().addAll(
-            toolsSection, sep1,
-            furnitureSection, sep2,
+            toolsSection, spacer1,
+            furnitureSection, spacer2,
             stylesSection
         );
         
@@ -785,39 +801,92 @@ public class LayoutDiagramApp extends GameApplication {
                 .reduce((first, second) -> second)
                 .orElse(null);
 
-        // Reset any previous selections
+        // Reset any previous box selection
         if (isSelecting) {
             isSelecting = false;
             selectionBox.setVisible(false);
         }
         
+        // Check if clicked furniture is part of existing group selection BEFORE clearing
+        boolean isPartOfGroup = false;
+        if (clickedFurniture != null && !selectedFurniture.isEmpty()) {
+            isPartOfGroup = selectedFurniture.contains(clickedFurniture);
+        }
+
+        if (clickedFurniture != null) {
+            if (isPartOfGroup) {
+                // If part of group selection, move entire group (don't clear selections)
+                initializeGroupDrag(point);
+                System.out.println("test1 - group drag initialized");
+            } else {
+                // New single furniture selection - clear all previous selections first
+                clearAllSelections();
+                selectedFurniture.clear();
+                lastClickedFurniture = clickedFurniture;
+                initialDragPoint = point;
+                // Store initial grid position for single furniture
+                Furniture furniture = (Furniture) clickedFurniture;
+                initialGridX = furniture.getGridX();
+                initialGridY = furniture.getGridY();
+                // Highlight the selected furniture by changing its opacity
+                furniture.getViewComponent().setOpacity(0.7);
+                System.out.println("test2 - single furniture selected");
+            }
+        } else {
+            // Clear all selections when clicking empty space
+            clearAllSelections();
+            // Start box selection on empty cell
+            startBoxSelection(point);
+            
+        }
+    }
+
+    private void clearAllSelections() {
         // Reset opacity of all furniture
         FXGL.getGameWorld().getEntities().stream()
                 .filter(e2 -> e2 instanceof Furniture)
                 .forEach(e2 -> ((Furniture) e2).getViewComponent().setOpacity(1.0));
+        
+        // Clear selections
+        selectedFurniture.clear();
+        originalGroupPositions.clear();
+        lastClickedFurniture = null;
+    }
 
-        if (clickedFurniture != null) {
-            lastClickedFurniture = clickedFurniture;
-            initialDragPoint = point;
-            // Store initial grid position
-            Furniture furniture = (Furniture) clickedFurniture;
-            initialGridX = furniture.getGridX();
-            initialGridY = furniture.getGridY();
-            // Highlight the selected furniture by changing its opacity
-            furniture.getViewComponent().setOpacity(0.7);
-        } else {
-            // Start selection box using world coordinates
-            selectionStart = point;
-            isSelecting = true;
-            
-            // Convert world coordinates to screen coordinates for the selection box
-            double screenX = (point.getX() - viewport.getX()) * viewport.getZoom();
-            selectionBox.setX(screenX);
-            selectionBox.setY(screenY);
-            selectionBox.setWidth(0);
-            selectionBox.setHeight(0);
-            selectionBox.setVisible(true);
-        }
+    private void initializeGroupDrag(Point2D point) {
+        // Store initial positions for group drag
+        storeOriginalGroupPositions();
+        initialDragPoint = point;
+        
+        // All selected furniture should already have 0.7 opacity
+        // No need to change opacity here
+    }
+
+    private void startBoxSelection(Point2D point) {
+        // Start selection box using world coordinates
+        selectionStart = point;
+        isSelecting = true;
+        
+        var viewport = FXGL.getGameScene().getViewport();
+        // Convert world coordinates to screen coordinates for the selection box
+        double screenX = (point.getX() - viewport.getX()) * viewport.getZoom();
+        double screenY = (point.getY() - viewport.getY()) * viewport.getZoom();
+        selectionBox.setX(screenX);
+        selectionBox.setY(screenY);
+        selectionBox.setWidth(0);
+        selectionBox.setHeight(0);
+        selectionBox.setVisible(true);
+    }
+
+    private void storeOriginalGroupPositions() {
+        originalGroupPositions.clear();
+        selectedFurniture.forEach(entity -> {
+            if (entity instanceof Furniture) {
+                Furniture furniture = (Furniture) entity;
+                originalGroupPositions.put(entity, 
+                    new Point2D(furniture.getGridX(), furniture.getGridY()));
+            }
+        });
     }
 
     private void updateSelectionBox(Point2D currentPoint) {
@@ -862,7 +931,7 @@ public class LayoutDiagramApp extends GameApplication {
         double worldHeight = selectionBox.getHeight() / viewport.getZoom();
 
         // Get all furniture within the selection box using world coordinates
-        var selectedFurniture = FXGL.getGameWorld().getEntities().stream()
+        var selectedFurnitureFromBox = FXGL.getGameWorld().getEntities().stream()
                 .filter(e -> e instanceof Furniture)
                 .filter(e -> {
                     var bbox = e.getBoundingBoxComponent();
@@ -880,49 +949,212 @@ public class LayoutDiagramApp extends GameApplication {
                 })
                 .collect(Collectors.toList());
 
-        // Highlight selected furniture
+        // Store selected furniture and their original positions
+        selectedFurniture = selectedFurnitureFromBox;
+        storeOriginalGroupPositions();
+
+        // Apply 0.7 opacity to all selected furniture
         selectedFurniture.forEach(e -> {
             if (e instanceof Furniture) {
                 ((Furniture) e).getViewComponent().setOpacity(0.7);
             }
         });
 
-        // Reset selection
+        // Reset selection box
         isSelecting = false;
         selectionBox.setVisible(false);
     }
 
     // Add mouse drag handler for edit mode
     private void handleEditDrag(Point2D mousePosition) {
-        if (lastClickedFurniture != null && lastClickedFurniture instanceof Furniture && FurnitureFactory.getCurrentType() == FurnitureType.EDIT) {
-            // Convert mouse position to grid coordinates
-            int gridX = (int) (mousePosition.getX() / CELL_SIZE);
-            int gridY = (int) (mousePosition.getY() / CELL_SIZE);
+        if (FurnitureFactory.getCurrentType() != FurnitureType.EDIT) return;
+        
+        // Group furniture drag has priority over single furniture drag
+        if (!selectedFurniture.isEmpty()) {
+            handleGroupFurnitureDrag(mousePosition);
+        }
+        // Single furniture drag (only if no group is selected)
+        else if (lastClickedFurniture != null && lastClickedFurniture instanceof Furniture) {
+            handleSingleFurnitureDrag(mousePosition);
+        }
+    }
+
+    private void handleSingleFurnitureDrag(Point2D mousePosition) {
+        // Ensure we're working with world coordinates by explicitly getting them
+        Point2D worldMousePos = FXGL.getInput().getMousePositionWorld();
+        
+        if (initialDragPoint != null) {
+            Furniture furniture = (Furniture) lastClickedFurniture;
             
-            // Check if the new position is within bounds and not occupied
-            if (gridX >= 0 && gridX < GRID_WIDTH && gridY >= 0 && gridY < GRID_HEIGHT) {
-                Furniture furniture = (Furniture) lastClickedFurniture;
-                // Only move if the new cell is different and not occupied
-                if (furniture.getGridX() != gridX || furniture.getGridY() != gridY) {
-                    if (!isCellOccupied(gridX, gridY) || (gridX == furniture.getGridX() && gridY == furniture.getGridY())) {
-                        // Just update the position during drag
-                        furniture.setPosition(gridX * CELL_SIZE, gridY * CELL_SIZE);
-                        furniture.setGridPosition(gridX, gridY);
-                    }
+            // Calculate the offset from initial drag point
+            double deltaX = worldMousePos.getX() - initialDragPoint.getX();
+            double deltaY = worldMousePos.getY() - initialDragPoint.getY();
+            
+            // Calculate new position based on original grid position + offset
+            double newX = (initialGridX * CELL_SIZE) + deltaX;
+            double newY = (initialGridY * CELL_SIZE) + deltaY;
+            
+            // Update visual position smoothly (pixel-perfect movement)
+            furniture.setPosition(newX, newY);
+            
+            // Update grid position only when close to a grid cell center
+            int nearestGridX = (int) Math.round(newX / CELL_SIZE);
+            int nearestGridY = (int) Math.round(newY / CELL_SIZE);
+            
+            // Check if the nearest grid position is valid and not occupied
+            if (nearestGridX >= 0 && nearestGridX < GRID_WIDTH && 
+                nearestGridY >= 0 && nearestGridY < GRID_HEIGHT &&
+                (!isCellOccupied(nearestGridX, nearestGridY) || 
+                 (nearestGridX == initialGridX && nearestGridY == initialGridY))) {
+                
+                furniture.setGridPosition(nearestGridX, nearestGridY);
+            }
+        }
+    }
+
+    private void handleGroupFurnitureDrag(Point2D mousePosition) {
+        if (selectedFurniture.isEmpty() || initialDragPoint == null) return;
+        
+        // Ensure we're working with world coordinates by explicitly getting them
+        Point2D worldMousePos = FXGL.getInput().getMousePositionWorld();
+        
+        // Calculate the offset from initial drag point (pixel-based)
+        double deltaX = worldMousePos.getX() - initialDragPoint.getX();
+        double deltaY = worldMousePos.getY() - initialDragPoint.getY();
+        
+        // Convert pixel offset to grid offset for validation
+        int gridDeltaX = (int) Math.round(deltaX / CELL_SIZE);
+        int gridDeltaY = (int) Math.round(deltaY / CELL_SIZE);
+        
+        // Check if all furniture can move to new grid positions
+        boolean allValid = validateGroupMovement(gridDeltaX, gridDeltaY);
+        
+        // Always show preview, but with different visual feedback based on validity
+        showGroupPreview(allValid);
+        
+        if (allValid) {
+            // Valid movement - move smoothly to new positions
+            moveGroupSmoothly(deltaX, deltaY, gridDeltaX, gridDeltaY);
+        } else {
+            // Invalid movement - keep furniture at original positions but show invalid preview
+            resetGroupToOriginalPositions();
+        }
+    }
+
+    private boolean validateGroupMovement(int deltaX, int deltaY) {
+        // Check each furniture piece in the group
+        for (Entity entity : selectedFurniture) {
+            if (entity instanceof Furniture) {
+                Point2D originalPos = originalGroupPositions.get(entity);
+                if (originalPos == null) continue;
+                
+                // Calculate new grid position based on original position + delta
+                int newGridX = (int) originalPos.getX() + deltaX;
+                int newGridY = (int) originalPos.getY() + deltaY;
+                
+                // Check bounds - must be within grid
+                if (newGridX < 0 || newGridX >= GRID_WIDTH || 
+                    newGridY < 0 || newGridY >= GRID_HEIGHT) {
+                    return false;
+                }
+                
+                // Check if this specific cell is occupied by non-selected furniture
+                if (isCellOccupiedExcluding(newGridX, newGridY, selectedFurniture)) {
+                    return false;
                 }
             }
         }
+        return true;
+    }
+
+    private boolean isCellOccupiedExcluding(int gridX, int gridY, List<Entity> excluding) {
+        return FXGL.getGameWorld().getEntities().stream()
+                .filter(e -> e instanceof Furniture)
+                .filter(e -> !excluding.contains(e))
+                .anyMatch(e -> {
+                    Furniture furniture = (Furniture) e;
+                    return furniture.getGridX() == gridX && furniture.getGridY() == gridY;
+                });
+    }
+
+    private void showGroupPreview(boolean isValid) {
+        selectedFurniture.forEach(entity -> {
+            if (entity instanceof Furniture) {
+                Furniture furniture = (Furniture) entity;
+                if (isValid) {
+                    // Valid position - show green-tinted preview
+                    furniture.getViewComponent().setOpacity(0.5);
+                } else {
+                    // Invalid position - show red-tinted preview with reduced opacity
+                    furniture.getViewComponent().setOpacity(0.3);
+                }
+            }
+        });
+    }
+
+    private void moveGroupSmoothly(double deltaX, double deltaY, int gridDeltaX, int gridDeltaY) {
+        selectedFurniture.forEach(entity -> {
+            if (entity instanceof Furniture) {
+                Furniture furniture = (Furniture) entity;
+                Point2D originalPos = originalGroupPositions.get(entity);
+                if (originalPos != null) {
+                    // Calculate smooth visual position
+                    double newX = (originalPos.getX() * CELL_SIZE) + deltaX;
+                    double newY = (originalPos.getY() * CELL_SIZE) + deltaY;
+                    
+                    // Update visual position smoothly
+                    furniture.setPosition(newX, newY);
+                    
+                    // Update grid position based on grid delta
+                    int newGridX = (int) originalPos.getX() + gridDeltaX;
+                    int newGridY = (int) originalPos.getY() + gridDeltaY;
+                    furniture.setGridPosition(newGridX, newGridY);
+                }
+            }
+        });
+    }
+
+    private void resetGroupToOriginalPositions() {
+        originalGroupPositions.forEach((entity, originalPos) -> {
+            if (entity instanceof Furniture) {
+                Furniture furniture = (Furniture) entity;
+                furniture.setPosition(originalPos.getX() * CELL_SIZE, originalPos.getY() * CELL_SIZE);
+                furniture.setGridPosition((int) originalPos.getX(), (int) originalPos.getY());
+            }
+        });
     }
 
     // Add mouse release handler for edit mode
     private void handleEditRelease() {
         if (lastClickedFurniture != null && lastClickedFurniture instanceof Furniture) {
+            // Handle single furniture release
             Furniture furniture = (Furniture) lastClickedFurniture;
             
+            // Snap to nearest valid grid position on release
+            double currentX = furniture.getX();
+            double currentY = furniture.getY();
+            int finalGridX = (int) Math.round(currentX / CELL_SIZE);
+            int finalGridY = (int) Math.round(currentY / CELL_SIZE);
+            
+            // Ensure final position is within bounds
+            finalGridX = Math.max(0, Math.min(finalGridX, GRID_WIDTH - 1));
+            finalGridY = Math.max(0, Math.min(finalGridY, GRID_HEIGHT - 1));
+            
+            // Check if final position is occupied by another furniture
+            if (isCellOccupied(finalGridX, finalGridY)) {
+                // Revert to original position if occupied
+                finalGridX = initialGridX;
+                finalGridY = initialGridY;
+            }
+            
+            // Snap to final grid position
+            furniture.setPosition(finalGridX * CELL_SIZE, finalGridY * CELL_SIZE);
+            furniture.setGridPosition(finalGridX, finalGridY);
+            
             // Create and execute move command if the position changed
-            if (furniture.getGridX() != initialGridX || furniture.getGridY() != initialGridY) {
+            if (finalGridX != initialGridX || finalGridY != initialGridY) {
                 MoveFurnitureCommand command = new MoveFurnitureCommand(furniture, initialGridX, initialGridY, 
-                    furniture.getGridX(), furniture.getGridY());
+                    finalGridX, finalGridY);
                 commandManager.executeCommand(command);
             }
             
@@ -930,7 +1162,105 @@ public class LayoutDiagramApp extends GameApplication {
             furniture.getViewComponent().setOpacity(1.0);
             lastClickedFurniture = null;
             initialDragPoint = null;
+        } else if (!selectedFurniture.isEmpty()) {
+            // Handle group furniture release
+            handleGroupRelease();
         }
+    }
+
+    private void handleGroupRelease() {
+        // First validate if all final positions are valid
+        boolean allValidFinalPositions = true;
+        Map<Furniture, Point2D> finalPositions = new HashMap<>();
+        
+        // Check each furniture's final position for validity
+        for (Entity entity : selectedFurniture) {
+            if (entity instanceof Furniture) {
+                Furniture furniture = (Furniture) entity;
+                
+                // Calculate final grid position
+                double currentX = furniture.getX();
+                double currentY = furniture.getY();
+                int finalGridX = (int) Math.round(currentX / CELL_SIZE);
+                int finalGridY = (int) Math.round(currentY / CELL_SIZE);
+                
+                // Ensure final position is within bounds
+                finalGridX = Math.max(0, Math.min(finalGridX, GRID_WIDTH - 1));
+                finalGridY = Math.max(0, Math.min(finalGridY, GRID_HEIGHT - 1));
+                
+                // Store final position
+                finalPositions.put(furniture, new Point2D(finalGridX, finalGridY));
+                
+                // Check if final position is occupied by non-selected furniture
+                if (isCellOccupiedExcluding(finalGridX, finalGridY, 
+                    selectedFurniture.stream()
+                        .filter(e -> e instanceof Furniture)
+                        .map(e -> (Furniture) e)
+                        .collect(Collectors.toList()))) {
+                    allValidFinalPositions = false;
+                    break;
+                }
+            }
+        }
+        
+        if (allValidFinalPositions) {
+            // Valid final positions - create and execute move group command
+            List<Furniture> furnitureList = selectedFurniture.stream()
+                .filter(e -> e instanceof Furniture)
+                .map(e -> (Furniture) e)
+                .collect(Collectors.toList());
+            
+            // Check if any furniture actually moved
+            boolean anyMoved = false;
+            for (Furniture furniture : furnitureList) {
+                Point2D originalPos = originalGroupPositions.get(furniture);
+                Point2D finalPos = finalPositions.get(furniture);
+                if (originalPos != null && finalPos != null && 
+                    (!originalPos.equals(finalPos))) {
+                    anyMoved = true;
+                    break;
+                }
+            }
+            
+            if (anyMoved) {
+                // Convert original positions map to use Furniture keys
+                Map<Furniture, Point2D> furnitureOriginalPositions = new HashMap<>();
+                for (Furniture furniture : furnitureList) {
+                    Point2D originalPos = originalGroupPositions.get(furniture);
+                    if (originalPos != null) {
+                        furnitureOriginalPositions.put(furniture, originalPos);
+                    }
+                }
+                
+                // Create and execute the move group command
+                MoveGroupCommand command = new MoveGroupCommand(furnitureList, furnitureOriginalPositions, finalPositions);
+                commandManager.executeCommand(command);
+            }
+            
+            // Snap all furniture to their final grid positions
+            finalPositions.forEach((furniture, finalPos) -> {
+                furniture.setPosition(finalPos.getX() * CELL_SIZE, finalPos.getY() * CELL_SIZE);
+                furniture.setGridPosition((int) finalPos.getX(), (int) finalPos.getY());
+                furniture.getViewComponent().setOpacity(1.0);
+            });
+        } else {
+            // Invalid final positions - revert all furniture to original positions
+            originalGroupPositions.forEach((entity, originalPos) -> {
+                if (entity instanceof Furniture) {
+                    Furniture furniture = (Furniture) entity;
+                    furniture.setPosition(originalPos.getX() * CELL_SIZE, originalPos.getY() * CELL_SIZE);
+                    furniture.setGridPosition((int) originalPos.getX(), (int) originalPos.getY());
+                    
+                    // Reset opacity to normal
+                    furniture.getViewComponent().setOpacity(1.0);
+                }
+            });
+        }
+        
+        // Clear group selection after release
+        selectedFurniture.clear();
+        originalGroupPositions.clear();
+        initialDragPoint = null;
     }
 
     private void initMouseInput() {
@@ -1096,8 +1426,8 @@ public class LayoutDiagramApp extends GameApplication {
                 }
                 lastPlacementX = -1;
                 lastPlacementY = -1;
-                lastClickedFurniture = null;
-                initialDragPoint = null;
+                // Don't clear lastClickedFurniture and selectedFurniture here
+                // They are cleared in handleEditRelease()
                 initialGridX = -1;
                 initialGridY = -1;
                 isRotating = false;
@@ -1114,7 +1444,8 @@ public class LayoutDiagramApp extends GameApplication {
                 .filter(e -> e instanceof Furniture)
                 .anyMatch(e -> {
                     Furniture furniture = (Furniture) e;
-                    return furniture.getGridX() == gridX && furniture.getGridY() == gridY && e != lastClickedFurniture;
+                    return furniture.getGridX() == gridX && furniture.getGridY() == gridY && 
+                           e != lastClickedFurniture && !selectedFurniture.contains(e);
                 });
     }
 
@@ -1136,10 +1467,10 @@ public class LayoutDiagramApp extends GameApplication {
         // Check if position is within grid bounds
         if (gridX >= 0 && gridX < GRID_WIDTH && gridY >= 0 && gridY < GRID_HEIGHT) {
             // Only place furniture if both a tool and a style are selected
-            if (selectedButton != null && FurnitureStyle.getCurrentStyle() != null) {
-                if (FurnitureFactory.getCurrentType() == FurnitureType.EDIT) {
-                    handleEditClick(worldMouse, null); // Pass null for MouseEvent
-                } else if (FurnitureFactory.getCurrentType() == FurnitureType.ERASE) {
+            // Don't handle EDIT tool here - it's handled directly in mouse press handler
+            if (selectedButton != null && FurnitureStyle.getCurrentStyle() != null && 
+                FurnitureFactory.getCurrentType() != FurnitureType.EDIT) {
+                if (FurnitureFactory.getCurrentType() == FurnitureType.ERASE) {
                     handleEraseClick(worldMouse);
                 } else {
                     // Check if the cell is already occupied
